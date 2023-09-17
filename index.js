@@ -1,39 +1,34 @@
-let express = require(`express`);
-let app = express();
+// библиотеки 
+const express = require(`express`);
 const session = require('express-session');
 const multer = require('multer');
+const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fileUpload = require('express-fileupload');
-const { secret } = require(`./config`);
-const { Sequelize } = require('sequelize')
+const path = require('path');
 
+// модули самого бэкенда
+const { NewsModel, UserModel, CardModel } = require('./models');
+
+const { secret } = require(`./config`);
+
+let app = express();
 let port = process.env.PORT || 3000
 
 app.listen(port, function () {
   console.log(`http://localhost:${port}`);
 });
 
-let cors = require('cors');
 app.use(cors());
 
 // Подключаем middleware для сессий
-app.use(
-  session({
-    secret: 'secret-key',
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-
+app.use(session({ secret: 'secret-key', resave: false, saveUninitialized: true, }));
 app.use((_req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', '*');
-
   next();
 });
-
-
 
 // Раздача статики
 app.use(express.static(`public`));
@@ -44,162 +39,32 @@ app.use(fileUpload());
 // Настройка POST-запроса
 app.use(express.urlencoded({ extended: true }));
 
-const sequelize = new Sequelize(`sqlite::memory:`)
-connect = async ()=>{
-  try {
-    await sequelize.authenticate()
-    console.log('Соединение с БД было успешно установлено')
-  } catch (e) {
-    console.log('Невозможно выполнить подключение к БД: ', e)
-  }
-}
-connect()
-let mongoose = require(`mongoose`);
-mongoose.connect(`mongodb://127.0.0.1:27017/estate`);
 
-
-let newsSchema = sequelize.define("newsSchema",
-  {
-    title: String,
-    content: String,
-  },
-  {
-    timestamps: {
-      createdAt: true,
-    },
-  }
-);
-
-
-let habinationShema = sequelize.define( "habinationShema", {
-  title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-// let Habinations = new mongoose.model(`habitation`, habinationShema);
-console.log(habinationShema === sequelize.models.habinationShema)
-
-let eventsShema = sequelize.define("eventsShema",{
- title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-
-let rentalShema = sequelize.define("rentalShema",{
- title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-
-let forChildrenShema = sequelize.define("forChildrenShema",{
- title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-
-let instructorToursShema = sequelize.define("instructorToursShema",{
-  title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-
-let RoleShema = sequelize.define("RoleShema",{
-  value: {
-    type: String,
-    unique: true,
-    default: 'USER',
-  },
-});
-
-let UserShema = sequelize.define("UserShema",{
-  username: {
-    type: String,
-    required: true,
-  },
-  surname: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  number: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-
-  roles: [
-    {
-      type: String,
-      ref: 'Role',
-    },
-  ],
-});
-
-let generateAccessToken = (id, roles) => {
-  let payload = {
-    id,
-    roles,
-  };
-  return jwt.sign(payload, secret, { expiresIn: '336h' });
-};
+let generateAccessToken = (id, roles) => jwt.sign({ id, roles }, secret, { expiresIn: '336h' });
 
 let verifyc = function (roles) {
   return function (req, res, next) {
-    if (req.method === 'OPTIONS') {
-      next();
-    }
+    if (req.method === 'OPTIONS') next();
+
     try {
       let token = req.headers.authorization;
       // if(token){
       //   return res.json({message: token})
       // }
-      if (!token) {
-        return res.json({ message: 'Пользователь не авторизован' });
-      }
+      if (!token) return res.json({ message: 'Пользователь не авторизован' });
+        
       let { roles: userRoles } = jwt.verify(token, secret);
       let hasRole = false;
       userRoles.forEach((role) => {
-        if (roles.includes(role)) {
-          hasRole = true;
-        }
+        if (roles.includes(role)) hasRole = true;
       });
-      if (!hasRole) {
-        return res.json({ message: 'У вас нет доступа' });
-      }
+      if (!hasRole) return res.json({ message: 'У вас нет доступа' });
       next();
     } catch (err) {
       return res.json({ message: 'Пользователь не авторизован' });
     }
-  };
-};
+  }
+}
 let ADMINVERIFY = function (roles) {
   return function (req, res, next) {
     if (req.method === 'OPTIONS') {
@@ -225,6 +90,8 @@ let ADMINVERIFY = function (roles) {
     }
   };
 };
+
+app.get('/', async function (req, res) { res.sendFile(path.join(__dirname, 'index.html')); });
 
 app.get(`/news`, async function (req, res) {
   let token = req.headers.authorization;
