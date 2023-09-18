@@ -1,52 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Document</title>
     <style>
-    
-        navmenu { display: flex; float: right; }
-        
+      navmenu {
+        display: flex;
+        float: right;
+      }
     </style>
-    
+
     <script>
-    
-        const getPromise = async href => {
-            let promise = await fetch(href);
-            let src = await promise.text();
-            return src;
-        }
-        
-        const initRegister = () => {
-            document.querySelector('#register').display = 'block';
-        }
-        
-        const getNews = () => {
-            getPromise('/newsDebug').then(
-                (result) => { document.querySelector('#news').innerHTML = result; }, 
-                (error) => { document.querySelector('#news').innerHTML = error; }
-            )
-        }
-        
-        const getHabitation = () => {   
-            getPromise('/habitationDebug').then(
-                (result) => { document.querySelector('#habitation').innerHTML = result; }, 
-                (error) => { document.querySelector('#habitation').innerHTML = error; }
-            )
-        }
-        
+      const getPromise = async (href) => {
+        let promise = await fetch(href);
+        let src = await promise.text();
+        return src;
+      };
+
+      const initRegister = () => {
+        document.querySelector('#register').display = 'block';
+      };
+
+
+      const getData = (data) => {
+        getPromise(`/${data}Debug`).then(
+          (result) => {
+            document.querySelector('#'+data).innerHTML = result;
+          },
+          (error) => {
+            document.querySelector('#'+data).innerHTML = error;
+          }
+        );
+      };
     </script>
-    
-</head>
-<body style = 'padding-left: 20%;'>
-   <div style = 'width: 60%;'>
-       <header>
-           <h4>
-               Сайт для проверки работы бэкенда
-           </h4>
-          
-           <nav class = 'navmenu'>
-              <!--
+  </head>
+  <body style="padding-left: 20%">
+    <div style="width: 60%">
+      <header>
+        <h4>Сайт для проверки работы бэкенда</h4>
+
+        <nav class="navmenu">
+          <!--
                <a href="/register">
                     Регистрация
                </a>
@@ -54,18 +48,17 @@
                     Бронирование
                </a>
                -->
-               <a onclick = 'getNews()'>
-                    Новости
-               </a>
-               <a onclick = 'getHabitation()'>
-                    Проживание
-               </a>
-           </nav>
+          <a onclick="getData(`news`)"> Новости </a>
+          <a onclick="getData(`habitation`)"> Проживание </a>
+          <a onclick="getData(`event`)"> События </a>
+          <a onclick="getData(`rental`)"> Аренда </a>
+          <a onclick="getData(`forChildren`)"> Для детей </a>
+          <a onclick="getData(`instructor-tours`)"> Экскурсии с инструктором </a>
+        </nav>
+      </header>
 
-       </header>
-       
-        <main>
-           <!--
+      <main>
+        <!--
             <div id = 'registerForm'>
                 <form action="/register">
                     <label for=""> Имя </label>
@@ -93,16 +86,11 @@
                 
             </div>
             -->
-            <div id = 'news'></div>
-            <div id = 'habitation'></div>
-        </main>
+        <div id="news"></div>
+        <div id="habitation"></div>
+      </main>
 
-        <footer>
-            
-            
-        </footer>
-  
-   </div>
-    
-</body>
+      <footer></footer>
+    </div>
+  </body>
 </html>
