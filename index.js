@@ -9,8 +9,7 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 
 // модули самого бэкенда
-const { NewsModel, UserModel, CardModel } = require('./models');
-
+const { sequelize, NewsModel, UserModel, CardModel } = require('./models');
 const { secret } = require(`./config`);
 
 let app = express();
@@ -99,13 +98,10 @@ app.get(`/news`, async function (req, res) {
   let admin
   if (token) {
     userRoles.forEach((role) => {
-      if (role == 'ADMIN') {
-        admin = true;
-      }
+      if (role == 'ADMIN') admin = true;
     });
   }
-
-  let news = await News.find({});
+  let news = await NewsModel.findAll();
 
   res.send({ news, admin });
 });
