@@ -90,7 +90,13 @@ let ADMINVERIFY = function (roles) {
   };
 };
 
-app.get('/', async function (req, res) { res.sendFile(path.join(__dirname, 'index.html')); });
+// этот код нужен только для дебага, на проде убрать
+app.get('/', async function (req, res) { res.sendFile(path.join(__dirname, 'test.html')); });
+app.get('/newsDebug', async function (req, res) {
+  let news = await NewsModel.findAll();
+
+  res.send({ news });
+});
 
 app.get(`/news`, async function (req, res) {
   let token = req.headers.authorization;
@@ -104,6 +110,44 @@ app.get(`/news`, async function (req, res) {
   let news = await NewsModel.findAll();
 
   res.send({ news, admin });
+});
+
+app.get(`/habitationDebug`, async function (req, res) {
+  let habit = await NewsModel.findAll(
+    { where: { category: 'habit' } } 
+  );
+
+  res.send({ habit });
+    
+    
+});
+
+app.get(`/habitation/items`, async function (req, res) {
+  try {
+    let name = req.query.name;
+    let cards;
+    let admin = false;
+    let token = req.headers.authorization;
+    console.log(token);
+    let { roles: userRoles } = jwt.verify(token, secret);
+    console.log(userRoles);
+
+    if (name) {
+      cards = await Habinations.find({ nameCard: name });
+      if (token) {
+        userRoles.forEach((role) => {
+          if (role == 'ADMIN') {
+            admin = true;
+          }
+        });
+      }
+    } else {
+      cards = await Habinations.find({});
+    }
+    res.send({ cards, admin });
+  } catch (e) {
+    res.send({ expired: true });
+  }
 });
 
 let timeId;
@@ -456,33 +500,6 @@ app.get(`/event/items`, async function (req, res) {
   }
 });
 
-app.get(`/habitation/items`, async function (req, res) {
-  try {
-    let name = req.query.name;
-    let cards;
-    let admin = false;
-    let token = req.headers.authorization;
-    console.log(token);
-    let { roles: userRoles } = jwt.verify(token, secret);
-    console.log(userRoles);
-
-    if (name) {
-      cards = await Habinations.find({ nameCard: name });
-      if (token) {
-        userRoles.forEach((role) => {
-          if (role == 'ADMIN') {
-            admin = true;
-          }
-        });
-      }
-    } else {
-      cards = await Habinations.find({});
-    }
-    res.send({ cards, admin });
-  } catch (e) {
-    res.send({ expired: true });
-  }
-});
 
 app.get(`/create_roles`, async function(req, res) {
   let user = new Role({value: 'USER'})
