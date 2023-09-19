@@ -28,22 +28,17 @@ UserModel.init(
 class CardModel extends Model { }
 CardModel.init(
     {
-        category:   { type: DataTypes.STRING,  allowNull: false, },
-        title:      { type: DataTypes.STRING,  allowNull: false, },
-        p:          { type: DataTypes.STRING,  allowNull: false, },
-        price:      { type: DataTypes.INTEGER, allowNull: false, },
-        phone:      { type: DataTypes.STRING,  allowNull: false, },
-        address:    { type: DataTypes.STRING,  allowNull: false, },
-        nameCard:   { type: DataTypes.STRING,  allowNull: false, },
+        category:    { type: DataTypes.STRING,  allowNull: false, },
+        subcategory: { type: DataTypes.STRING,  allowNull: false, },
+        title:       { type: DataTypes.STRING,  allowNull: false, },
+        img:         { type: DataTypes.STRING,  allowNull: false, },
+        p:           { type: DataTypes.STRING,  allowNull: false, },
+        price:       { type: DataTypes.INTEGER, allowNull: false, },
+        phone:       { type: DataTypes.STRING,  allowNull: false, },
+        address:     { type: DataTypes.STRING,  allowNull: false, },
+        nameCard:    { type: DataTypes.STRING,  allowNull: false, },
     }, 
     { sequelize, modelName: 'CardModel', }
 );
 
-class CardImage extends Model { }
-CardModel.init(
-    { src:   { type: DataTypes.STRING,  allowNull: false, }, }, 
-    { sequelize, modelName: 'CardModel', }
-);
-
-//CardModel.hasMany(CardImage);
-module.exports = { NewsModel, UserModel, CardModel }
+module.exports = { sequelize, NewsModel, UserModel, CardModel }
