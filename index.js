@@ -30,7 +30,6 @@ app.use((_req, res, next) => {
 });
 
 // Раздача статики
-app.use(express.static(`public`));
 
 // Настройка POST-запроса — JSON
 app.use(express.json());
@@ -113,35 +112,36 @@ app.get(`/news`, async function (req, res) {
 });
 
 app.get(`/habitationDebug`, async function (req, res) {
-  let response = await NewsModel.findAll(
+  console.log(CardModel)
+  let response = await CardModel.findAll(
     { where: { category: 'habitation' } } 
   );
 
   res.send({ response });
 });
 app.get(`/eventDebug`, async function (req, res) {
-  let response = await NewsModel.findAll(
+  let response = await CardModel.findAll(
     { where: { category: 'event' } } 
   );
 
   res.send({ response });
 });
 app.get(`/rentalDebug`, async function (req, res) {
-  let response = await NewsModel.findAll(
+  let response = await CardModel.findAll(
     { where: { category: 'rental' } } 
   );
 
   res.send({ response });
 });
 app.get(`/forChildrenDebug`, async function (req, res) {
-  let response = await NewsModel.findAll(
+  let response = await CardModel.findAll(
     { where: { category: 'forChildren' } } 
   );
 
   res.send({ response });
 });
 app.get(`/instructor-toursDebug`, async function (req, res) {
-  let response = await NewsModel.findAll(
+  let response = await CardModel.findAll(
     { where: { category: 'instructor-tours' } } 
   );
 
