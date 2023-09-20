@@ -9,6 +9,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      subcategory: {
+        type: Sequelize.STRING
+      },
       category: {
         type: Sequelize.STRING
       },

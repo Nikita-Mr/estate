@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   CardModel.init({
+    subcategory: DataTypes.STRING, // создать subcategory
     category: DataTypes.STRING,
     title: DataTypes.STRING,
     img: DataTypes.STRING,

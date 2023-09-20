@@ -20,8 +20,7 @@ export default {
   methods: {
     async loadInfo() {
       if (this.$route.path == `/habitation/items`) {
-        let hotel = await axios.get(`/habitation/items`, {
-          params: { name: this.$route.query.name },
+        let hotel = await axios.get(`/habitationDebug`, { // не работает error
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },

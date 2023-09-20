@@ -9,11 +9,11 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 
 // модули самого бэкенда
-const { sequelize, NewsModel, UserModel, CardModel } = require('./models');
+const { sequelize, NewsModel, UserModel, CardModel } = require('./modules/models');
 const { secret } = require(`./config`);
 
 let app = express();
-let port = process.env.PORT || 3000
+let port = process.env.PORT || 3005
 
 app.listen(port, function () {
   console.log(`http://localhost:${port}`);
@@ -90,9 +90,10 @@ let ADMINVERIFY = function (roles) {
 };
 
 // этот код нужен только для дебага, на проде убрать
-app.get('/', async function (req, res) { res.sendFile(path.join(__dirname, 'test.html')); });
+// app.get('/', async function (req, res) { res.sendFile(path.join(__dirname, 'test.html')); });
 app.get('/newsDebug', async function (req, res) {
-  let news = await NewsModel.findAll();
+  console.log(UserModel)
+  let news = await UserModel.findAll();
 
   res.send({ news });
 });
@@ -113,8 +114,9 @@ app.get(`/news`, async function (req, res) {
 
 app.get(`/habitationDebug`, async function (req, res) {
   console.log(CardModel)
+  let name = req.query.name
   let response = await CardModel.findAll(
-    { where: { category: 'habitation' } } 
+    { where: { category: 'habitation'} } 
   );
 
   res.send({ response });
