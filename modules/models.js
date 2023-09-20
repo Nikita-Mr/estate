@@ -37,6 +37,7 @@ CardModel.init(
         phone:          { type: DataTypes.STRING,  allowNull: false, },
         address:        { type: DataTypes.STRING,  allowNull: false, },
         nameCard:       { type: DataTypes.STRING,  allowNull: false, },
+
     }, 
     { sequelize, modelName: 'CardModel', }
 );
@@ -47,5 +48,5 @@ CardImage.init(
     { sequelize, modelName: 'CardImage', }
 );
 
-//CardModel.hasMany(CardImage);
-module.exports = { NewsModel, UserModel, CardModel }
+
+module.exports = { sequelize, NewsModel, UserModel, CardModel }

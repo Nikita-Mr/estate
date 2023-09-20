@@ -25,7 +25,7 @@ export default {
             Authorization: document.cookie.replace('token=', ``),
           },
         });
-        this.INFO = hotel.data.cards;
+        this.INFO = hotel.data.response;
         this.admin = hotel.data.admin;
         this.expired = hotel.data.expired;
         if (this.expired) {
