@@ -6,7 +6,7 @@ module.exports = {
     return queryInterface.bulkInsert('CardModels', [
       {
         category: "habitation",
-        // subcategory: "hotel",// создать subcategory
+        subcategory: "cottage",
         title: "Что то",
         img: "ol.jpg",
         p: "Prototip",

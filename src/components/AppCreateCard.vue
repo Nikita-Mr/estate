@@ -50,10 +50,11 @@ export default defineComponent({
           p: this.description,
           phone: this.phone,
           adress: this.adress,
-          nameCard: this.$route.query.name,
+          name: this.$route.query.name,
+          category: this.$route.query.category
         })
         .then((e) => {
-          axios
+           axios
             .post('/upload', formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',

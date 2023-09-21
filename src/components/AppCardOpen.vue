@@ -59,7 +59,7 @@ export default defineComponent({
     async deleteCard() {
       await axios
         .post('/deleteCard', {
-          id: this.INFO._id,
+          id: this.INFO.id,
           name: this.$route.query.name,
         })
         .then((e) => {
@@ -71,7 +71,7 @@ export default defineComponent({
     async edit() {
       this.$router.push({
         path: '/create-card',
-        query: { id: this.INFO._id, name: this.$route.query.name, edit: true },
+        query: { id: this.INFO.id, name: this.$route.query.name, category: this.$router.path.slice(1, -6) , edit: true },
       });
     },
   },
@@ -90,7 +90,8 @@ export default defineComponent({
         </div>
       </div>
       <div class="img">
-        <Carousel :autoplay="4000" :wrap-around="true">
+        <img :src="`/src/assets/img/` + INFO.img" alt="" /> <!-- одна картинка --> 
+        <!-- <Carousel :autoplay="4000" :wrap-around="true">
           <Slide v-for="slide in INFO.img" :key="slide">
             <div class="carousel__item">
               <img :src="`/src/assets/img/` + slide" alt="" />
@@ -101,7 +102,7 @@ export default defineComponent({
             <Navigation />
             <Pagination />
           </template>
-        </Carousel>
+        </Carousel> -->
       </div>
       <div class="wrapper">
         <div class="info">

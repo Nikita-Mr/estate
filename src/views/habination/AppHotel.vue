@@ -84,6 +84,9 @@ export default {
         query: { id: id, name: this.$route.path.slice(1, -6) },
       });
     },
+    category(name){
+      return name.slice(0, -5)
+    }
   },
 };
 </script>
@@ -92,7 +95,7 @@ export default {
   <div class="hotel-wrapper">
     <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
       <div v-if="admin" class="cols create-card">
-        <RouterLink :to="`/create-card?name=`+ $route.query.name">
+        <RouterLink :to="`/create-card?name=`+ $route.query.name+`&category=${category($route.name)}`">
           <div class="cross">
             <div class="line"></div>
             <div class="line"></div>
