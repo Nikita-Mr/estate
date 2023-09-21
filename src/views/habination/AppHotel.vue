@@ -20,12 +20,13 @@ export default {
   methods: {
     async loadInfo() {
       if (this.$route.path == `/habitation/items`) {
-        let hotel = await axios.get(`/habitationDebug`, { // не работает error
+        let hotel = await axios.get(`/habitation/items`, { // не работает error
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },
+          params: { name: this.$route.query.name },
         });
-        this.INFO = hotel.data.response;
+        this.INFO = hotel.data.cards;
         this.admin = hotel.data.admin;
         this.expired = hotel.data.expired;
         if (this.expired) {
@@ -105,7 +106,7 @@ export default {
           :img="cardInfo.img"
           :price="cardInfo.price"
           :p="cardInfo.p"
-          :id="cardInfo._id"
+          :id="cardInfo.id"
         />
       </div>
     </div>

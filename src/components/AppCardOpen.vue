@@ -6,27 +6,27 @@ import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
 
 import 'vue3-carousel/dist/carousel.css';
 
-ymaps.ready(init); // когда апи готово, инициализируемя карту
-var customMap; // объявим переменную для карты
-async function init() {
-  // функция инициализации
-  customMap = new ymaps.Map('customMap', {
-    // создадим карту выведем ее в див с id="customMap"
-    center: [25.15, 55.18], // центра карты
-    behaviors: ['default', 'scrollZoom'], // скроллинг колесом
-    zoom: 10, // масштаб карты
-    controls: ['zoomControl', 'fullscreenControl'], // элементы управления
-  });
-  myGeocoder.then(console.log(res.geoObjects.get(0).geometry.getCoordinates()));
+// ymaps.ready(init); // когда апи готово, инициализируемя карту
+// var customMap; // объявим переменную для карты
+// async function init() {
+//   // функция инициализации
+//   customMap = new ymaps.Map('customMap', {
+//     // создадим карту выведем ее в див с id="customMap"
+//     center: [25.15, 55.18], // центра карты
+//     behaviors: ['default', 'scrollZoom'], // скроллинг колесом
+//     zoom: 10, // масштаб карты
+//     controls: ['zoomControl', 'fullscreenControl'], // элементы управления
+//   });
+//   myGeocoder.then(console.log(res.geoObjects.get(0).geometry.getCoordinates()));
 
-  // customMap.controls.remove('geolocationControl'); // удаляем геолокацию
-  // customMap.controls.remove('searchControl'); // удаляем поиск
-  // customMap.controls.remove('trafficControl'); // удаляем контроль трафика
-  // customMap.controls.remove('typeSelector'); // удаляем тип
-  // customMap.controls.remove('fullscreenControl'); // удаляем кнопку перехода в полноэкранный режим
-  // customMap.controls.remove('zoomControl'); // удаляем контрол зуммирования
-  // customMap.controls.remove('rulerControl'); // удаляем контрол правил
-}
+//   // customMap.controls.remove('geolocationControl'); // удаляем геолокацию
+//   // customMap.controls.remove('searchControl'); // удаляем поиск
+//   // customMap.controls.remove('trafficControl'); // удаляем контроль трафика
+//   // customMap.controls.remove('typeSelector'); // удаляем тип
+//   // customMap.controls.remove('fullscreenControl'); // удаляем кнопку перехода в полноэкранный режим
+//   // customMap.controls.remove('zoomControl'); // удаляем контрол зуммирования
+//   // customMap.controls.remove('rulerControl'); // удаляем контрол правил
+// }
 
 export default defineComponent({
   components: {
@@ -121,9 +121,9 @@ export default defineComponent({
             </a>
           </div>
         </div>
-        <div class="wrapper-for-map">
+        <!-- <div class="wrapper-for-map">
           <div id="customMap" class="map"></div>
-        </div>
+        </div> -->
       </div>
       <div class="body">
         <span class="description">{{ INFO.p }}</span>

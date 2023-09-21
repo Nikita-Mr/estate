@@ -1,4 +1,4 @@
-// библиотеки 
+// библиотеки
 const express = require(`express`);
 const session = require('express-session');
 const multer = require('multer');
@@ -9,11 +9,16 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 
 // модули самого бэкенда
-const { sequelize, NewsModel, UserModel, CardModel } = require('./modules/models');
+const {
+  sequelize,
+  NewsModel,
+  UserModel,
+  CardModel,
+} = require('./modules/models');
 const { secret } = require(`./config`);
 
 let app = express();
-let port = process.env.PORT || 3005
+let port = process.env.PORT || 3005;
 
 app.listen(port, function () {
   console.log(`http://localhost:${port}`);
@@ -22,7 +27,9 @@ app.listen(port, function () {
 app.use(cors());
 
 // Подключаем middleware для сессий
-app.use(session({ secret: 'secret-key', resave: false, saveUninitialized: true, }));
+app.use(
+  session({ secret: 'secret-key', resave: false, saveUninitialized: true })
+);
 app.use((_req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', '*');
@@ -37,8 +44,8 @@ app.use(fileUpload());
 // Настройка POST-запроса
 app.use(express.urlencoded({ extended: true }));
 
-
-let generateAccessToken = (id, roles) => jwt.sign({ id, roles }, secret, { expiresIn: '336h' });
+let generateAccessToken = (id, roles) =>
+  jwt.sign({ id, roles }, secret, { expiresIn: '336h' });
 
 let verifyc = function (roles) {
   return function (req, res, next) {
@@ -50,7 +57,7 @@ let verifyc = function (roles) {
       //   return res.json({message: token})
       // }
       if (!token) return res.json({ message: 'Пользователь не авторизован' });
-        
+
       let { roles: userRoles } = jwt.verify(token, secret);
       let hasRole = false;
       userRoles.forEach((role) => {
@@ -61,8 +68,8 @@ let verifyc = function (roles) {
     } catch (err) {
       return res.json({ message: 'Пользователь не авторизован' });
     }
-  }
-}
+  };
+};
 let ADMINVERIFY = function (roles) {
   return function (req, res, next) {
     if (req.method === 'OPTIONS') {
@@ -92,7 +99,7 @@ let ADMINVERIFY = function (roles) {
 // этот код нужен только для дебага, на проде убрать
 // app.get('/', async function (req, res) { res.sendFile(path.join(__dirname, 'test.html')); });
 app.get('/newsDebug', async function (req, res) {
-  console.log(UserModel)
+  console.log(UserModel);
   let news = await UserModel.findAll();
 
   res.send({ news });
@@ -101,7 +108,7 @@ app.get('/newsDebug', async function (req, res) {
 app.get(`/news`, async function (req, res) {
   let token = req.headers.authorization;
   let { roles: userRoles } = jwt.verify(token, secret);
-  let admin
+  let admin;
   if (token) {
     userRoles.forEach((role) => {
       if (role == 'ADMIN') admin = true;
@@ -113,39 +120,33 @@ app.get(`/news`, async function (req, res) {
 });
 
 app.get(`/habitationDebug`, async function (req, res) {
-  console.log(CardModel)
-  let name = req.query.name
-  let response = await CardModel.findAll(
-    { where: { category: 'habitation'} } 
-  );
+  console.log(CardModel);
+  let name = req.query.name;
+  let response = await CardModel.findAll({ where: { category: 'habitation' } });
 
   res.send({ response });
 });
 app.get(`/eventDebug`, async function (req, res) {
-  let response = await CardModel.findAll(
-    { where: { category: 'event' } } 
-  );
+  let response = await CardModel.findAll({ where: { category: 'event' } });
 
   res.send({ response });
 });
 app.get(`/rentalDebug`, async function (req, res) {
-  let response = await CardModel.findAll(
-    { where: { category: 'rental' } } 
-  );
+  let response = await CardModel.findAll({ where: { category: 'rental' } });
 
   res.send({ response });
 });
 app.get(`/forChildrenDebug`, async function (req, res) {
-  let response = await CardModel.findAll(
-    { where: { category: 'forChildren' } } 
-  );
+  let response = await CardModel.findAll({
+    where: { category: 'forChildren' },
+  });
 
   res.send({ response });
 });
 app.get(`/instructor-toursDebug`, async function (req, res) {
-  let response = await CardModel.findAll(
-    { where: { category: 'instructor-tours' } } 
-  );
+  let response = await CardModel.findAll({
+    where: { category: 'instructor-tours' },
+  });
 
   res.send({ response });
 });
@@ -161,7 +162,7 @@ app.get(`/habitation/items`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await Habinations.find({ nameCard: name });
+      cards = await CardModel.findAll({ where: { category: 'habitation'} });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -169,8 +170,6 @@ app.get(`/habitation/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await Habinations.find({});
     }
     res.send({ cards, admin });
   } catch (e) {
@@ -397,22 +396,7 @@ app.get(`/card`, async function (req, res) {
       }
     });
   }
-  if (name == `habitation`) {
-    card = await Habinations.findOne({ _id: id });
-  }
-  if (name == `event`) {
-    card = await Events.findOne({ _id: id });
-  }
-  if (name == `rental`) {
-    card = await Rental.findOne({ _id: id });
-  }
-  if (name == `forChildren`) {
-    card = await ForChildren.findOne({ _id: id });
-  }
-  if (name == `instructor-tours`) {
-    card = await InstructorTours.findOne({ _id: id });
-  }
-
+  card = await CardModel.findOne({ where: { id: id } });
   res.send({ card, admin });
 });
 
@@ -427,7 +411,7 @@ app.get(`/instructor-tours/items`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await InstructorTours.find({ nameCard: name });
+      cards = await CardModel.findAll({ where: { category: 'habitation'} });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -435,9 +419,7 @@ app.get(`/instructor-tours/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await InstructorTours.find({});
-    }
+    } 
     res.send({ cards, admin });
   } catch (e) {
     res.send({ expired: true });
@@ -455,7 +437,7 @@ app.get(`/forChildren/items`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await ForChildren.find({ nameCard: name });
+      cards = await CardModel.findAll({ where: { category: 'habitation'} });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -463,8 +445,6 @@ app.get(`/forChildren/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await ForChildren.find({});
     }
     res.send({ cards, admin });
   } catch (e) {
@@ -483,7 +463,7 @@ app.get(`/rental/items`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await Rental.find({ nameCard: name });
+      cards = await CardModel.findAll({ where: { category: 'habitation'} });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -491,9 +471,7 @@ app.get(`/rental/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await Rental.find({});
-    }
+    } 
     res.send({ cards, admin });
   } catch (e) {
     res.send({ expired: true });
@@ -511,7 +489,7 @@ app.get(`/event/items`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await Events.find({ nameCard: name });
+      cards = await CardModel.findAll({ where: { category: 'habitation'} });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -519,8 +497,6 @@ app.get(`/event/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await Events.find({});
     }
     res.send({ cards, admin });
   } catch (e) {
@@ -528,11 +504,10 @@ app.get(`/event/items`, async function (req, res) {
   }
 });
 
-
-app.get(`/create_roles`, async function(req, res) {
-  let user = new Role({value: 'USER'})
-  await user.save()
-  let admin = new Role({value: 'ADMIN'})
-  await admin.save()
-  res.redirect(`back`)
-})
+app.get(`/create_roles`, async function (req, res) {
+  let user = new Role({ value: 'USER' });
+  await user.save();
+  let admin = new Role({ value: 'ADMIN' });
+  await admin.save();
+  res.redirect(`back`);
+});
