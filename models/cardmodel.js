@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     subcategory: DataTypes.STRING, // создать subcategory
     category: DataTypes.STRING,
     title: DataTypes.STRING,
-    img: DataTypes.STRING,
+    img: DataTypes.JSON,
     p: DataTypes.STRING,
     price: DataTypes.STRING,
     phone: DataTypes.STRING,

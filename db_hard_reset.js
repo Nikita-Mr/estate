@@ -18,7 +18,7 @@ const THE_FUCKING_CURE = async () =>
         category: "habitation",
         subcategory: 'hotel',
         title: "Что то",
-        img: "ol.jpg",
+        img: {},
         p: "Prototip",
         price: 1000,
         phone: "+79042065393",

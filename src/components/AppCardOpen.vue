@@ -71,7 +71,7 @@ export default defineComponent({
     async edit() {
       this.$router.push({
         path: '/create-card',
-        query: { id: this.INFO.id, name: this.$route.query.name, category: this.$router.path.slice(1, -6) , edit: true },
+        query: { id: this.INFO.id, name: this.$route.query.name , edit: true },
       });
     },
   },
@@ -90,8 +90,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="img">
-        <img :src="`/src/assets/img/` + INFO.img" alt="" /> <!-- одна картинка --> 
-        <!-- <Carousel :autoplay="4000" :wrap-around="true">
+        <Carousel :autoplay="4000" :wrap-around="true">
           <Slide v-for="slide in INFO.img" :key="slide">
             <div class="carousel__item">
               <img :src="`/src/assets/img/` + slide" alt="" />
@@ -102,13 +101,13 @@ export default defineComponent({
             <Navigation />
             <Pagination />
           </template>
-        </Carousel> -->
+        </Carousel>
       </div>
       <div class="wrapper">
         <div class="info">
           <span class="title">{{ INFO.title }}</span>
           <span class="price">{{ INFO.price }} руб</span>
-          <span class="adress">{{ INFO.adress }}</span>
+          <span class="adress">{{ INFO.address }}</span>
           <span class="phone mb-2">{{ INFO.phone }}</span>
           <div class="messengers">
             <a href="#" target="_blank">

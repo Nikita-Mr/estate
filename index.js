@@ -119,39 +119,9 @@ app.get(`/news`, async function (req, res) {
   res.send({ news, admin });
 });
 
-app.get(`/habitationDebug`, async function (req, res) {
-  console.log(CardModel);
-  let name = req.query.name;
-  let response = await CardModel.findAll({ where: { category: 'habitation' } });
 
-  res.send({ response });
-});
-app.get(`/eventDebug`, async function (req, res) {
-  let response = await CardModel.findAll({ where: { category: 'event' } });
 
-  res.send({ response });
-});
-app.get(`/rentalDebug`, async function (req, res) {
-  let response = await CardModel.findAll({ where: { category: 'rental' } });
-
-  res.send({ response });
-});
-app.get(`/forChildrenDebug`, async function (req, res) {
-  let response = await CardModel.findAll({
-    where: { category: 'forChildren' },
-  });
-
-  res.send({ response });
-});
-app.get(`/instructor-toursDebug`, async function (req, res) {
-  let response = await CardModel.findAll({
-    where: { category: 'instructor-tours' },
-  });
-
-  res.send({ response });
-});
-
-app.get(`/habitation/items`, async function (req, res) {
+app.get(`/habitation`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;
@@ -339,22 +309,8 @@ app.post(`/login`, async function (req, res) {
 app.post(`/deleteCard`, async function (req, res) {
   try {
     let { id, name } = req.body;
-
-    if (name == `habitation`) {
-      await Habinations.deleteOne({ _id: id });
-    }
-    if (name == `event`) {
-      await Events.deleteOne({ _id: id });
-    }
-    if (name == `rental`) {
-      await Rental.deleteOne({ _id: id });
-    }
-    if (name == `forChildren`) {
-      await ForChildren.deleteOne({ _id: id });
-    }
-    if (name == `instructor-tours`) {
-      await InstructorTours.deleteOne({ _id: id });
-    }
+    let card = await CardModel.findOne({where: {id: id}})
+    await card.destroy()
     res.send({ status: '200' });
   } catch (e) {
     res.send({ message: 'Ошибка' });
@@ -380,7 +336,7 @@ app.get(`/card`, async function (req, res) {
   res.send({ card, admin });
 });
 
-app.get(`/instructor-tours/items`, async function (req, res) {
+app.get(`/instructor-tours`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;
@@ -408,7 +364,7 @@ app.get(`/instructor-tours/items`, async function (req, res) {
   }
 });
 
-app.get(`/forChildren/items`, async function (req, res) {
+app.get(`/forChildren`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;
@@ -436,7 +392,7 @@ app.get(`/forChildren/items`, async function (req, res) {
   }
 });
 
-app.get(`/rental/items`, async function (req, res) {
+app.get(`/rental`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;
@@ -464,7 +420,7 @@ app.get(`/rental/items`, async function (req, res) {
   }
 });
 
-app.get(`/event/items`, async function (req, res) {
+app.get(`/event`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;

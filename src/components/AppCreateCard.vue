@@ -157,7 +157,7 @@ export default defineComponent({
         this.title = this.INFO.title;
         this.price = this.INFO.price;
         this.phone = this.INFO.phone;
-        this.adress = this.INFO.adress;
+        this.adress = this.INFO.address;
         this.description = this.INFO.p;
       }
     },

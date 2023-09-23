@@ -20,7 +20,7 @@ export default {
   methods: {
     async loadInfo() {
       if (this.$route.path == `/habitation/items`) {
-        let hotel = await axios.get(`/habitation/items`, { // не работает error
+        let hotel = await axios.get(`/habitation`, { // не работает error
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },
@@ -34,7 +34,7 @@ export default {
         }
       }
       if (this.$route.path == `/event/items`) {
-        let events = await axios.get(`/event/items`, {
+        let events = await axios.get(`/event`, {
           params: { name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
@@ -45,7 +45,7 @@ export default {
         this.expired = events.data.expired;
       }
       if (this.$route.path == `/rental/items`) {
-        let rental = await axios.get(`/rental/items`, {
+        let rental = await axios.get(`/rental`, {
           params: { name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
@@ -56,7 +56,7 @@ export default {
         this.expired = rental.data.expired;
       }
       if (this.$route.path == `/forChildren/items`) {
-        let forChildren = await axios.get(`/forChildren/items`, {
+        let forChildren = await axios.get(`/forChildren`, {
           params: { name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
@@ -67,7 +67,7 @@ export default {
         this.expired = forChildren.data.expired;
       }
       if (this.$route.path == `/instructor-tours/items`) {
-        let InstructorTours = await axios.get(`/instructor-tours/items`, {
+        let InstructorTours = await axios.get(`/instructor-tours`, {
           params: { name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
