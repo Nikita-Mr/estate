@@ -1,29 +1,33 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
-import AppNav from './components/AppNav.vue'
-import AppSlider from './components/AppSlider.vue'
-import AppCenter from './components/AppCenter.vue'
-import AppPhone from './components/AppPhone.vue'
+import { RouterLink, RouterView } from 'vue-router';
+import AppNav from './components/AppNav.vue';
+import AppSlider from './components/AppSlider.vue';
+import AppCenter from './components/AppCenter.vue';
+import AppPhone from './components/AppPhone.vue';
 import axios from 'axios';
 // axios.defaults.headers.common['Authorization'] = document.cookie.replace("token=", ``).split(`;`, 1)
 
-export default{
+export default {
   components: {
     AppNav,
     AppSlider,
     AppCenter,
-    AppPhone
+    AppPhone,
   },
   data() {
+    return {
+      reload() {
+       window.location.assign(`http://localhost:5173`)
 
+      },
+    };
   },
-  methods(){
-
+  watch(){
+    this.reload()
   },
-  mounted() {
-
-  }
-}
+  methods() {},
+  mounted() {},
+};
 </script>
 
 <template>
@@ -33,6 +37,4 @@ export default{
   <app-phone></app-phone>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

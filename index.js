@@ -30,11 +30,11 @@ app.use(cors());
 app.use(
   session({ secret: 'secret-key', resave: false, saveUninitialized: true })
 );
-app.use((_req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-  next();
-});
+// app.use((_req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', '*');
+//   next();
+// });
 
 // Раздача статики
 
@@ -274,7 +274,7 @@ app.post(`/registration`, async function (req, res) {
       email,
       phone: number,
       password: hashPassword,
-      role: 'USER',
+      role: '',
     });
     console.log(newUser);
     await newUser.save();
