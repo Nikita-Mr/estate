@@ -3,15 +3,16 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('Users', [
+    return queryInterface.bulkInsert('UserModels', [
       {
         username: 'Никита',
         surname: 'Лысенков',
         email: 'example@example.com',
-        number: 79042065393,
-        password: 'ХХХХХХХХХХХХХХХХХХууууууууууууЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙ',
-
-        roles: ["ADMIN"],
+        phone: 79042065393,
+        password: 'членовещание',
+        role: "ADMIN",
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
     ]);
   },

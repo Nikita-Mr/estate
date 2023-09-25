@@ -20,11 +20,11 @@ export default {
   methods: {
     async loadInfo() {
       if (this.$route.path == `/habitation/items`) {
-        let hotel = await axios.get(`/habitation/items`, {
-          params: { name: this.$route.query.name },
+        let hotel = await axios.get(`/habitation`, { // не работает error
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },
+          params: { name: this.$route.query.name },
         });
         this.INFO = hotel.data.cards;
         this.admin = hotel.data.admin;
@@ -34,7 +34,7 @@ export default {
         }
       }
       if (this.$route.path == `/event/items`) {
-        let events = await axios.get(`/event/items`, {
+        let events = await axios.get(`/event`, {
           params: { name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
@@ -45,7 +45,7 @@ export default {
         this.expired = events.data.expired;
       }
       if (this.$route.path == `/rental/items`) {
-        let rental = await axios.get(`/rental/items`, {
+        let rental = await axios.get(`/rental`, {
           params: { name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
@@ -56,7 +56,7 @@ export default {
         this.expired = rental.data.expired;
       }
       if (this.$route.path == `/forChildren/items`) {
-        let forChildren = await axios.get(`/forChildren/items`, {
+        let forChildren = await axios.get(`/forChildren`, {
           params: { name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
@@ -67,7 +67,7 @@ export default {
         this.expired = forChildren.data.expired;
       }
       if (this.$route.path == `/instructor-tours/items`) {
-        let InstructorTours = await axios.get(`/instructor-tours/items`, {
+        let InstructorTours = await axios.get(`/instructor-tours`, {
           params: { name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
@@ -84,6 +84,9 @@ export default {
         query: { id: id, name: this.$route.path.slice(1, -6) },
       });
     },
+    category(name){
+      return name.slice(0, -5)
+    }
   },
 };
 </script>
@@ -92,7 +95,7 @@ export default {
   <div class="hotel-wrapper">
     <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
       <div v-if="admin" class="cols create-card">
-        <RouterLink :to="`/create-card?name=`+ $route.query.name">
+        <RouterLink :to="`/create-card?name=`+ $route.query.name+`&category=${category($route.name)}`">
           <div class="cross">
             <div class="line"></div>
             <div class="line"></div>
@@ -106,7 +109,7 @@ export default {
           :img="cardInfo.img"
           :price="cardInfo.price"
           :p="cardInfo.p"
-          :id="cardInfo._id"
+          :id="cardInfo.id"
         />
       </div>
     </div>

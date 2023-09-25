@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style>
+      .navmenu {
+        display: flex;
+        float: right;
+      }
+      a::after{
+        content: "Хуй";
+        width: auto;
+        padding: 0 5px;
+        border: 1px solid #000;
+        cursor: pointer;
+      }
+    </style>
+
+    <script>
+      const getPromise = async (href) => {
+        let promise = await fetch(href);
+        let src = await promise.text();
+        return src;
+      };
+
+      const initRegister = () => {
+        document.querySelector('#register').display = 'block';
+      };
+
+
+      const getData = (data) => {
+        getPromise(`/${data}Debug`).then(
+          (result) => {
+            document.querySelector('#'+data).innerHTML = result;
+          },
+          (error) => {
+            document.querySelector('#'+data).innerHTML = error;
+          }
+        );
+      };
+    </script>
+  </head>
+  <body style="padding-left: 20%">
+    <div style="width: 60%">
+      <header>
+        <h4>Сайт для проверки работы бэкенда</h4>
+
+        <nav class="navmenu">
+          <!--
+               <a href="/register">
+                    Регистрация
+               </a>
+               <a href="/book_a_seat">
+                    Бронирование
+               </a>
+               -->
+          <a onclick="getData(`news`)"> Новости </a>
+          <a onclick="getData(`habitation`)"> Проживание </a>
+          <a onclick="getData(`event`)"> События </a>
+          <a onclick="getData(`rental`)"> Аренда </a>
+          <a onclick="getData(`forChildren`)"> Для детей </a>
+          <a onclick="getData(`instructor-tours`)"> Экскурсии с инструктором </a>
+        </nav>
+      </header>
+
+      <main>
+        <!--
+            <div id = 'registerForm'>
+                <form action="/register">
+                    <label for=""> Имя </label>
+                    <input type="text">
+                    <br>
+                    
+                    <label for=""> Фамилия </label>
+                    <input type="text">
+                    <br>
+                    
+                    <label for=""> Email </label>
+                    <input type="email">
+                    <br>
+                    
+                    <label for=""> Телефон </label>
+                    <input type="text">
+                    <br>
+                    
+                    <label for=""> Пароль </label>
+                    <input type="text">
+                    <br>
+                    
+                    <button type = 'submit'> запуск ракет на Кубе </button>
+                </form>
+                
+            </div>
+            -->
+        <div id="event"></div>
+        <div id="rental"></div>
+        <div id="forChildren"></div>
+        <div id="instructor-tours"></div>
+        <div id="news"></div>
+        <div id="habitation"></div>
+      </main>
+
+      <footer></footer>
+    </div>
+  </body>
+</html>

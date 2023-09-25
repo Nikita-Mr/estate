@@ -1,42 +1,42 @@
-let express = require(`express`);
-let app = express();
+// библиотеки
+const express = require(`express`);
 const session = require('express-session');
 const multer = require('multer');
+const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fileUpload = require('express-fileupload');
-const { secret } = require(`./config`);
-const { Sequelize } = require('sequelize')
+const path = require('path');
 
-let port = process.env.PORT || 3000
+// модули самого бэкенда
+const {
+  sequelize,
+  NewsModel,
+  UserModel,
+  CardModel,
+} = require('./modules/models');
+const { secret } = require(`./config`);
+
+let app = express();
+let port = process.env.PORT || 3005;
 
 app.listen(port, function () {
   console.log(`http://localhost:${port}`);
 });
 
-let cors = require('cors');
 app.use(cors());
 
 // Подключаем middleware для сессий
 app.use(
-  session({
-    secret: 'secret-key',
-    resave: false,
-    saveUninitialized: true,
-  })
+  session({ secret: 'secret-key', resave: false, saveUninitialized: true })
 );
-
-app.use((_req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-
-  next();
-});
-
-
+// app.use((_req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', '*');
+//   next();
+// });
 
 // Раздача статики
-app.use(express.static(`public`));
 
 // Настройка POST-запроса — JSON
 app.use(express.json());
@@ -44,156 +44,26 @@ app.use(fileUpload());
 // Настройка POST-запроса
 app.use(express.urlencoded({ extended: true }));
 
-const sequelize = new Sequelize(`sqlite::memory:`)
-connect = async ()=>{
-  try {
-    await sequelize.authenticate()
-    console.log('Соединение с БД было успешно установлено')
-  } catch (e) {
-    console.log('Невозможно выполнить подключение к БД: ', e)
-  }
-}
-connect()
-let mongoose = require(`mongoose`);
-mongoose.connect(`mongodb://127.0.0.1:27017/estate`);
-
-
-let newsSchema = sequelize.define("newsSchema",
-  {
-    title: String,
-    content: String,
-  },
-  {
-    timestamps: {
-      createdAt: true,
-    },
-  }
-);
-
-
-let habinationShema = sequelize.define( "habinationShema", {
-  title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-// let Habinations = new mongoose.model(`habitation`, habinationShema);
-console.log(habinationShema === sequelize.models.habinationShema)
-
-let eventsShema = sequelize.define("eventsShema",{
- title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-
-let rentalShema = sequelize.define("rentalShema",{
- title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-
-let forChildrenShema = sequelize.define("forChildrenShema",{
- title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-
-let instructorToursShema = sequelize.define("instructorToursShema",{
-  title: String,
-  img: Array,
-  p: String,
-  price: Number,
-  phone: Number,
-  adress: String,
-  nameCard: String,
-});
-
-let RoleShema = sequelize.define("RoleShema",{
-  value: {
-    type: String,
-    unique: true,
-    default: 'USER',
-  },
-});
-
-let UserShema = sequelize.define("UserShema",{
-  username: {
-    type: String,
-    required: true,
-  },
-  surname: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  number: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-
-  roles: [
-    {
-      type: String,
-      ref: 'Role',
-    },
-  ],
-});
-
-let generateAccessToken = (id, roles) => {
-  let payload = {
-    id,
-    roles,
-  };
-  return jwt.sign(payload, secret, { expiresIn: '336h' });
-};
+let generateAccessToken = (id, role) =>
+  jwt.sign({ id, role }, secret, { expiresIn: '336h' });
 
 let verifyc = function (roles) {
   return function (req, res, next) {
-    if (req.method === 'OPTIONS') {
-      next();
-    }
+    if (req.method === 'OPTIONS') next();
+
     try {
       let token = req.headers.authorization;
       // if(token){
       //   return res.json({message: token})
       // }
-      if (!token) {
-        return res.json({ message: 'Пользователь не авторизован' });
-      }
-      let { roles: userRoles } = jwt.verify(token, secret);
+      if (!token) return res.json({ message: 'Пользователь не авторизован' });
+
+      let { role: userRoles } = jwt.verify(token, secret);
       let hasRole = false;
       userRoles.forEach((role) => {
-        if (roles.includes(role)) {
-          hasRole = true;
-        }
+        if (roles.includes(role)) hasRole = true;
       });
-      if (!hasRole) {
-        return res.json({ message: 'У вас нет доступа' });
-      }
+      if (!hasRole) return res.json({ message: 'У вас нет доступа' });
       next();
     } catch (err) {
       return res.json({ message: 'Пользователь не авторизован' });
@@ -213,7 +83,7 @@ let ADMINVERIFY = function (roles) {
       if (!token) {
         return res.json({ message: 'Пользователь не авторизован' });
       }
-      let { roles: userRoles } = jwt.verify(token, secret);
+      let { role: userRoles } = jwt.verify(token, secret);
       userRoles.forEach((role) => {
         if (role == 'ADMIN') {
           return res.json({ admin: true });
@@ -226,21 +96,57 @@ let ADMINVERIFY = function (roles) {
   };
 };
 
+// этот код нужен только для дебага, на проде убрать
+// app.get('/', async function (req, res) { res.sendFile(path.join(__dirname, 'test.html')); });
+app.get('/newsDebug', async function (req, res) {
+  console.log(UserModel);
+  let news = await UserModel.findAll();
+
+  res.send({ news });
+});
+
 app.get(`/news`, async function (req, res) {
   let token = req.headers.authorization;
-  let { roles: userRoles } = jwt.verify(token, secret);
-  let admin
+  let { role: userRoles } = jwt.verify(token, secret);
+  let admin;
   if (token) {
     userRoles.forEach((role) => {
-      if (role == 'ADMIN') {
-        admin = true;
-      }
+      if (role == 'ADMIN') admin = true;
     });
   }
-
-  let news = await News.find({});
+  let news = await NewsModel.findAll();
 
   res.send({ news, admin });
+});
+
+
+
+app.get(`/habitation`, async function (req, res) {
+  try {
+    let name = req.query.name;
+    let cards;
+    let admin = false;
+    let token = req.headers.authorization;
+    console.log(token);
+    let { role: userRoles } = jwt.verify(token, secret);
+    console.log(userRoles);
+
+    if (name) {
+      cards = await CardModel.findAll({
+        where: { category: 'habitation', subcategory: name },
+      });
+      if (token) {
+        userRoles.forEach((role) => {
+          if (role == 'ADMIN') {
+            admin = true;
+          }
+        });
+      }
+    }
+    res.send({ cards, admin });
+  } catch (e) {
+    res.send({ expired: true });
+  }
 });
 
 let timeId;
@@ -258,8 +164,8 @@ app.post(`/upload`, async function (req, res) {
         return res.send({ message: 'Error occured' });
       }
     });
-    let card = await Habinations.findOne({ _id: timeId });
-    card.img.push(file.name);
+    let card = await CardModel.findOne({ where: { id: timeId } });
+    card.img = file.name;
     console.log(card);
     await card.save();
   }
@@ -277,27 +183,12 @@ app.post(`/upload`, async function (req, res) {
     });
   }
   if (name) {
-    let card;
-    if (name == `habitation`) {
-      card = await Habinations.findOne({ _id: id });
-    }
-    if (name == `event`) {
-      card = await Events.findOne({ _id: id });
-    }
-    if (name == `rental`) {
-      card = await Rental.findOne({ _id: id });
-    }
-    if (name == `forChildren`) {
-      card = await ForChildren.findOne({ _id: id });
-    }
-    if (name == `instructor-tours`) {
-      card = await InstructorTours.findOne({ _id: id });
-    }
+    let card = await CardModel.findOne({ where: { id: id } });
     card.img = imgName;
     await card.save();
     return res.send({ message: 'Успешно', status: '200' });
   }
-  let card = await Habinations.findOne({ _id: timeId });
+  let card = await CardModel.findOne({ where: { id: timeId } });
   card.img = imgName;
   console.log(card);
   await card.save();
@@ -305,45 +196,44 @@ app.post(`/upload`, async function (req, res) {
 });
 app.post(`/create-card`, async function (req, res) {
   try {
-    let { title, price, p, nameCard, edit, name, id, phone, adress, img } =
-      req.body;
+    let {
+      title,
+      price,
+      p,
+      edit,
+      name,
+      id,
+      phone,
+      adress,
+      img,
+      category,
+    } = req.body;
+    console.log(req.body)
     if (edit) {
-      let card;
-      if (name == `habitation`) {
-        card = await Habinations.findOne({ _id: id });
-      }
-      if (name == `event`) {
-        card = await Events.findOne({ _id: id });
-      }
-      if (name == `rental`) {
-        card = await Rental.findOne({ _id: id });
-      }
-      if (name == `forChildren`) {
-        card = await ForChildren.findOne({ _id: id });
-      }
-      if (name == `instructor-tours`) {
-        card = await InstructorTours.findOne({ _id: id });
-      }
+      let card = await CardModel.findOne({ where: { id: id } });
       card.title = title;
       card.price = price;
       card.p = p;
-      card.adress = adress;
+      card.address = adress;
       card.phone = phone;
       card.img = img;
       await card.save();
       console.log(card);
       return res.json({ status: '200' });
     }
-    let card = new Habinations({
-      title,
-      price,
-      p,
-      nameCard,
-      phone,
-      adress,
+    let card = await CardModel.create({
+      img: '',
+      category: category,
+      subcategory: name,
+      title: title,
+      price: price,
+      p: p,
+      phone: phone,
+      address: adress,
+      nameCard: "Пососи"
     });
-    timeId = card._id;
-    await card.save();
+    timeId = card.id;
+    // await card.save();
     return res.send({ message: 'Успешно', status: '200' });
   } catch (e) {
     return res.send({ message: 'Ошибка', status: '400' });
@@ -362,9 +252,9 @@ app.get(`/getUsers`, verifyc(['ADMIN']), async function (req, res) {
 app.post(`/registration`, async function (req, res) {
   try {
     let { username, surname, email, number, password } = req.body;
-    let candidate = await User.findOne({ username, surname });
-    let candidateEmail = await User.findOne({ email });
-    let candidatePhone = await User.findOne({ number });
+    let candidateEmail = await UserModel.findOne({ where: { email: email } });
+    let candidatePhone = await UserModel.findOne({ where: { phone: number } });
+
     if (candidatePhone) {
       return res.json({
         message: 'Пользователь с таким номером телефона уже существует',
@@ -377,35 +267,29 @@ app.post(`/registration`, async function (req, res) {
         status: '400',
       });
     }
-    if (candidate) {
-      return res.json({
-        message: 'Пользователь с таким именем уже существует',
-        status: '400',
-      });
-    }
     let hashPassword = bcrypt.hashSync(password, 7);
-    let userRole = await Role.findOne({ value: 'USER' });
-    let user = new User({
+    let newUser = await UserModel.create({
       username,
       surname,
       email,
-      number,
+      phone: number,
       password: hashPassword,
-      roles: [userRole.value],
+      role: '',
     });
-    await user.save();
+    console.log(newUser);
+    await newUser.save();
     return res.json({
       message: 'Пользователь успешно зарегистрирован',
       status: '200',
     });
   } catch (err) {
-    res.json({ message: 'Registration error' });
+    res.json({ message: 'Registration error', err });
   }
 });
 app.post(`/login`, async function (req, res) {
   try {
     let { email, password } = req.body;
-    let user = await User.findOne({ email });
+    let user = await UserModel.findOne({ where: { email } });
     if (!user) {
       return res.json({
         message: `Пользователь с почтой ${email} не найден`,
@@ -416,7 +300,7 @@ app.post(`/login`, async function (req, res) {
     if (!validPassword) {
       return res.json({ message: 'Введен неверный пароль', status: 400 });
     }
-    let token = generateAccessToken(user._id, user.roles);
+    let token = generateAccessToken(user._id, [user.role]);
     return res.json({ token, message: 'Вошел', status: 200 });
   } catch (err) {
     res.json({ message: 'Login error' });
@@ -425,22 +309,8 @@ app.post(`/login`, async function (req, res) {
 app.post(`/deleteCard`, async function (req, res) {
   try {
     let { id, name } = req.body;
-
-    if (name == `habitation`) {
-      await Habinations.deleteOne({ _id: id });
-    }
-    if (name == `event`) {
-      await Events.deleteOne({ _id: id });
-    }
-    if (name == `rental`) {
-      await Rental.deleteOne({ _id: id });
-    }
-    if (name == `forChildren`) {
-      await ForChildren.deleteOne({ _id: id });
-    }
-    if (name == `instructor-tours`) {
-      await InstructorTours.deleteOne({ _id: id });
-    }
+    let card = await CardModel.findOne({where: {id: id}})
+    await card.destroy()
     res.send({ status: '200' });
   } catch (e) {
     res.send({ message: 'Ошибка' });
@@ -452,7 +322,7 @@ app.get(`/card`, async function (req, res) {
   let admin = false;
   let token = req.headers.authorization;
   console.log(token);
-  let { roles: userRoles } = jwt.verify(token, secret);
+  let { role: userRoles } = jwt.verify(token, secret);
   console.log(userRoles);
 
   if (token) {
@@ -462,37 +332,24 @@ app.get(`/card`, async function (req, res) {
       }
     });
   }
-  if (name == `habitation`) {
-    card = await Habinations.findOne({ _id: id });
-  }
-  if (name == `event`) {
-    card = await Events.findOne({ _id: id });
-  }
-  if (name == `rental`) {
-    card = await Rental.findOne({ _id: id });
-  }
-  if (name == `forChildren`) {
-    card = await ForChildren.findOne({ _id: id });
-  }
-  if (name == `instructor-tours`) {
-    card = await InstructorTours.findOne({ _id: id });
-  }
-
+  card = await CardModel.findOne({ where: { id: id } });
   res.send({ card, admin });
 });
 
-app.get(`/instructor-tours/items`, async function (req, res) {
+app.get(`/instructor-tours`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;
     let admin = false;
     let token = req.headers.authorization;
     console.log(token);
-    let { roles: userRoles } = jwt.verify(token, secret);
+    let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);
 
     if (name) {
-      cards = await InstructorTours.find({ nameCard: name });
+      cards = await CardModel.findAll({
+        where: { category: 'habitation', subcategory: name },
+      });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -500,8 +357,6 @@ app.get(`/instructor-tours/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await InstructorTours.find({});
     }
     res.send({ cards, admin });
   } catch (e) {
@@ -509,18 +364,20 @@ app.get(`/instructor-tours/items`, async function (req, res) {
   }
 });
 
-app.get(`/forChildren/items`, async function (req, res) {
+app.get(`/forChildren`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;
     let admin = false;
     let token = req.headers.authorization;
     console.log(token);
-    let { roles: userRoles } = jwt.verify(token, secret);
+    let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);
 
     if (name) {
-      cards = await ForChildren.find({ nameCard: name });
+      cards = await CardModel.findAll({
+        where: { category: 'habitation', subcategory: name },
+      });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -528,8 +385,6 @@ app.get(`/forChildren/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await ForChildren.find({});
     }
     res.send({ cards, admin });
   } catch (e) {
@@ -537,18 +392,20 @@ app.get(`/forChildren/items`, async function (req, res) {
   }
 });
 
-app.get(`/rental/items`, async function (req, res) {
+app.get(`/rental`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;
     let admin = false;
     let token = req.headers.authorization;
     console.log(token);
-    let { roles: userRoles } = jwt.verify(token, secret);
+    let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);
 
     if (name) {
-      cards = await Rental.find({ nameCard: name });
+      cards = await CardModel.findAll({
+        where: { category: 'habitation', subcategory: name },
+      });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -556,8 +413,6 @@ app.get(`/rental/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await Rental.find({});
     }
     res.send({ cards, admin });
   } catch (e) {
@@ -565,18 +420,20 @@ app.get(`/rental/items`, async function (req, res) {
   }
 });
 
-app.get(`/event/items`, async function (req, res) {
+app.get(`/event`, async function (req, res) {
   try {
     let name = req.query.name;
     let cards;
     let admin = false;
     let token = req.headers.authorization;
     console.log(token);
-    let { roles: userRoles } = jwt.verify(token, secret);
+    let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);
 
     if (name) {
-      cards = await Events.find({ nameCard: name });
+      cards = await CardModel.findAll({
+        where: { category: 'habitation', subcategory: name },
+      });
       if (token) {
         userRoles.forEach((role) => {
           if (role == 'ADMIN') {
@@ -584,8 +441,6 @@ app.get(`/event/items`, async function (req, res) {
           }
         });
       }
-    } else {
-      cards = await Events.find({});
     }
     res.send({ cards, admin });
   } catch (e) {
@@ -593,38 +448,10 @@ app.get(`/event/items`, async function (req, res) {
   }
 });
 
-app.get(`/habitation/items`, async function (req, res) {
-  try {
-    let name = req.query.name;
-    let cards;
-    let admin = false;
-    let token = req.headers.authorization;
-    console.log(token);
-    let { roles: userRoles } = jwt.verify(token, secret);
-    console.log(userRoles);
-
-    if (name) {
-      cards = await Habinations.find({ nameCard: name });
-      if (token) {
-        userRoles.forEach((role) => {
-          if (role == 'ADMIN') {
-            admin = true;
-          }
-        });
-      }
-    } else {
-      cards = await Habinations.find({});
-    }
-    res.send({ cards, admin });
-  } catch (e) {
-    res.send({ expired: true });
-  }
+app.get(`/create_roles`, async function (req, res) {
+  let user = new Role({ value: 'USER' });
+  await user.save();
+  let admin = new Role({ value: 'ADMIN' });
+  await admin.save();
+  res.redirect(`back`);
 });
-
-app.get(`/create_roles`, async function(req, res) {
-  let user = new Role({value: 'USER'})
-  await user.save()
-  let admin = new Role({value: 'ADMIN'})
-  await admin.save()
-  res.redirect(`back`)
-})

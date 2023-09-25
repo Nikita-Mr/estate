@@ -5,7 +5,9 @@ import { RouterLink, RouterView } from 'vue-router';
 <template>
   <div class="wrapper-main">
     <div class="container">
-      <button class="webBack" @click="$router.go(-1)"><img src="/src/assets/img/arrow-down-sign-to-navigate.png" alt=""></button>
+      <button class="webBack" @click="$router.go(-1)">
+        <img src="/src/assets/img/arrow-down-sign-to-navigate.png" alt="" />
+      </button>
       <RouterView />
     </div>
   </div>
@@ -13,51 +15,50 @@ import { RouterLink, RouterView } from 'vue-router';
 
 <style>
 @media (max-width: 1180px) {
-.webBack{
-  display: none;
+  .webBack {
+    display: none;
+  }
 }
-}
-.webBack{
+.webBack {
   background: transparent;
   border: none;
   position: absolute;
   left: 0;
 }
-.webBack:hover{
+.webBack:hover {
   filter: brightness(1000%);
 }
-.webBack img{
+.webBack img {
   transform: rotate(90deg);
   width: 30px;
 }
-.accordion-item{
+.accordion-item {
   background: transparent;
-  border: none
+  border: none;
 }
-.accordion-button{
+.accordion-button {
   border: none;
   background: transparent;
   padding: 0;
   color: var(--mainColor);
 }
-.accordion-button[aria-expanded="true"]{
+.accordion-button[aria-expanded='true'] {
   background: transparent;
   color: var(--mainColor);
 }
-.accordion-button[aria-expanded="true"] .card{
+.accordion-button[aria-expanded='true'] .card {
   height: auto !important;
 }
 
-
-.accordion-button:focus{
+.accordion-button:focus {
   box-shadow: none;
   border: none;
 }
-.accordion-button:not(.collapsed)::after{
-  background-image: url("../assets/img/arrow-down-sign-to-navigate.png")
+.accordion-button:not(.collapsed)::after {
+  background-image: url('../assets/img/arrow-down-sign-to-navigate.png');
 }
-.accordion-button::after{
-  background-image: url("../assets/img/arrow-down-sign-to-navigate.png")
+.accordion-button::after {
+  background-image: url('../assets/img/arrow-down-sign-to-navigate.png');
 }
 img {
   width: auto;
@@ -72,10 +73,10 @@ h5 {
   justify-content: space-between;
   align-items: center;
 }
-.card-body{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /*
@@ -133,6 +134,19 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: scroll;
+}
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 420px) {
+  .container {
+    display: block;
+  }
+  .list-events {
+    display: block !important;
+  }
 }
 
 .wrapper-main {
