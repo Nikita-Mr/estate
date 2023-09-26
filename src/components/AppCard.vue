@@ -28,7 +28,7 @@ export default {
 
 <template>
   <div class="card">
-    <img class="card-img-top" @click="open" :src="'/assets/img/' + Array.from(img)[0]" alt="" />
+    <img class="card-img-top" @click="open" :src="'/dist/assets/img/user/' + Array.from(img)[0]" alt="" />
     <div class="card-body">
       <h5 class="card-title">
         <span class="title">{{ title }}</span>

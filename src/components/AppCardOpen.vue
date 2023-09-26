@@ -93,7 +93,7 @@ export default defineComponent({
         <Carousel :autoplay="4000" :wrap-around="true">
           <Slide v-for="slide in INFO.img" :key="slide">
             <div class="carousel__item">
-              <img :src="`/assets/img/` + slide" alt="" />
+              <img :src="`/dist/assets/img/user/` + slide" alt="" />
             </div>
           </Slide>
 
