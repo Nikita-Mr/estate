@@ -169,7 +169,7 @@ export default defineComponent({
         this.title = this.INFO.title;
         this.price = this.INFO.price;
         this.phone = this.INFO.phone;
-        this.adress = this.INFO.adress;
+        this.adress = this.INFO.address;
         this.description = this.INFO.p;
       }
     },
@@ -218,7 +218,7 @@ export default defineComponent({
           <Slide v-for="slide in img" :key="slide">
             <div class="carousel__item">
               <div class="imgCross">
-                <img :src="`/src/assets/img/` + slide" alt="" />
+                <img :src="`/dist/assets/img/user/` + slide" alt="" />
                 <button @click="remove(slide)" class="cross">
                   <ion-icon name="close-outline"></ion-icon>
                 </button>
