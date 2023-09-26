@@ -4,7 +4,7 @@ import axios from 'axios';
 export default {};
 import * as Vue from 'vue';
 import VueTinymce from '../components/TinyMce.vue'
-Vue.component('vue-tinymce', VueTinymce)
+// Vue.component('vue-tinymce', VueTinymce)
 
 
 </script>

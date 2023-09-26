@@ -24,7 +24,7 @@ export default {
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },
-          params: { name: this.$route.query.name },
+          params: {category: this.$route.path.slice(1, -6) , name: this.$route.query.name },
         });
         this.INFO = hotel.data.cards;
         this.admin = hotel.data.admin;
@@ -35,7 +35,7 @@ export default {
       }
       if (this.$route.path == `/event/items`) {
         let events = await axios.get(`/event`, {
-          params: { name: this.$route.query.name },
+          params: {category: this.$route.path.slice(1, -6) , name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },
@@ -46,7 +46,7 @@ export default {
       }
       if (this.$route.path == `/rental/items`) {
         let rental = await axios.get(`/rental`, {
-          params: { name: this.$route.query.name },
+          params: {category: this.$route.path.slice(1, -6) , name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },
@@ -57,7 +57,7 @@ export default {
       }
       if (this.$route.path == `/forChildren/items`) {
         let forChildren = await axios.get(`/forChildren`, {
-          params: { name: this.$route.query.name },
+          params: {category: this.$route.path.slice(1, -6) , name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },
@@ -68,7 +68,7 @@ export default {
       }
       if (this.$route.path == `/instructor-tours/items`) {
         let InstructorTours = await axios.get(`/instructor-tours`, {
-          params: { name: this.$route.query.name },
+          params: {category: this.$route.path.slice(1, -6) , name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },
