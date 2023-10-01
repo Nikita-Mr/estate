@@ -250,6 +250,24 @@ app.post(`/upload`, async function (req, res) {
   return res.send({ message: 'Изображение загружено', status: '200' });
 });
 
+
+app.post(`/create_news`, async function(req, res) { 
+  try { 
+    let { title, content } = req.body 
+    let news = await NewsModel.create({ 
+      title, 
+      content, 
+    }); 
+    await news.save(); 
+    return res.json({ 
+      message: 'Новость успешно создана', 
+      status: '200', 
+    }); 
+  } catch (err) { 
+    res.json({ message: 'Ошибка создания новости', err }); 
+  } 
+})
+
 app.post(`/create-card`, async function (req, res) {
   try {
     let {
