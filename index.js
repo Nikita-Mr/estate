@@ -552,3 +552,33 @@ app.get(`/create_roles`, async function (req, res) {
   await admin.save();
   res.redirect(`back`);
 });
+
+app.post(`/create_news`, async function (req, res) {
+  try {
+    let { title, content } = req.body
+    let news = await NewsModel.create({
+      title,
+      content,
+    });
+    await news.save();
+    return res.send({
+      message: 'Новость успешно создана',
+      show: true,
+      status: '200',
+    });
+  } catch (err) {
+    res.send({ message: 'Ошибка создания новости', show: false, err });
+  }
+})
+
+app.post(`/delete-news`, async function (req, res) {
+  try {
+    let id = req.body.id
+    let newsDelete = await NewsModel.findOne({ where: { id: id } })
+    console.log(newsDelete, id)
+    await newsDelete.destroy()
+    res.json({message: 'Удаление прошло успешно', status: 200})
+  } catch (err) {
+    res.json({ message: 'Ошибка удаления новости', err });
+  }
+})

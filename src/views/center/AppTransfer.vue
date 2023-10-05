@@ -2,8 +2,12 @@
 import { RouterLink, RouterView } from 'vue-router';
 
 export default {
-  components: {},
-  data() {},
+  data() {
+    return {
+      today: new Date().toLocaleDateString('en-CA'),
+      date: ''
+    }
+  },
   methods: {
     find(e){
       e.preventDefault();
@@ -20,7 +24,7 @@ export default {
       <div class="input-group">
         <input type="text" placeholder="Откуда" />
         <input type="text" placeholder="Куда" />
-        <input type="date" />
+        <input type="date" :value="today"/>
         <input type="number" value="1" min="1" />
         <button class="btn btn-primary" type="submit">Поиск</button>
       </div>

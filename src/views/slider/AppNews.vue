@@ -24,6 +24,13 @@ export default {
           this.admin = e.data.admin;
         });
     },
+
+    async deleteNews(id) {
+      await axios.post(`delete-news`, {
+        id: id
+      })
+      this.loadNews()
+    }
   },
   mounted() {
     this.loadNews();
@@ -32,29 +39,23 @@ export default {
 </script>
 
 <template>
-  <RouterLink v-if="admin" to="/create-news">Создать новость</RouterLink>
   <div class="wrapperNews">
+    <div v-if="admin" class="create-news">
+      <RouterLink to="/create-news">Создать новость</RouterLink>
+    </div>
     <div class="accordion" id="accordionExample">
       <div class="accordion-item" v-for="(news, i) in NEWS">
         <h2 class="accordion-header" :id="'heading' + i">
-          <button
-            class="accordion-button"
-            type="button"
-            data-bs-toggle="collapse"
-            :data-bs-target="'#collapse' + i"
-            aria-expanded="true"
-            :aria-controls="'collapseOne' + i"
-          >
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            :data-bs-target="'#collapse' + i" aria-expanded="true" :aria-controls="'collapse' + i">
             {{ news.title }}
-            <button class="delete">Удалить</button>
+            <div class="divDelete">
+              <button class="delete" @click="deleteNews(news.id)">Удалить</button>
+            </div>
           </button>
         </h2>
-        <div
-          :id="'collapse' + i"
-          class="accordion-collapse collapse show"
-          :aria-labelledby="'heading' + i"
-          data-bs-parent="#accordionExample"
-        >
+        <div :id="'collapse' + i" class="accordion-collapse collapse" :aria-labelledby="'heading' + i"
+          data-bs-parent="#accordionExample">
           <div class="accordion-body">
             {{ news.content }}
           </div>
@@ -65,32 +66,66 @@ export default {
 </template>
 
 <style scoped>
-
-.delete{
-  margin-left: 80% ;
-  background: rgba(230, 86, 86, 0.992);
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
+.create-news {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: sticky;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
-a{
+
+.divDelete {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-right: 10px;
+  z-index: 10;
+}
+
+.delete {
+  width: fit-content;
+  position: absolute;
+  background: transparent;
+  color: #EE2E31;
+  border: 1px solid #EE2E31;
+  border-radius: 10px;
+  padding: 5px 10px;
+  z-index: 1000000;
+}
+
+a {
   width: fit-content;
   padding: 5px 10px;
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  border-radius: 10px;
+  /* position: absolute; */
+  /* top: 10px;
+  right: 10px; */
   background: transparent;
   border: 1px solid var(--mainColor);
   color: var(--mainColor);
+
+  transition: scale 500ms;
 }
+
+a:hover {
+  scale: 1.05;
+}
+
 .wrapperNews {
-  width: 80%;
-  height: 100%;
+  margin-top: 10px;
+  width: 100%;
+  max-height: 600px;
+  min-height: 600px;
   overflow-y: scroll;
 }
+
 .accordion-body {
   color: var(--mainColor);
 }
+
 .wrapperNews::-webkit-scrollbar {
   width: 0;
 }
@@ -100,20 +135,42 @@ a{
   background: transparent;
   border: 1px solid var(--mainColor);
 }
+
 .accordion-button {
   border: none;
   padding: 10px !important;
   background: transparent;
   color: var(--mainColor);
+  z-index: 9;
 }
+
 .accordion-button:focus {
   box-shadow: none;
   border: none;
 }
-.accordion-button:not(.collapsed)::after {
-  background-image: url('/src/assets/img/arrow-down-sign-to-navigate.png');
-}
+
 .accordion-button::after {
   background-image: url('/src/assets/img/arrow-down-sign-to-navigate.png');
+  transform: rotate(0);
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-image: url('/src/assets/img/arrow-down-sign-to-navigate.png');
+  transform: rotate(-180deg);
+}
+
+@media screen and (width <=600px) {
+  .delete {
+    width: fit-content;
+    position: absolute;
+    background: transparent;
+    color: #EE2E31;
+    border: 1px solid #EE2E31;
+    border-radius: 10px;
+    padding: 5px 10px;
+    z-index: 1000000;
+    font-size: small;
+  }
+
 }
 </style>

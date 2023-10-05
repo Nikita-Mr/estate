@@ -251,7 +251,7 @@ export default defineComponent({
       </div>
       <div class="reviews"></div>
       <div class="button-wrapper">
-        <button v-if="!edit" @click="submitFiles">Создать</button>
+        <button v-if="!edit" @click="submitFiles">Создать</button>  
         <button v-if="edit" @click="editCard">Сохранить</button>
       </div>
     </div>
@@ -259,6 +259,21 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+.button-wrapper button {
+  padding: 5px 15px;
+  background-color: transparent;
+  border: 1px solid #62A87C;
+  border-radius: 10px;
+  color: #62A87C;
+  font-weight: 600;
+  transition: scale 500ms;
+}
+
+.button-wrapper button:hover {
+  scale: 1.03;
+}
+
 @media (max-width: 426px) {
   label {
     height: 200px !important;
