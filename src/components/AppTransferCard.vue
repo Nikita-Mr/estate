@@ -28,47 +28,55 @@ export default {
         <div class="info">
           <div class="time">
             <div class="first">
-              <span>15:00</span>
+              <span>{{ timefrom }}</span>
               <span class="sub">15 ч 15</span>
             </div>
             <div class="second">
-              <span>06:10</span>
+              <span>{{ timeto }}</span>
               <span class="sub">+1</span>
             </div>
           </div>
           <div class="line"></div>
           <div class="city">
             <div class="first">
-              <span>Москва</span>
+              <span>{{ cityfrom }}</span>
               <div class="wrapsvg">
-                <div class="circlesvg"><ion-icon name="walk"></ion-icon></div>
-                <div class="circlesvg yellow">
+                <div class="circlesvg" :class="{ green: walkfrom == 1 }">
                   <ion-icon name="walk"></ion-icon>
                 </div>
-                <div class="circlesvg"><ion-icon name="walk"></ion-icon></div>
+                <div class="circlesvg" :class="{ yellow: walkfrom == 2 }">
+                  <ion-icon name="walk"></ion-icon>
+                </div>
+                <div class="circlesvg" :class="{ red: walkfrom == 3 }">
+                  <ion-icon name="walk"></ion-icon>
+                </div>
               </div>
             </div>
             <div class="second">
               <span>Казань</span>
               <div class="wrapsvg">
-                <div class="circlesvg green">
+                <div class="circlesvg" :class="{ green: walkto == 1 }">
                   <ion-icon name="walk"></ion-icon>
                 </div>
-                <div class="circlesvg"><ion-icon name="walk"></ion-icon></div>
-                <div class="circlesvg"><ion-icon name="walk"></ion-icon></div>
+                <div class="circlesvg" :class="{ yellow: walkto == 2 }">
+                  <ion-icon name="walk"></ion-icon>
+                </div>
+                <div class="circlesvg" :class="{ red: walkto == 3 }">
+                  <ion-icon name="walk"></ion-icon>
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div class="cars">
           <div class="circlesvg"><ion-icon name="bus"></ion-icon></div>
-          <span>Intercars</span>
+          <span>{{cars}}</span>
         </div>
       </div>
       <div class="wrapprice">
         <div class="price">
-          <span>1 295₽</span>
-          <span class="sub discount">1 890₽</span>
+          <span>{{price}}₽</span>
+          <span class="sub discount">{{price-1000}}₽</span>
         </div>
         <div class="content">
           <img src="" alt="" />

@@ -50,12 +50,12 @@ CardImage.init(
 class CardTransfer extends Model { }
 CardTransfer.init(
     {
-        cityFrom:       { type: DataTypes.STRING,  allowNull: false, },
-        cityTo:         { type: DataTypes.STRING,  allowNull: false, },
-        timeFrom:       { type: DataTypes.STRING,  allowNull: false, },
-        timeTo:         { type: DataTypes.STRING,  allowNull: false, },
-        walkFrom:       { type: DataTypes.STRING,  allowNull: false, },
-        walkTo:         { type: DataTypes.STRING,  allowNull: false, },
+        cityfrom:       { type: DataTypes.STRING,  allowNull: false, },
+        cityto:         { type: DataTypes.STRING,  allowNull: false, },
+        timefrom:       { type: DataTypes.STRING,  allowNull: false, },
+        timeto:         { type: DataTypes.STRING,  allowNull: false, },
+        walkfrom:       { type: DataTypes.STRING,  allowNull: false, },
+        walkto:         { type: DataTypes.STRING,  allowNull: false, },
         cars:           { type: DataTypes.STRING,  allowNull: false, },
         price:          { type: DataTypes.INTEGER, allowNull: false, },
     }, 

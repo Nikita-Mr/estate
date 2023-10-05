@@ -50,7 +50,18 @@ export default {
     </div>
     <div class="transfer-card-wrapper">
       <div class="cards">
-        <app-transfer-card fromto:Transfer.fromto> </app-transfer-card>
+        <app-transfer-card v-for="(card, index) in Transfer"
+        :i = index
+        :cityfrom = "card.cityfrom"
+        :cityto = "card.cityto"
+        :timefrom = "card.timefrom"
+        :timeto = "card.timefrom"
+        :walkfrom = "card.walkfrom"
+        :walkto = "card.walkto"
+        :cars = "card.cars"
+        :price = "card.price"
+        >
+        </app-transfer-card>
       </div>
     </div>
     
@@ -64,6 +75,14 @@ export default {
 <style scoped>
 .cards{
   width: 80%;
+  padding: 10px;
+  height: 200px;
+  overflow-y: scroll;
+  gap: 30px;
+  display: grid;
+}
+.cards::-webkit-scrollbar{
+  display: none;
 }
 .transfer-card-wrapper{
   display: flex;
