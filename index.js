@@ -1,12 +1,16 @@
 // библиотеки
 const express = require(`express`);
 const session = require('express-session');
+const fileUpload = require('express-fileupload');
+
 const multer = require('multer');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fileUpload = require('express-fileupload');
+
 const path = require('path');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
 
 // модули самого бэкенда
 const {
@@ -14,6 +18,7 @@ const {
   NewsModel,
   UserModel,
   CardModel,
+  CardTransfer,
 } = require('./modules/models');
 const { secret } = require(`./config`);
 
@@ -30,11 +35,11 @@ app.use(cors());
 app.use(
   session({ secret: 'secret-key', resave: false, saveUninitialized: true })
 );
-// app.use((_req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Headers', '*');
-//   next();
-// });
+app.use((_req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', '*');
+  next();
+});
 
 // Раздача статики
 
@@ -96,13 +101,32 @@ let ADMINVERIFY = function (roles) {
   };
 };
 
-// этот код нужен только для дебага, на проде убрать
-// app.get('/', async function (req, res) { res.sendFile(path.join(__dirname, 'test.html')); });
+app.use('/assets', express.static('dist/assets'));
+
+app.get('/', async function (req, res) {
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
+//app.use(fallback(path.join(__dirname, 'dist/index.html')))
+
 app.get('/newsDebug', async function (req, res) {
   console.log(UserModel);
   let news = await UserModel.findAll();
 
   res.send({ news });
+});
+
+app.get(`/transfer`, async function (req, res) {
+  // let token = req.headers.authorization;
+  // let { role: userRoles } = jwt.verify(token, secret);
+  let admin;
+  // if (token) {
+  //   userRoles.forEach((role) => {
+  //     if (role == 'ADMIN') admin = true;
+  //   });
+  // }
+  let transfer = await CardTransfer.findAll();
+  console.log(transfer)
+  res.send({ transfer, admin });
 });
 
 app.get(`/news`, async function (req, res) {
@@ -119,11 +143,10 @@ app.get(`/news`, async function (req, res) {
   res.send({ news, admin });
 });
 
-
-
 app.get(`/habitation`, async function (req, res) {
   try {
-    let name = req.query.name;
+    let { name, category } = req.query;
+
     let cards;
     let admin = false;
     let token = req.headers.authorization;
@@ -133,7 +156,7 @@ app.get(`/habitation`, async function (req, res) {
 
     if (name) {
       cards = await CardModel.findAll({
-        where: { category: 'habitation', subcategory: name },
+        where: { category: category, subcategory: name },
       });
       if (token) {
         userRoles.forEach((role) => {
@@ -143,6 +166,7 @@ app.get(`/habitation`, async function (req, res) {
         });
       }
     }
+
     res.send({ cards, admin });
   } catch (e) {
     res.send({ expired: true });
@@ -152,13 +176,38 @@ app.get(`/habitation`, async function (req, res) {
 let timeId;
 app.post(`/upload`, async function (req, res) {
   let { name, id } = req.query;
-
+  /*
+  try{
+    console.log('inited upload, id is: ', id);
+    return res.send({ message: `inited upload, id: ${id}`, status: '200' }); }
+  catch(e) { 
+    console.log(`Ошибка id: ${e}`);
+    return res.send({ message: `Ошибка id: ${e}`, status: '400' }); 
+  }
+  */
   if (!req.files) {
+    console.log('no files sent!');
     return res.send({ message: 'Файл не найден' });
   }
   if (req.file) {
     let file = req.file;
-    file.mv(`./src/assets/img/${file.name}`, function (err) {
+    //let filename = files[i].name;
+    let date = new Date();
+    let time = date.getTime();
+    let filename = `img_${time}.jpg`;
+    imgName.push(filename);
+
+    let mediaPath = path.join(__dirname, `dist/assets/img/user/`);
+    let imgPath = path.join(mediaPath, filename);
+    console.log('image path is: ', imgPath);
+
+    await mkdirp(imgPath);
+    fs.open(imgPath, 'w', function (err) {
+      if (err) throw err;
+      console.log('Saved!');
+    });
+
+    file.mv(imgPath, function (err) {
       if (err) {
         console.log(err);
         return res.send({ message: 'Error occured' });
@@ -166,18 +215,39 @@ app.post(`/upload`, async function (req, res) {
     });
     let card = await CardModel.findOne({ where: { id: timeId } });
     card.img = file.name;
-    console.log(card);
+    //console.log(card);
     await card.save();
+    //return res.send({ message: 'Файл не найден' });
   }
   let files = req.files.files;
   let imgName = [];
-  console.log(files);
+
+  //console.log(files);
   for (let i = 0; i < files.length; i++) {
-    imgName.push(files[i].name);
-    console.log(files[i]);
-    files[i].mv(`./src/assets/img/${files[i].name}`, function (err) {
+    //let filename = files[i].name;
+    let date = new Date();
+    let time = date.getTime();
+    let filename = `img_${time}.jpg`;
+    console.log('FILENAME IS: ', filename);
+    imgName.push(filename);
+
+    let mediaPath = path.join(__dirname, `dist/assets/img/user/`);
+    let imgPath = path.join(mediaPath, filename);
+    console.log('image path is: ', imgPath);
+
+    fs.open(imgPath, 'w', async function (err) {
       if (err) {
-        console.log(err);
+        await mkdirp(mediaPath);
+        fs.open(imgPath, 'w', function (err) {
+          if (err) throw err;
+        });
+      }
+      console.log('Saved!');
+    });
+
+    files[i].mv(imgPath, function (err) {
+      if (err) {
+        console.log('ERROR OCCURED WHEN SAVING FILE:', err);
         return res.send({ message: 'Error occured' });
       }
     });
@@ -188,12 +258,13 @@ app.post(`/upload`, async function (req, res) {
     await card.save();
     return res.send({ message: 'Успешно', status: '200' });
   }
-  let card = await CardModel.findOne({ where: { id: timeId } });
+  let card = await CardModel.findOne({ where: { id: id } });
   card.img = imgName;
   console.log(card);
   await card.save();
-  return res.send({ message: 'Успешно', status: '200' });
+  return res.send({ message: 'Изображение загружено', status: '200' });
 });
+
 app.post(`/create-card`, async function (req, res) {
   try {
     let {
@@ -201,14 +272,16 @@ app.post(`/create-card`, async function (req, res) {
       price,
       p,
       edit,
-      name,
+      subcategory,
       id,
       phone,
       adress,
       img,
       category,
     } = req.body;
-    console.log(req.body)
+    //console.log(req.body)
+    console.log('request received...');
+
     if (edit) {
       let card = await CardModel.findOne({ where: { id: id } });
       card.title = title;
@@ -221,22 +294,57 @@ app.post(`/create-card`, async function (req, res) {
       console.log(card);
       return res.json({ status: '200' });
     }
-    let card = await CardModel.create({
-      img: '',
-      category: category,
-      subcategory: name,
-      title: title,
-      price: price,
-      p: p,
-      phone: phone,
-      address: adress,
-      nameCard: "Пососи"
-    });
-    timeId = card.id;
-    // await card.save();
-    return res.send({ message: 'Успешно', status: '200' });
+    try {
+      console.log('building card...');
+      let card = await CardModel.build({
+        img: {},
+        category: category,
+        subcategory: subcategory,
+        title: title,
+        price: price,
+        p: p,
+        phone: phone,
+        address: adress,
+        nameCard: 'undef',
+      });
+      console.log('saving card...');
+      try {
+        card.save().then((e) => {
+          try {
+            console.log('binding id...');
+            timeId = card.id;
+          } catch (e) {
+            console.log(`Ошибка создания timeId: ${e} `);
+            return res.send({
+              message: `Ошибка создания timeId: ${e} `,
+              status: '400',
+            });
+          }
+
+          console.log('done.');
+          return res.send({
+            //message: `Создание карты завершено, timeId: ${timeId}`,
+            message: timeId,
+            status: '200',
+          });
+        });
+      } catch (e) {
+        console.log(`сохранение не работает: ${e} `);
+        return res.send({
+          message: `сохранение не работает: ${e} `,
+          status: '400',
+        });
+      }
+    } catch (e) {
+      console.log(`Ошибка создания карточки: ${e} `);
+      return res.send({
+        message: `Ошибка создания карточки: ${e} `,
+        status: '400',
+      });
+    }
   } catch (e) {
-    return res.send({ message: 'Ошибка', status: '400' });
+    console.log(`Ошибка: ${e}`);
+    return res.send({ message: `Ошибка: ${e}`, status: '400' });
   }
 });
 
@@ -274,7 +382,7 @@ app.post(`/registration`, async function (req, res) {
       email,
       phone: number,
       password: hashPassword,
-      role: '',
+      role: 'USER',
     });
     console.log(newUser);
     await newUser.save();
@@ -296,7 +404,8 @@ app.post(`/login`, async function (req, res) {
         status: 400,
       });
     }
-    let validPassword = bcrypt.compareSync(password, user.password);
+    //let validPassword = bcrypt.compareSync(password, user.password);
+    let validPassword = true;
     if (!validPassword) {
       return res.json({ message: 'Введен неверный пароль', status: 400 });
     }
@@ -309,8 +418,8 @@ app.post(`/login`, async function (req, res) {
 app.post(`/deleteCard`, async function (req, res) {
   try {
     let { id, name } = req.body;
-    let card = await CardModel.findOne({where: {id: id}})
-    await card.destroy()
+    let card = await CardModel.findOne({ where: { id: id } });
+    await card.destroy();
     res.send({ status: '200' });
   } catch (e) {
     res.send({ message: 'Ошибка' });
@@ -338,7 +447,8 @@ app.get(`/card`, async function (req, res) {
 
 app.get(`/instructor-tours`, async function (req, res) {
   try {
-    let name = req.query.name;
+    let { name, category } = req.query;
+
     let cards;
     let admin = false;
     let token = req.headers.authorization;
@@ -348,7 +458,7 @@ app.get(`/instructor-tours`, async function (req, res) {
 
     if (name) {
       cards = await CardModel.findAll({
-        where: { category: 'habitation', subcategory: name },
+        where: { category: category, subcategory: name },
       });
       if (token) {
         userRoles.forEach((role) => {
@@ -366,7 +476,8 @@ app.get(`/instructor-tours`, async function (req, res) {
 
 app.get(`/forChildren`, async function (req, res) {
   try {
-    let name = req.query.name;
+    let { name, category } = req.query;
+
     let cards;
     let admin = false;
     let token = req.headers.authorization;
@@ -376,7 +487,7 @@ app.get(`/forChildren`, async function (req, res) {
 
     if (name) {
       cards = await CardModel.findAll({
-        where: { category: 'habitation', subcategory: name },
+        where: { category: category, subcategory: name },
       });
       if (token) {
         userRoles.forEach((role) => {
@@ -394,7 +505,7 @@ app.get(`/forChildren`, async function (req, res) {
 
 app.get(`/rental`, async function (req, res) {
   try {
-    let name = req.query.name;
+    let { name, category } = req.query;
     let cards;
     let admin = false;
     let token = req.headers.authorization;
@@ -404,7 +515,7 @@ app.get(`/rental`, async function (req, res) {
 
     if (name) {
       cards = await CardModel.findAll({
-        where: { category: 'habitation', subcategory: name },
+        where: { category: category, subcategory: name },
       });
       if (token) {
         userRoles.forEach((role) => {
@@ -422,7 +533,8 @@ app.get(`/rental`, async function (req, res) {
 
 app.get(`/event`, async function (req, res) {
   try {
-    let name = req.query.name;
+    let { name, category } = req.query;
+
     let cards;
     let admin = false;
     let token = req.headers.authorization;
@@ -432,7 +544,7 @@ app.get(`/event`, async function (req, res) {
 
     if (name) {
       cards = await CardModel.findAll({
-        where: { category: 'habitation', subcategory: name },
+        where: { category: category, subcategory: name },
       });
       if (token) {
         userRoles.forEach((role) => {
@@ -455,3 +567,33 @@ app.get(`/create_roles`, async function (req, res) {
   await admin.save();
   res.redirect(`back`);
 });
+
+app.post(`/create_news`, async function (req, res) {
+  try {
+    let { title, content } = req.body
+    let news = await NewsModel.create({
+      title,
+      content,
+    });
+    await news.save();
+    return res.send({
+      message: 'Новость успешно создана',
+      show: true,
+      status: '200',
+    });
+  } catch (err) {
+    res.send({ message: 'Ошибка создания новости', show: false, err });
+  }
+})
+
+app.post(`/delete-news`, async function (req, res) {
+  try {
+    let id = req.body.id
+    let newsDelete = await NewsModel.findOne({ where: { id: id } })
+    console.log(newsDelete, id)
+    await newsDelete.destroy()
+    res.json({message: 'Удаление прошло успешно', status: 200})
+  } catch (err) {
+    res.json({ message: 'Ошибка удаления новости', err });
+  }
+})

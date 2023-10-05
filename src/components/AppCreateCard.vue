@@ -50,27 +50,39 @@ export default defineComponent({
           p: this.description,
           phone: this.phone,
           adress: this.adress,
-          name: this.$route.query.name,
-          category: this.$route.query.category
+          subcategory: this.$route.query.name,
+          category: this.$route.query.category,
         })
         .then((e) => {
-           axios
-            .post('/upload', formData, {
+          console.log(`card creation return: ${e.data.text}`);
+
+          let routeAppend = new String();
+
+          console.log(`response info is: ${e.data.message}`);
+          if (!isNaN(e.data.message)) routeAppend = `?id=${e.data.message}`;
+
+          let uploadRoute = `/upload${routeAppend}`
+
+          console.log(`card creation response ${e.data.message}`);
+          console.log(`upload route is ${uploadRoute}`);
+        
+          axios
+            .post(uploadRoute, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
               },
             })
-            .then(function () {
-              console.log('SUCCESS!!');
+            .then(r => {
+              console.log(`got code 200 on upload: ${e.data.text}`);
             })
-            .catch(function () {
-              console.log('FAILURE!!');
+            .catch(r => {
+              console.log(`got code 400 on upload: ${e.data.text}`);
             });
           this.error = e.data.message;
           this.status = e.data.status;
         });
       if (this.status == '200') {
-        this.$router.push({ name: 'habitation' });
+        this.$router.push({ name: this.$route.query.name });
       }
     },
     url(file) {
@@ -206,7 +218,7 @@ export default defineComponent({
           <Slide v-for="slide in img" :key="slide">
             <div class="carousel__item">
               <div class="imgCross">
-                <img :src="`/src/assets/img/` + slide" alt="" />
+                <img :src="`/dist/assets/img/user/` + slide" alt="" />
                 <button @click="remove(slide)" class="cross">
                   <ion-icon name="close-outline"></ion-icon>
                 </button>
@@ -239,7 +251,7 @@ export default defineComponent({
       </div>
       <div class="reviews"></div>
       <div class="button-wrapper">
-        <button v-if="!edit" @click="submitFiles">Создать</button>
+        <button v-if="!edit" @click="submitFiles">Создать</button>  
         <button v-if="edit" @click="editCard">Сохранить</button>
       </div>
     </div>
@@ -247,6 +259,21 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+.button-wrapper button {
+  padding: 5px 15px;
+  background-color: transparent;
+  border: 1px solid #62A87C;
+  border-radius: 10px;
+  color: #62A87C;
+  font-weight: 600;
+  transition: scale 500ms;
+}
+
+.button-wrapper button:hover {
+  scale: 1.03;
+}
+
 @media (max-width: 426px) {
   label {
     height: 200px !important;

@@ -28,7 +28,7 @@ UserModel.init(
 class CardModel extends Model { }
 CardModel.init(
     {
-        category:       { type: DataTypes.STRING,  allowNull: false, }, // создать subcategory
+        category:       { type: DataTypes.STRING,  allowNull: false, }, 
         subcategory:    { type: DataTypes.STRING,  allowNull: false, },
         title:          { type: DataTypes.STRING,  allowNull: false, },
         img:            { type: DataTypes.JSON,  allowNull: false, },
@@ -47,6 +47,21 @@ CardImage.init(
     { src:   { type: DataTypes.STRING,  allowNull: false, }, }, 
     { sequelize, modelName: 'CardImage', }
 );
+class CardTransfer extends Model { }
+CardTransfer.init(
+    {
+        cityFrom:       { type: DataTypes.STRING,  allowNull: false, },
+        cityTo:         { type: DataTypes.STRING,  allowNull: false, },
+        timeFrom:       { type: DataTypes.STRING,  allowNull: false, },
+        timeTo:         { type: DataTypes.STRING,  allowNull: false, },
+        walkFrom:       { type: DataTypes.STRING,  allowNull: false, },
+        walkTo:         { type: DataTypes.STRING,  allowNull: false, },
+        cars:           { type: DataTypes.STRING,  allowNull: false, },
+        price:          { type: DataTypes.INTEGER, allowNull: false, },
+    }, 
+    { sequelize, modelName: 'CardTransfer', }
+);
 
 
-module.exports = { sequelize, NewsModel, UserModel, CardModel }
+
+module.exports = { sequelize, NewsModel, UserModel, CardModel, CardTransfer }

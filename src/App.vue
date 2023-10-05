@@ -18,7 +18,7 @@ export default {
     return {
       reload() {
        window.location.assign(`http://localhost:5173`)
-
+       Vue.config.silent = true
       },
     };
   },
