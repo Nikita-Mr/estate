@@ -67,7 +67,7 @@ export default {
     
     <div class="transfers"></div>
     <div v-if="admin" class="create-transfer">
-      <RouterLink to="/create-transfer">Создать трансфер</RouterLink>
+      <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
     </div>
   </div>
 </template>

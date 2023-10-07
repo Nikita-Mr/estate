@@ -42,29 +42,18 @@ export default {
               <span>{{ cityfrom }}</span>
               <div class="wrapsvg">
                 <div class="circlesvg" :class="{ green: walkfrom == 1 }">
-                  <ion-icon name="walk"></ion-icon>
+                  <ion-icon name="person"></ion-icon>
                 </div>
                 <div class="circlesvg" :class="{ yellow: walkfrom == 2 }">
-                  <ion-icon name="walk"></ion-icon>
+                  <ion-icon name="person"></ion-icon>
                 </div>
                 <div class="circlesvg" :class="{ red: walkfrom == 3 }">
-                  <ion-icon name="walk"></ion-icon>
+                  <ion-icon name="person"></ion-icon>
                 </div>
               </div>
             </div>
             <div class="second">
               <span>Казань</span>
-              <div class="wrapsvg">
-                <div class="circlesvg" :class="{ green: walkto == 1 }">
-                  <ion-icon name="walk"></ion-icon>
-                </div>
-                <div class="circlesvg" :class="{ yellow: walkto == 2 }">
-                  <ion-icon name="walk"></ion-icon>
-                </div>
-                <div class="circlesvg" :class="{ red: walkto == 3 }">
-                  <ion-icon name="walk"></ion-icon>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -189,6 +178,6 @@ span:not(.sub, .cars span) {
   background: #ffcd57;
 }
 .red {
-  background: #f58b00;
+  background: #EE2E31;
 }
 </style>
