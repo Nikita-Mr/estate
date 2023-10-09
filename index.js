@@ -600,11 +600,13 @@ app.post(`/delete-news`, async function (req, res) {
 
 app.post(`/create_transfer`, async function(req, res) {
   try {
-    let { name, cityfrom, cityto, timefrom, timeto, car, typeCar, passenger, price } = req.body
+    let { name, cityfrom, cityto, datefrom, dateto, timefrom, timeto, car, typeCar, passenger, price } = req.body
     let transfer = await CardTransfer.create({
       name: name,
       cityfrom: cityfrom,
       cityto: cityto,
+      datefrom: datefrom,
+      dateto: dateto,
       timefrom: timefrom,
       timeto: timeto,
       car: car,
@@ -619,6 +621,6 @@ app.post(`/create_transfer`, async function(req, res) {
       status: '200',
     });
   } catch (err) {
-    res.json({ message: 'Ошибка создания трансфера', err });
+    res.send({ message: 'Ошибка создания трансфера', show: false, err });
   }
 })
