@@ -57,11 +57,9 @@ CardTransfer.init(
         dateto:         { type: DataTypes.STRING,  allowNull: false, },
         timefrom:       { type: DataTypes.STRING,  allowNull: false, },
         timeto:         { type: DataTypes.STRING,  allowNull: false, },
-        walkfrom:       { type: DataTypes.STRING,  allowNull: false, },
-        walkto:         { type: DataTypes.STRING,  allowNull: false, },
         typeCar:        { type: DataTypes.STRING,  allowNull: false, },
         car:            { type: DataTypes.STRING,  allowNull: false, },
-        passenger:      { type: DataTypes.INTEGER,  allowNull: false, },
+        passenger:      { type: DataTypes.INTEGER, allowNull: false, },
         price:          { type: DataTypes.INTEGER, allowNull: false, },
     }, 
     { sequelize, modelName: 'CardTransfer', }
