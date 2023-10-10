@@ -119,7 +119,7 @@ export default {
                 </div>
             </div>
             <div class="input-group">
-                <div class="title">Количество пассажиров в машине:</div>
+                <div class="title titleMore">Количество пассажиров в машине:</div>
                 <div class="wrapper-for-input">
                     <input v-model="passenger" type="number" name="passenger" class="form-input passenger" id="">
                 </div>
@@ -133,11 +133,10 @@ export default {
         </div>
     </div>
     <div class="create-news" v-if="show">{{ message }}</div>
-    <button v-else class="create-transfer" @click="createTransfer">Создать</button>
+    <button v-else class="create-transfer" @click="createTransfer">Опубликовать</button>
 </template>
 
 <style scoped>
-
 .titlebody {
     color: #d5d5d5;
     font-weight: 600;
@@ -148,11 +147,10 @@ export default {
 }
 
 .wrapper-for-input {
-    width: 60%;
+    width: 50%;
 }
 
 .input-group {
-    width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -191,7 +189,8 @@ export default {
     color: #d5d5d5;
 }
 
-.form-input:focus, .form-input:hover {
+.form-input:focus,
+.form-input:hover {
     color: #d5d5d5;
 }
 
@@ -227,11 +226,43 @@ select {
 }
 
 .col1 {
-    width: 50%;
+    width: 45%;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 20px;
     flex-direction: column;
+}
+
+@media screen and (width <=1200px) {
+    .col1 {
+        gap: 5px
+    }
+
+    .title {
+        font-size: small;
+        width: 20%;
+        text-align: end;
+        line-height: 0.8;
+    }
+
+    .titleMore {
+        font-size: 10px;
+    }
+
+    .wrapper-for-input {
+        margin-left: 10px;
+    }
+
+    .input-group {
+        gap: 30px;
+    }
+
+}
+
+@media (max-width: 420px) {
+    .container {
+        display: flex;
+    }
 }
 </style>
