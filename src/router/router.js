@@ -22,6 +22,7 @@ import AppHotel from '../views/habination/AppHotel.vue'
 import AppCardOpen from '../components/AppCardOpen.vue'
 import AppCreateCard from '../components/AppCreateCard.vue'
 import AppCreateNews from '../components/AppCreateNews.vue'
+import AppCreateTransfer from '../components/AppCreateTransfer.vue'
 
 
 const router = createRouter({
@@ -156,6 +157,11 @@ const router = createRouter({
       path: '/create-news',
       name: 'createNews',
       component: AppCreateNews,
+    },
+    {
+      path: '/create-transfer',
+      name: 'createTransfer',
+      component: AppCreateTransfer,
     },
   ]
 })

@@ -18,6 +18,7 @@ const {
   NewsModel,
   UserModel,
   CardModel,
+  CardTransfer,
 } = require('./modules/models');
 const { secret } = require(`./config`);
 
@@ -112,6 +113,20 @@ app.get('/newsDebug', async function (req, res) {
   let news = await UserModel.findAll();
 
   res.send({ news });
+});
+
+app.get(`/transfer`, async function (req, res) {
+  // let token = req.headers.authorization;
+  // let { role: userRoles } = jwt.verify(token, secret);
+  let admin;
+  // if (token) {
+  //   userRoles.forEach((role) => {
+  //     if (role == 'ADMIN') admin = true;
+  //   });
+  // }
+  let transfer = await CardTransfer.findAll();
+  transfer.reverse()
+  res.send({ transfer, admin });
 });
 
 app.get(`/news`, async function (req, res) {
@@ -570,3 +585,60 @@ app.get(`/create_roles`, async function (req, res) {
   await admin.save();
   res.redirect(`back`);
 });
+
+app.post(`/create_news`, async function (req, res) {
+  try {
+    let { title, content } = req.body
+    let news = await NewsModel.create({
+      title,
+      content,
+    });
+    await news.save();
+    return res.send({
+      message: 'Новость успешно создана',
+      show: true,
+      status: '200',
+    });
+  } catch (err) {
+    res.send({ message: 'Ошибка создания новости', show: false, err });
+  }
+})
+
+app.post(`/delete-news`, async function (req, res) {
+  try {
+    let id = req.body.id
+    let newsDelete = await NewsModel.findOne({ where: { id: id } })
+    console.log(newsDelete, id)
+    await newsDelete.destroy()
+    res.json({message: 'Удаление прошло успешно', status: 200})
+  } catch (err) {
+    res.json({ message: 'Ошибка удаления новости', err });
+  }
+})
+
+app.post(`/create_transfer`, async function(req, res) {
+  try {
+    let { name, cityfrom, cityto, datefrom, dateto, timefrom, timeto, car, typeCar, passenger, price } = req.body
+    let transfer = await CardTransfer.create({
+      name: name,
+      cityfrom: cityfrom,
+      cityto: cityto,
+      datefrom: datefrom,
+      dateto: dateto,
+      timefrom: timefrom,
+      timeto: timeto,
+      car: car,
+      typeCar: typeCar,
+      passenger: passenger,
+      price: price,
+    })
+    await transfer.save();
+    return res.send({
+      message: 'Трансфер успешно создан',
+      show: true,
+      status: '200',
+    });
+  } catch (err) {
+    res.send({ message: 'Ошибка создания трансфера', show: false, err });
+  }
+})

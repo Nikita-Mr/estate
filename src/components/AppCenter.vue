@@ -141,9 +141,9 @@ a {
 }
 
 @media (max-width: 420px) {
-  .container {
+  /* .container {
     display: block;
-  }
+  } */
   .list-events {
     display: block !important;
   }

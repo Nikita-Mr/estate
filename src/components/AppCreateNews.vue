@@ -1,27 +1,35 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router';
 import axios from 'axios';
-import {AnimationButton} from '@/AnimationButton.js'
+
 export default {
-  name: 'App',
-  components: {
-  },
   data() {
     return {
+      show: false,
+      message: '',
       title: '',
       content: ''
-    };
+    }
   },
   methods: {
     async createNews() {
-      await axios.post({
+      let response = await axios.post(`/create_news`, {
         title: this.title,
         content: this.content
       })
+      this.show = response.data.show
+      this.message = response.data.message
+
+      setTimeout(() => {
+        this.show = false;
+        this.message = ''
+      }, 3000);
     },
-    async clickButton () {
-      AnimationButton()
-    }
+    showMessage(message) {
+      this.message = message;
+      this.show = true;
+    },
+
   }
 };
 
@@ -30,266 +38,16 @@ export default {
 <template>
   <div class="wrapperNews mt-1 mb-1">
     <input v-model="title" type="text" name="title" class="titleInput" id="" placeholder="заголовок">
-    <textarea v-model="content" name="content" id="content" class="contentTextarea" cols="30" rows="10"
-      placeholder="контент"></textarea>
-    <!-- <button class="create-news" @click="createNews">Создать</button> -->
-    <button id="button" class="ready" @click="clickButton">
 
-      <div class="message submitMessage">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 12.2">
-          <polyline stroke="currentColor" points="2,7.1 6.5,11.1 11,7.1 " />
-          <line stroke="currentColor" x1="6.5" y1="1.2" x2="6.5" y2="10.3" />
-        </svg> <span class="button-text">Submit</span>
-      </div>
-
-      <div class="message loadingMessage">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 17">
-          <circle class="loadingCircle" cx="2.2" cy="10" r="1.6" />
-          <circle class="loadingCircle" cx="9.5" cy="10" r="1.6" />
-          <circle class="loadingCircle" cx="16.8" cy="10" r="1.6" />
-        </svg>
-      </div>
-
-      <div class="message successMessage">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 11">
-          <polyline stroke="currentColor" points="1.4,5.8 5.1,9.5 11.6,2.1 " />
-        </svg> <span class="button-text">Success</span>
-      </div>
-    </button>
-
-    <canvas :ref="canvas" id="canvas"></canvas>
-
-    <!-- Website Corner Link -->
-    
+    <textarea v-model="content" name="content" id="" class="contentTextarea" placeholder="контент" cols="50"
+      rows="10"></textarea>
+      <div class="create-news" v-if="show">{{ message }}</div>
+    <button v-else class="create-news" @click="createNews">Создать</button>
   </div>
 </template>
 
 <style scoped>
-@keyframes loading {
-  0% {
-    cy: 10;
-  }
 
-  25% {
-    cy: 3;
-  }
-
-  50% {
-    cy: 10;
-  }
-}
-
-body {
-  -webkit-font-smoothing: antialiased;
-  background-color: #f4f7ff;
-}
-
-canvas {
-  height: 100vh;
-  pointer-events: none;
-  position: fixed;
-  width: 100%;
-  z-index: 2;
-}
-
-button {
-  background: none;
-  border: none;
-  color: #f4f7ff;
-  cursor: pointer;
-  font-family: "Quicksand", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  height: 40px;
-  left: 50%;
-  outline: none;
-  overflow: hidden;
-  padding: 0 10px;
-  position: fixed;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 190px;
-  -webkit-tap-highlight-color: transparent;
-  z-index: 1;
-}
-
-button::before {
-  background: #1f2335;
-  border-radius: 50px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4) inset;
-  content: "";
-  display: block;
-  height: 100%;
-  margin: 0 auto;
-  position: relative;
-  transition: width 0.2s cubic-bezier(0.39, 1.86, 0.64, 1) 0.3s;
-  width: 100%;
-}
-
-button.ready .submitMessage svg {
-  opacity: 1;
-  top: 1px;
-  transition: top 0.4s ease 600ms, opacity 0.3s linear 600ms;
-}
-
-button.ready .submitMessage .button-text span {
-  top: 0;
-  opacity: 1;
-  transition: all 0.2s ease calc(var(--dr) + 600ms);
-}
-
-button.loading::before {
-  transition: width 0.3s ease;
-  width: 80%;
-}
-
-button.loading .loadingMessage {
-  opacity: 1;
-}
-
-button.loading .loadingCircle {
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-  animation-name: loading;
-  cy: 10;
-}
-
-button.complete .submitMessage svg {
-  top: -30px;
-  transition: none;
-}
-
-button.complete .submitMessage .button-text span {
-  top: -8px;
-  transition: none;
-}
-
-button.complete .loadingMessage {
-  top: 80px;
-}
-
-button.complete .successMessage .button-text span {
-  left: 0;
-  opacity: 1;
-  transition: all 0.2s ease calc(var(--d) + 1000ms);
-}
-
-button.complete .successMessage svg {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 0.3s ease-in-out 1.4s;
-}
-
-.button-text span {
-  opacity: 0;
-  position: relative;
-}
-
-.message {
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-}
-
-.message svg {
-  display: inline-block;
-  fill: none;
-  margin-right: 5px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-}
-
-.submitMessage .button-text span {
-  top: 8px;
-  transition: all 0.2s ease var(--d);
-}
-
-.submitMessage svg {
-  color: #5c86ff;
-  margin-left: -1px;
-  opacity: 0;
-  position: relative;
-  top: 30px;
-  transition: top 0.4s ease, opacity 0.3s linear;
-  width: 14px;
-}
-
-.loadingMessage {
-  opacity: 0;
-  transition: opacity 0.3s linear 0.3s, top 0.4s cubic-bezier(0.22, 0, 0.41, -0.57);
-}
-
-.loadingMessage svg {
-  fill: #5c86ff;
-  margin: 0;
-  width: 22px;
-}
-
-.successMessage .button-text span {
-  left: 5px;
-  transition: all 0.2s ease var(--dr);
-}
-
-.successMessage svg {
-  color: #5cffa1;
-  stroke-dasharray: 20;
-  stroke-dashoffset: 20;
-  transition: stroke-dashoffset 0.3s ease-in-out;
-  width: 14px;
-}
-
-.loadingCircle:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.loadingCircle:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
-/* Website Link */
-.website-link {
-  background: #f8faff;
-  border-radius: 50px 0 0 50px;
-  bottom: 30px;
-  color: #324b77;
-  cursor: pointer;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 600;
-  height: 34px;
-  filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.1));
-  padding: 0 20px 0 40px;
-  position: fixed;
-  right: 0;
-  text-align: left;
-  text-decoration: none;
-}
-
-.website-link__icon {
-  left: -10px;
-  position: absolute;
-  top: -12px;
-  width: 44px;
-}
-
-.website-link__name {
-  display: block;
-  font-size: 14px;
-  line-height: 14px;
-  margin: 5px 0 3px;
-}
-
-.website-link__last-name {
-  color: #55bada;
-}
-
-.website-link__message {
-  color: #8aa8c5;
-  display: block;
-  font-size: 7px;
-  line-height: 7px;
-}
 
 .titleInput {
   padding: 5px 7px;
@@ -301,25 +59,29 @@ button.complete .successMessage svg {
 }
 
 .titleInput::placeholder {
+  text-align: center;
   font-weight: 500;
   color: black;
-  text-align: center;
-}
 
-.contentTextarea::placeholder {
-  font-weight: 500;
-  color: black;
-  font-size: large;
-  text-align: center;
+  opacity: 0.6;
 }
 
 .contentTextarea {
-  padding: 5px 7px;
+  padding: 10px 15px;
   background-color: transparent;
   border: 1px solid #d5d5d5;
   box-shadow: 0px 0 10px 0 #ffffff71;
   border-radius: 15px;
   width: 60%;
+
+}
+
+.contentTextarea::placeholder {
+  font-size: large;
+  text-align: center;
+  font-weight: 500;
+  color: black;
+  opacity: 0.6;
 }
 
 .create-news {
@@ -329,6 +91,12 @@ button.complete .successMessage svg {
   border-radius: 10px;
   color: #62A87C;
   font-weight: 600;
+
+  transition: scale 500ms;
+}
+
+.create-news:hover {
+  scale: 1.06;
 }
 
 textarea {
