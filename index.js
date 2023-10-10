@@ -639,6 +639,6 @@ app.post(`/create_transfer`, async function(req, res) {
       status: '200',
     });
   } catch (err) {
-    res.send({ message: 'Ошибка создания трансфера', show: false, err });
+    res.send({ message: 'Ошибка создания трансфера',show: false, err });
   }
 })
