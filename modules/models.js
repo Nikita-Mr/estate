@@ -65,6 +65,17 @@ CardTransfer.init(
     { sequelize, modelName: 'CardTransfer', }
 );
 
+class CardService extends Model { }
+CardService.init(
+    {
+        name:           { type: DataTypes.STRING,  allowNull: false, },
+        phone:          { type: DataTypes.STRING,  allowNull: false, },
+        description:    { type: DataTypes.STRING,  allowNull: false, },
+        img:            { type: DataTypes.JSON,    allowNull: false, },
+    }, 
+    { sequelize, modelName: 'CardService', }
+);
 
 
-module.exports = { sequelize, NewsModel, UserModel, CardModel, CardTransfer }
+
+module.exports = { sequelize, NewsModel, UserModel, CardModel, CardTransfer, CardService }

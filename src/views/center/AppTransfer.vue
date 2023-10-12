@@ -69,7 +69,7 @@ export default {
     </div>
     
     <div class="transfers"></div>
-    <div v-if="admin" class="create-transfer">
+    <div class="create-transfer">
       <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
     </div>
   </div>
@@ -184,6 +184,10 @@ input::placeholder {
   color: var(--mainColor);
 
   transition: scale 500ms;
+}
+
+.create-transfer a:hover{
+  scale: 1.06;
 }
 
 .wrapper-for-form {
