@@ -48,9 +48,21 @@ export default {
       <RouterLink to="/create-service">Опубликовать услугу</RouterLink>
     </div>
   </div>
+
 </template>
 
 <style scoped>
+.wrapper-for-content {
+  width: 100%;
+}
+.create-service {
+  position: absolute;
+  bottom: 2%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .wrapper-for-content {
   width: 100%;
 }
@@ -70,8 +82,34 @@ export default {
   border: 1px solid var(--mainColor);
   color: var(--mainColor);
 
+
   transition: scale 500ms;
 }
+.create-service a:hover{
+  scale: 1.06;
+}
+
+.row {
+  width: 100%;
+  height: auto;
+}
+.cols {
+  padding: 10px;
+}
+.hotel-wrapper {
+  padding: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  height: 500px;
+  overflow-y: scroll;
+}
+.hotel-wrapper::-webkit-scrollbar {
+  width: 0;
+}
+
 .create-service a:hover {
   scale: 1.06;
 }
