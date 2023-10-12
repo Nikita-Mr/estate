@@ -21,7 +21,6 @@ export default {
 </script>
 
 <template>
-  <div class="bg" @click="close"></div>
   <div class="wrapper-for-nav">
     <button class="webBack" id="webBack" @click="$router.go(-1)"><img src="/src/assets/img/arrow-down-sign-to-navigate.png" alt=""></button>
     <button @click="click" class="burger" :class="{'cross': active == 1}">

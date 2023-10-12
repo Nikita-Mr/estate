@@ -17,13 +17,13 @@ export default {
   data() {
     return {
       reload() {
-       window.location.assign(`http://localhost:5173`)
-       Vue.config.silent = true
+        window.location.assign(`http://localhost:5173`);
+        Vue.config.silent = true;
       },
     };
   },
-  watch(){
-    this.reload()
+  watch() {
+    this.reload();
   },
   methods() {},
   mounted() {},
@@ -37,4 +37,6 @@ export default {
   <app-phone></app-phone>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>
