@@ -19,6 +19,7 @@ const {
   UserModel,
   CardModel,
   CardTransfer,
+  CardService,
 } = require('./modules/models');
 const { secret } = require(`./config`);
 
@@ -175,7 +176,7 @@ app.get(`/habitation`, async function (req, res) {
 
 let timeId;
 app.post(`/upload`, async function (req, res) {
-  let { name, id } = req.query;
+  let { name, id, model } = req.query;
   /*
   try{
     console.log('inited upload, id is: ', id);
@@ -213,11 +214,18 @@ app.post(`/upload`, async function (req, res) {
         return res.send({ message: 'Error occured' });
       }
     });
-    let card = await CardModel.findOne({ where: { id: timeId } });
-    card.img = file.name;
-    //console.log(card);
-    await card.save();
-    //return res.send({ message: 'Файл не найден' });
+    if (model == 'taxi') {
+      let service = await CardService.findOne({ where: { id: timeId } });
+      service.img = file.name;
+      //console.log(card);
+      await service.save();
+    } else {
+      let card = await CardModel.findOne({ where: { id: timeId } });
+      card.img = file.name;
+      //console.log(card);
+      await card.save();
+      //return res.send({ message: 'Файл не найден' });
+    }
   }
   let files = req.files.files;
   let imgName = [];
@@ -252,35 +260,42 @@ app.post(`/upload`, async function (req, res) {
       }
     });
   }
-  if (name) {
+  if (model == 'taxi') {
+      let card = await CardService.findOne({ where: { id: id } });
+      card.img = imgName;
+      await card.save();
+      return res.send({ message: 'Успешно', status: '200' });
+  } else {
+    if (name) {
+      let card = await CardModel.findOne({ where: { id: id } });
+      card.img = imgName;
+      await card.save();
+      return res.send({ message: 'Успешно', status: '200' });
+    }
     let card = await CardModel.findOne({ where: { id: id } });
     card.img = imgName;
+    console.log(card);
     await card.save();
-    return res.send({ message: 'Успешно', status: '200' });
+    return res.send({ message: 'Изображение загружено', status: '200' });
   }
-  let card = await CardModel.findOne({ where: { id: id } });
-  card.img = imgName;
-  console.log(card);
-  await card.save();
-  return res.send({ message: 'Изображение загружено', status: '200' });
 });
 
 
-app.post(`/create_news`, async function(req, res) { 
-  try { 
-    let { title, content } = req.body 
-    let news = await NewsModel.create({ 
-      title, 
-      content, 
-    }); 
-    await news.save(); 
-    return res.json({ 
-      message: 'Новость успешно создана', 
-      status: '200', 
-    }); 
-  } catch (err) { 
-    res.json({ message: 'Ошибка создания новости', err }); 
-  } 
+app.post(`/create_news`, async function (req, res) {
+  try {
+    let { title, content } = req.body
+    let news = await NewsModel.create({
+      title,
+      content,
+    });
+    await news.save();
+    return res.json({
+      message: 'Новость успешно создана',
+      status: '200',
+    });
+  } catch (err) {
+    res.json({ message: 'Ошибка создания новости', err });
+  }
 })
 
 app.post(`/create-card`, async function (req, res) {
@@ -610,13 +625,13 @@ app.post(`/delete-news`, async function (req, res) {
     let newsDelete = await NewsModel.findOne({ where: { id: id } })
     console.log(newsDelete, id)
     await newsDelete.destroy()
-    res.json({message: 'Удаление прошло успешно', status: 200})
+    res.json({ message: 'Удаление прошло успешно', status: 200 })
   } catch (err) {
     res.json({ message: 'Ошибка удаления новости', err });
   }
 })
 
-app.post(`/create_transfer`, async function(req, res) {
+app.post(`/create_transfer`, async function (req, res) {
   try {
     let { name, cityfrom, cityto, datefrom, dateto, timefrom, timeto, car, typeCar, passenger, price } = req.body
     let transfer = await CardTransfer.create({
@@ -639,6 +654,70 @@ app.post(`/create_transfer`, async function(req, res) {
       status: '200',
     });
   } catch (err) {
-    res.send({ message: 'Ошибка создания трансфера',show: false, err });
+    res.send({ message: 'Ошибка создания трансфера', show: false, err });
+  }
+})
+
+app.post(`/create_service`, async function (req, res) {
+  try {
+    let { name, phone, description } = req.body
+    try {
+      console.log('building card...');
+      let card = await CardService.build({
+        img: {},
+        name: name,
+        phone: phone,
+        description: description
+      });
+      console.log('saving card...');
+      try {
+        card.save().then((e) => {
+          try {
+            console.log('binding id...');
+            timeId = card.id;
+          } catch (e) {
+            console.log(`Ошибка создания timeId: ${e} `);
+            return res.send({
+              message: `Ошибка создания timeId: ${e} `,
+              status: '400',
+            });
+          }
+
+          console.log('done.');
+          return res.send({
+            //message: `Создание карты завершено, timeId: ${timeId}`,
+            message: timeId,
+            status: '200',
+          });
+        });
+      } catch (e) {
+        console.log(`сохранение не работает: ${e} `);
+        return res.send({
+          message: `сохранение не работает: ${e} `,
+          status: '400',
+        });
+      }
+    } catch (e) {
+      console.log(`Ошибка создания карточки: ${e} `);
+      return res.send({
+        message: `Ошибка создания карточки: ${e} `,
+        status: '400',
+      });
+    }
+  } catch (err) {
+    res.send({ message: 'Ошибка создания услуги', show: false, err });
+  }
+})
+
+app.get(`/services`, async function (req, res) {
+  let services = await CardService.findAll()
+  res.send({services})
+})
+
+app.get(`/delete_service`, async function(req, res) {
+  let services = await CardService.findAll()
+  for (let i = 0; i < services.length; i++) {
+    let service = services[i]
+    await service.destroy()
   }
 })
