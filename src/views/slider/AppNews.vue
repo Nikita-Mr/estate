@@ -9,6 +9,7 @@ export default {
     return {
       NEWS: ``,
       admin: false,
+      login: true
     };
   },
   methods: {
@@ -22,6 +23,10 @@ export default {
         .then((e) => {
           this.NEWS = e.data.news;
           this.admin = e.data.admin;
+          this.login = e.data.login
+          if(!this.login){
+        this.$router.push({name: `login`})
+      }
         });
     },
 

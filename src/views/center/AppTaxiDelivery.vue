@@ -10,6 +10,7 @@ export default {
   data() {
     return {
       INFO: [],
+      login: true
     };
   },
   methods: {
@@ -21,6 +22,11 @@ export default {
         },
       });
       this.INFO = service.data.services;
+      this.login = service.data.login;
+      if(!this.login){
+        this.$router.push({name: `login`})
+      }
+
     },
   },
   mounted() {

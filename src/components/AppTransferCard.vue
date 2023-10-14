@@ -14,10 +14,13 @@ export default {
     car: String,
     passenger: String,
     price: String,
+    boardedPlaces: Number,
   },
   components: {},
   data() {
-    return {};
+    return {
+      passenger2: this.passenger/2
+    };
   },
   methods: {},
   mounted() {},
@@ -43,12 +46,16 @@ export default {
           <div class="city">
             <div class="first">
               <span>{{ cityfrom }}</span>
+              <span class="sub">Мест: {{ passenger }}</span>
+            </div>
+            <div class="second">
+              <span>{{ cityto }}</span>
               <div class="wrapsvg">
                 <div
                   class="circlesvg"
                   :class="{
-                    green: passenger <= 5 && typeCar == `bus`,
-                    green: passenger == 1 && typeCar == `car`,
+                    green: boardedPlaces < passenger2 && typeCar == `bus`,
+                    green: boardedPlaces < passenger2 && typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
@@ -57,8 +64,8 @@ export default {
                   class="circlesvg"
                   :class="{
                     yellow:
-                      passenger > 5 && passenger <= 15 && typeCar == `bus`,
-                    yellow: passenger < 3 && passenger > 1 && typeCar == `car`,
+                      boardedPlaces >= passenger2 - 2 && boardedPlaces <= passenger2 + 2  && typeCar == `bus`,
+                    yellow: boardedPlaces >= passenger2 - 1  && boardedPlaces <= passenger1  + 1 && typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
@@ -66,16 +73,13 @@ export default {
                 <div
                   class="circlesvg"
                   :class="{
-                    red: passenger <= 20 && passenger > 15 && typeCar == `bus`,
-                    yellow: passenger == 4 && typeCar == `car`,
+                    red: boardedPlaces <= passenger && boardedPlaces > passenger2 && typeCar == `bus`,
+                    red: boardedPlaces <= passenger && boardedPlaces > passenger2 && typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
                 </div>
               </div>
-            </div>
-            <div class="second">
-              <span>{{ cityto }}</span>
             </div>
           </div>
         </div>

@@ -122,6 +122,7 @@ export default defineComponent({
           phone: this.phone,
           adress: this.adress,
           edit: true,
+          login: true
         })
         .then((e) => {
           if (formData) {

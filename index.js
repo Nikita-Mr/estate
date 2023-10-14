@@ -59,6 +59,9 @@ let verifyc = function (roles) {
 
     try {
       let token = req.headers.authorization;
+       if (!token){
+      return res.send({login: false})
+    }
       // if(token){
       //   return res.json({message: token})
       // }
@@ -83,6 +86,9 @@ let ADMINVERIFY = function (roles) {
     }
     try {
       let token = req.headers.authorization;
+       if (!token){
+      return res.send({login: false})
+    }
       // if(token){
       //   return res.json({message: token})
       // }
@@ -117,14 +123,17 @@ app.get('/newsDebug', async function (req, res) {
 });
 
 app.get(`/transfer`, async function (req, res) {
-  // let token = req.headers.authorization;
-  // let { role: userRoles } = jwt.verify(token, secret);
+  let token = req.headers.authorization;
+   if (!token){
+      return res.send({login: false})
+    }
+  let { role: userRoles } = jwt.verify(token, secret);
   let admin;
-  // if (token) {
-  //   userRoles.forEach((role) => {
-  //     if (role == 'ADMIN') admin = true;
-  //   });
-  // }
+  if (token) {
+    userRoles.forEach((role) => {
+      if (role == 'ADMIN') admin = true;
+    });
+  }
   let transfer = await CardTransfer.findAll();
   transfer.reverse()
   res.send({ transfer, admin });
@@ -132,6 +141,9 @@ app.get(`/transfer`, async function (req, res) {
 
 app.get(`/news`, async function (req, res) {
   let token = req.headers.authorization;
+   if (!token){
+      return res.send({login: false})
+    }
   let { role: userRoles } = jwt.verify(token, secret);
   let admin;
   if (token) {
@@ -151,6 +163,9 @@ app.get(`/habitation`, async function (req, res) {
     let cards;
     let admin = false;
     let token = req.headers.authorization;
+     if (!token){
+      return res.send({login: false})
+    }
     console.log(token);
     let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);
@@ -463,6 +478,9 @@ app.get(`/card`, async function (req, res) {
   let card;
   let admin = false;
   let token = req.headers.authorization;
+   if (!token){
+      return res.send({login: false})
+    }
   console.log(token);
   let { role: userRoles } = jwt.verify(token, secret);
   console.log(userRoles);
@@ -485,6 +503,9 @@ app.get(`/instructor-tours`, async function (req, res) {
     let cards;
     let admin = false;
     let token = req.headers.authorization;
+     if (!token){
+      return res.send({login: false})
+    }
     console.log(token);
     let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);
@@ -514,6 +535,9 @@ app.get(`/forChildren`, async function (req, res) {
     let cards;
     let admin = false;
     let token = req.headers.authorization;
+     if (!token){
+      return res.send({login: false})
+    }
     console.log(token);
     let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);
@@ -542,6 +566,12 @@ app.get(`/rental`, async function (req, res) {
     let cards;
     let admin = false;
     let token = req.headers.authorization;
+     if (!token){
+      return res.send({login: false})
+    }
+    if (!token){
+      return res.send({login: false})
+    }
     console.log(token);
     let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);
@@ -571,6 +601,9 @@ app.get(`/event`, async function (req, res) {
     let cards;
     let admin = false;
     let token = req.headers.authorization;
+     if (!token){
+      return res.send({login: false})
+    }
     console.log(token);
     let { role: userRoles } = jwt.verify(token, secret);
     console.log(userRoles);

@@ -6,27 +6,6 @@ import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
 
 import 'vue3-carousel/dist/carousel.css';
 
-// ymaps.ready(init); // когда апи готово, инициализируемя карту
-// var customMap; // объявим переменную для карты
-// async function init() {
-//   // функция инициализации
-//   customMap = new ymaps.Map('customMap', {
-//     // создадим карту выведем ее в див с id="customMap"
-//     center: [25.15, 55.18], // центра карты
-//     behaviors: ['default', 'scrollZoom'], // скроллинг колесом
-//     zoom: 10, // масштаб карты
-//     controls: ['zoomControl', 'fullscreenControl'], // элементы управления
-//   });
-//   myGeocoder.then(console.log(res.geoObjects.get(0).geometry.getCoordinates()));
-
-//   // customMap.controls.remove('geolocationControl'); // удаляем геолокацию
-//   // customMap.controls.remove('searchControl'); // удаляем поиск
-//   // customMap.controls.remove('trafficControl'); // удаляем контроль трафика
-//   // customMap.controls.remove('typeSelector'); // удаляем тип
-//   // customMap.controls.remove('fullscreenControl'); // удаляем кнопку перехода в полноэкранный режим
-//   // customMap.controls.remove('zoomControl'); // удаляем контрол зуммирования
-//   // customMap.controls.remove('rulerControl'); // удаляем контрол правил
-// }
 
 export default defineComponent({
   components: {
@@ -40,7 +19,7 @@ export default defineComponent({
       INFO: {},
       admin: ``,
       target: 0,
-      login: true,
+      login: true
     };
   },
   mounted() {
@@ -56,10 +35,11 @@ export default defineComponent({
       });
       this.INFO = response.data.card;
       this.admin = response.data.admin;
-      this.login = e.data.login;
-      if (!this.login) {
-        this.$router.push({ name: `login` });
+      this.login = response.data.login
+      if(!this.login){
+        this.$router.push({name: `login`})
       }
+
     },
     async deleteCard() {
       await axios
@@ -76,7 +56,7 @@ export default defineComponent({
     async edit() {
       this.$router.push({
         path: '/create-card',
-        query: { id: this.INFO.id, name: this.$route.query.name, edit: true },
+        query: { id: this.INFO.id, name: this.$route.query.name , edit: true },
       });
     },
   },

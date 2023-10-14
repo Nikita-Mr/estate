@@ -24,6 +24,7 @@ import AppCreateCard from '../components/AppCreateCard.vue'
 import AppCreateNews from '../components/AppCreateNews.vue'
 import AppCreateTransfer from '../components/AppCreateTransfer.vue'
 import AppCreateService from '../components/AppCreateService.vue'
+import AppTransferCardOpen from '../components/AppTransferCardOpen.vue'
 
 
 const router = createRouter({
@@ -168,6 +169,11 @@ const router = createRouter({
       path: '/create-service',
       name: 'createService',
       component: AppCreateService,
+    },
+    {
+      path: '/transfer/card',
+      name: 'AppTransferCardOpen',
+      component: AppTransferCardOpen,
     },
   ]
 })
