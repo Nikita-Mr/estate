@@ -14,8 +14,7 @@ export default {
       today: new Date().toLocaleDateString('en-CA'),
       date: '',
       admin: false,
-      Transfer: [],
-      login: true
+      Transfer: []
     };
   },
   methods: {
@@ -30,11 +29,6 @@ export default {
       })
       this.Transfer = response.data.transfer
       this.admin = response.data.admin
-      this.login = response.data.login
-      if(!this.login){
-        this.$router.push({name: `login`})
-      }
-
     }
   },
   mounted() {

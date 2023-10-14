@@ -19,7 +19,6 @@ export default defineComponent({
       INFO: {},
       admin: ``,
       target: 0,
-      login: true
     };
   },
   mounted() {
@@ -35,11 +34,6 @@ export default defineComponent({
       });
       this.INFO = response.data.card;
       this.admin = response.data.admin;
-      this.login = response.data.login
-      if(!this.login){
-        this.$router.push({name: `login`})
-      }
-
     },
     async deleteCard() {
       await axios

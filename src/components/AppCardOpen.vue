@@ -40,7 +40,6 @@ export default defineComponent({
       INFO: {},
       admin: ``,
       target: 0,
-      login: true,
     };
   },
   mounted() {
@@ -56,10 +55,6 @@ export default defineComponent({
       });
       this.INFO = response.data.card;
       this.admin = response.data.admin;
-      this.login = e.data.login;
-      if (!this.login) {
-        this.$router.push({ name: `login` });
-      }
     },
     async deleteCard() {
       await axios
@@ -76,7 +71,7 @@ export default defineComponent({
     async edit() {
       this.$router.push({
         path: '/create-card',
-        query: { id: this.INFO.id, name: this.$route.query.name, edit: true },
+        query: { id: this.INFO.id, name: this.$route.query.name , edit: true },
       });
     },
   },

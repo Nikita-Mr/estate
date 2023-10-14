@@ -9,7 +9,7 @@ export default {
       password: ``,
       token: ``,
       error: ``,
-      status: ``,
+      status: Number,
     };
   },
   methods: {
@@ -26,7 +26,7 @@ export default {
         document.cookie = `token=${this.token}; max-age=1123200`;
       }
       setTimeout(() => {
-        if (this.status == '200') {
+        if (this.status == 200) {
           this.$refs.form.reset();
           this.$router.push({ name: 'home' });
         }
@@ -49,7 +49,7 @@ export default {
 </script>
 
 <template>
-  <div class="wrapper">
+  <div class="wrapper-login">
     <div class="form-box">
       <form ref="form" @submit.prevent="submit">
         <h2 class="title">Вход</h2>
@@ -83,7 +83,7 @@ export default {
         </div>
         <div
           v-if="error"
-          :class="{ error: status == '400', success: status == '200' }"
+          :class="{ 'error': status == 400, 'success': status == 200 }"
         >
           <span>{{ error }}</span>
         </div>
@@ -113,7 +113,7 @@ export default {
   padding: 10px;
   color: #dd7575;
 }
-.wrapper {
+.wrapper-login {
   display: flex;
   justify-content: center;
   align-items: center;

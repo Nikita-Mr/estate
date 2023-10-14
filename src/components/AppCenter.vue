@@ -112,7 +112,7 @@ a {
 
 @media (max-width: 507px) {
   .item-event {
-    cursor: pointer;
+    cursor: '';
     margin-bottom: 10px;
     background-color: transparent;
     flex-basis: 47%;
@@ -134,8 +134,9 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-y: scroll;
 }
+
+
 .container::-webkit-scrollbar {
   display: none;
 }
