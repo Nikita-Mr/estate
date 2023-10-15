@@ -134,7 +134,6 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-y: scroll;
 }
 .container::-webkit-scrollbar {
   display: none;

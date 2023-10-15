@@ -117,16 +117,22 @@ app.get('/newsDebug', async function (req, res) {
 });
 
 app.get(`/transfer`, async function (req, res) {
-  // let token = req.headers.authorization;
-  // let { role: userRoles } = jwt.verify(token, secret);
+  let token = req.headers.authorization;
+  let { id } = req.query;
+  let { role: userRoles } = jwt.verify(token, secret);
   let admin;
-  // if (token) {
-  //   userRoles.forEach((role) => {
-  //     if (role == 'ADMIN') admin = true;
-  //   });
-  // }
+  if (token) {
+    userRoles.forEach((role) => {
+      if (role == 'ADMIN') admin = true;
+    });
+  }
+  if (id) {
+    let transfer = await CardTransfer.findOne({ where: { id: id } });
+    res.send({ transfer, admin });
+    return
+  }
   let transfer = await CardTransfer.findAll();
-  transfer.reverse()
+  transfer.reverse();
   res.send({ transfer, admin });
 });
 
@@ -261,10 +267,10 @@ app.post(`/upload`, async function (req, res) {
     });
   }
   if (model == 'taxi') {
-      let card = await CardService.findOne({ where: { id: id } });
-      card.img = imgName;
-      await card.save();
-      return res.send({ message: 'Успешно', status: '200' });
+    let card = await CardService.findOne({ where: { id: id } });
+    card.img = imgName;
+    await card.save();
+    return res.send({ message: 'Успешно', status: '200' });
   } else {
     if (name) {
       let card = await CardModel.findOne({ where: { id: id } });
@@ -280,10 +286,9 @@ app.post(`/upload`, async function (req, res) {
   }
 });
 
-
 app.post(`/create_news`, async function (req, res) {
   try {
-    let { title, content } = req.body
+    let { title, content } = req.body;
     let news = await NewsModel.create({
       title,
       content,
@@ -296,7 +301,7 @@ app.post(`/create_news`, async function (req, res) {
   } catch (err) {
     res.json({ message: 'Ошибка создания новости', err });
   }
-})
+});
 
 app.post(`/create-card`, async function (req, res) {
   try {
@@ -603,7 +608,7 @@ app.get(`/create_roles`, async function (req, res) {
 
 app.post(`/create_news`, async function (req, res) {
   try {
-    let { title, content } = req.body
+    let { title, content } = req.body;
     let news = await NewsModel.create({
       title,
       content,
@@ -617,23 +622,35 @@ app.post(`/create_news`, async function (req, res) {
   } catch (err) {
     res.send({ message: 'Ошибка создания новости', show: false, err });
   }
-})
+});
 
 app.post(`/delete-news`, async function (req, res) {
   try {
-    let id = req.body.id
-    let newsDelete = await NewsModel.findOne({ where: { id: id } })
-    console.log(newsDelete, id)
-    await newsDelete.destroy()
-    res.json({ message: 'Удаление прошло успешно', status: 200 })
+    let id = req.body.id;
+    let newsDelete = await NewsModel.findOne({ where: { id: id } });
+    console.log(newsDelete, id);
+    await newsDelete.destroy();
+    res.json({ message: 'Удаление прошло успешно', status: 200 });
   } catch (err) {
     res.json({ message: 'Ошибка удаления новости', err });
   }
-})
+});
 
 app.post(`/create_transfer`, async function (req, res) {
   try {
-    let { name, cityfrom, cityto, datefrom, dateto, timefrom, timeto, car, typeCar, passenger, price } = req.body
+    let {
+      name,
+      cityfrom,
+      cityto,
+      datefrom,
+      dateto,
+      timefrom,
+      timeto,
+      car,
+      typeCar,
+      passenger,
+      price,
+    } = req.body;
     let transfer = await CardTransfer.create({
       name: name,
       cityfrom: cityfrom,
@@ -646,7 +663,7 @@ app.post(`/create_transfer`, async function (req, res) {
       typeCar: typeCar,
       passenger: passenger,
       price: price,
-    })
+    });
     await transfer.save();
     return res.send({
       message: 'Трансфер успешно создан',
@@ -656,18 +673,18 @@ app.post(`/create_transfer`, async function (req, res) {
   } catch (err) {
     res.send({ message: 'Ошибка создания трансфера', show: false, err });
   }
-})
+});
 
 app.post(`/create_service`, async function (req, res) {
   try {
-    let { name, phone, description } = req.body
+    let { name, phone, description } = req.body;
     try {
       console.log('building card...');
       let card = await CardService.build({
         img: {},
         name: name,
         phone: phone,
-        description: description
+        description: description,
       });
       console.log('saving card...');
       try {
@@ -707,17 +724,17 @@ app.post(`/create_service`, async function (req, res) {
   } catch (err) {
     res.send({ message: 'Ошибка создания услуги', show: false, err });
   }
-})
+});
 
 app.get(`/services`, async function (req, res) {
-  let services = await CardService.findAll()
-  res.send({services})
-})
+  let services = await CardService.findAll();
+  res.send({ services });
+});
 
-app.get(`/delete_service`, async function(req, res) {
-  let services = await CardService.findAll()
+app.get(`/delete_service`, async function (req, res) {
+  let services = await CardService.findAll();
   for (let i = 0; i < services.length; i++) {
-    let service = services[i]
-    await service.destroy()
+    let service = services[i];
+    await service.destroy();
   }
-})
+});

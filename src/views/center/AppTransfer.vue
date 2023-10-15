@@ -13,7 +13,7 @@ export default {
     return {
       today: new Date().toLocaleDateString('en-CA'),
       date: '',
-      admin: true,
+      admin: false,
       Transfer: []
     };
   },
@@ -22,8 +22,13 @@ export default {
       e.preventDefault();
     },
     async transferLoad(){
-      let response = await axios.get(`/transfer`)
+      let response = await axios.get(`/transfer`,{
+        headers: {
+            "Authorization": document.cookie.replace('token=', ``),
+          },
+      })
       this.Transfer = response.data.transfer
+      this.admin = response.data.admin
     }
   },
   mounted() {
@@ -50,7 +55,7 @@ export default {
     </div>
     <div class="transfer-card-wrapper">
       <div class="cards">
-        <app-transfer-card v-for="(card, index) in Transfer"
+        <app-transfer-card @click="$router.push({path:`/transfer/card`, query: {id: card.id}}) " v-for="(card, index) in Transfer"
         :i = index
         :name = "card.name"
         :cityfrom = "card.cityfrom"
@@ -69,7 +74,7 @@ export default {
     </div>
     
     <div class="transfers"></div>
-    <div class="create-transfer">
+    <div v-if="admin" class="create-transfer">
       <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
     </div>
   </div>
@@ -192,6 +197,7 @@ input::placeholder {
 
 .wrapper-for-form {
   width: 100%;
+  left: 0;
   position: absolute;
   top: 0;
   display: flex;
