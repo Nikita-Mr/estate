@@ -1,5 +1,6 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router';
+import * as dayjs from 'dayjs';
 
 export default {
   props: {
@@ -14,12 +15,22 @@ export default {
     car: String,
     passenger: String,
     price: String,
+    boardedPlaces: Number,
   },
   components: {},
   data() {
-    return {};
+    return {
+      passenger2: this.passenger / 2,
+    };
   },
-  methods: {},
+  methods: {
+    getDate(data) {
+      let date = new Date(data);
+      let day = dayjs(date)
+      dayjs.locale('ru')
+      return day.format(`D ddd`);
+    },
+  },
   mounted() {},
 };
 </script>
@@ -32,23 +43,27 @@ export default {
           <div class="time">
             <div class="first">
               <span>{{ timefrom }}</span>
-              <span class="sub">{{datefrom}}</span>
+              <span class="sub">{{ getDate(datefrom) }}</span>
             </div>
             <div class="second">
               <span>{{ timeto }}</span>
-              <span class="sub">{{dateto}}</span>
+              <span class="sub">{{ getDate(dateto) }}</span>
             </div>
           </div>
           <div class="line"></div>
           <div class="city">
             <div class="first">
               <span>{{ cityfrom }}</span>
+              <span class="sub">Мест: {{ passenger }}</span>
+            </div>
+            <div class="second">
+              <span>{{ cityto }}</span>
               <div class="wrapsvg">
                 <div
                   class="circlesvg"
                   :class="{
-                    green: passenger <= 5 && typeCar == `bus`,
-                    green: passenger == 1 && typeCar == `car`,
+                    green: boardedPlaces < passenger2 && typeCar == `bus`,
+                    green: boardedPlaces < passenger2 && typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
@@ -57,8 +72,13 @@ export default {
                   class="circlesvg"
                   :class="{
                     yellow:
-                      passenger > 5 && passenger <= 15 && typeCar == `bus`,
-                    yellow: passenger < 3 && passenger > 1 && typeCar == `car`,
+                      boardedPlaces >= passenger2 - 2 &&
+                      boardedPlaces <= passenger2 + 2 &&
+                      typeCar == `bus`,
+                    yellow:
+                      boardedPlaces >= passenger2 - 1 &&
+                      boardedPlaces <= passenger1 + 1 &&
+                      typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
@@ -66,16 +86,19 @@ export default {
                 <div
                   class="circlesvg"
                   :class="{
-                    red: passenger <= 20 && passenger > 15 && typeCar == `bus`,
-                    yellow: passenger == 4 && typeCar == `car`,
+                    red:
+                      boardedPlaces <= passenger &&
+                      boardedPlaces > passenger2 &&
+                      typeCar == `bus`,
+                    red:
+                      boardedPlaces <= passenger &&
+                      boardedPlaces > passenger2 &&
+                      typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
                 </div>
               </div>
-            </div>
-            <div class="second">
-              <span>{{ cityto }}</span>
             </div>
           </div>
         </div>
@@ -89,8 +112,11 @@ export default {
       </div>
       <div class="wrapprice">
         <div class="price">
-          <span>{{ price }}₽</span>
-          <span class="sub discount">{{ price - 1000 }}₽</span>
+          <span v-if="boardedPlaces != passenger">{{ price }}₽</span>
+          <span v-if="boardedPlaces == passenger">Нет мест</span>
+          <span v-if="boardedPlaces != passenger" class="sub discount"
+            >{{ price - 1000 }}₽</span
+          >
         </div>
         <div class="content">
           <img src="" alt="" />
@@ -122,8 +148,8 @@ export default {
   margin-bottom: 10px;
   min-width: 230px;
 }
-.first span{
-    width: 100%;
+.first span {
+  width: 100%;
 }
 .first {
   height: 50%;
