@@ -116,9 +116,34 @@ app.get('/newsDebug', async function (req, res) {
   res.send({ news });
 });
 
+app.get(`/filter`, async function (req, res) {
+  let { namefilter, cityfrom, cityto, datefrom, passenger } = req.query;
+  let filter;
+  filter = await CardTransfer.findAll({
+    where: {
+      cityfrom: cityfrom,
+      cityto: cityto,
+      datefrom: datefrom,
+    },
+  });
+  filter.forEach((element) => {
+    if (passenger <= element.passenger) {
+      filter.push(element);
+    } else {
+      res.send({ message: 'Столько мест нет' });
+      return;
+    }
+  });
+  if (!filter) {
+    res.send({ message: 'В это время поездок нет' });
+    return;
+  }
+  res.send({ filter });
+});
+
 app.get(`/transfer`, async function (req, res) {
   let token = req.headers.authorization;
-  let { id } = req.query;
+  let { id, book } = req.query;
   let { role: userRoles } = jwt.verify(token, secret);
   let admin;
   if (token) {
@@ -126,10 +151,20 @@ app.get(`/transfer`, async function (req, res) {
       if (role == 'ADMIN') admin = true;
     });
   }
-  if (id) {
+  if (book && id) {
+    let transfer = await CardTransfer.findOne({ where: { id: id } });
+    if (transfer.boardedPlaces >= transfer.passenger) {
+      return res.send({ message: 'Мест нет' });
+    }
+    transfer.boardedPlaces += 1;
+    await transfer.save();
+    res.send({ transfer, admin });
+    return;
+  }
+  if (id && !book) {
     let transfer = await CardTransfer.findOne({ where: { id: id } });
     res.send({ transfer, admin });
-    return
+    return;
   }
   let transfer = await CardTransfer.findAll();
   transfer.reverse();

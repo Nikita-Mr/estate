@@ -1,7 +1,7 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router';
 import * as dayjs from 'dayjs';
-
+import 'dayjs/locale/ru';
 export default {
   props: {
     name: String,
@@ -28,7 +28,7 @@ export default {
       let date = new Date(data);
       let day = dayjs(date)
       dayjs.locale('ru')
-      return day.format(`D ddd`);
+      return day.format(`dd, D MMM`);
     },
   },
   mounted() {},
@@ -128,6 +128,12 @@ export default {
 </template>
 
 <style scoped>
+.time{
+  width: 70px;
+}
+.city{
+  width: min-content;
+}
 .cardTransfer {
   display: flex;
   justify-content: space-between;
@@ -168,7 +174,8 @@ span:not(.sub, .cars span) {
   transform: rotate(90deg);
   align-self: center;
   margin-bottom: 25px;
-  max-width: 20%;
+  left: -10px;
+  max-width: 40px;
   background: black;
   position: relative;
 }

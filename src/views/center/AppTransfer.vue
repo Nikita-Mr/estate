@@ -7,32 +7,46 @@ import AppTransferCard from '/src/components/AppTransferCard.vue';
 export default {
   components: {
     AppCard,
-    AppTransferCard
+    AppTransferCard,
   },
   data() {
     return {
-      today: new Date().toLocaleDateString('en-CA'),
       date: '',
       admin: false,
-      Transfer: []
+      Transfer: [],
+      cityfrom: '',
+      cityto: '',
+      datefrom: new Date().toLocaleDateString('en-CA'),
+      passenger: 1,
+      message: ``,
     };
   },
   methods: {
-    find(e) {
-      e.preventDefault();
+    async find() {
+      let response = await axios.get(`/filter`, {
+        params: {
+          cityfrom: this.cityfrom,
+          cityto: this.cityto,
+          datefrom: this.datefrom,
+          passenger: this.passenger,
+          namefilter: 'transfer',
+        },
+      });
+      this.Transfer = response.data.filter;
+      this.message = response.data.message;
     },
-    async transferLoad(){
-      let response = await axios.get(`/transfer`,{
+    async transferLoad() {
+      let response = await axios.get(`/transfer`, {
         headers: {
-            "Authorization": document.cookie.replace('token=', ``),
-          },
-      })
-      this.Transfer = response.data.transfer
-      this.admin = response.data.admin
-    }
+          Authorization: document.cookie.replace('token=', ``),
+        },
+      });
+      this.Transfer = response.data.transfer;
+      this.admin = response.data.admin;
+    },
   },
   mounted() {
-    this.transferLoad()
+    this.transferLoad();
   },
 };
 </script>
@@ -42,12 +56,12 @@ export default {
     <div class="wrapper-for-form">
       <div class="form">
         <div class="title mb-3">Трансфер</div>
-        <form class="form" @submit="find">
+        <form class="form" @submit.prevent="find">
           <div class="input-group">
-            <input type="text" placeholder="Откуда" />
-            <input type="text" placeholder="Куда" />
-            <input type="date" :value="today" />
-            <input type="number" value="1" min="1" />
+            <input v-model="cityfrom" type="text" placeholder="Откуда" />
+            <input v-model="cityto" type="text" placeholder="Куда" />
+            <input v-model="datefrom" type="date" />
+            <input v-model="passenger" type="number" min="1" />
             <button class="btn btn-primary" type="submit">Поиск</button>
           </div>
         </form>
@@ -55,24 +69,30 @@ export default {
     </div>
     <div class="transfer-card-wrapper">
       <div class="cards">
-        <app-transfer-card @click="$router.push({path:`/transfer/card`, query: {id: card.id}}) " v-for="(card, index) in Transfer"
-        :i = index
-        :name = "card.name"
-        :cityfrom = "card.cityfrom"
-        :cityto = "card.cityto"
-        :datefrom = "card.datefrom"
-        :dateto = "card.dateto"
-        :timefrom = "card.timefrom"
-        :timeto = "card.timeto"
-        :typeCar = "card.typeCar"
-        :car = "card.car"
-        :passenger = "card.passenger"
-        :price = "card.price"
+        <app-transfer-card
+          @click="
+            $router.push({ path: `/transfer/card`, query: { id: card.id } })
+          "
+          v-for="(card, index) in Transfer"
+          :i="index"
+          :name="card.name"
+          :cityfrom="card.cityfrom"
+          :cityto="card.cityto"
+          :datefrom="card.datefrom"
+          :dateto="card.dateto"
+          :timefrom="card.timefrom"
+          :timeto="card.timeto"
+          :typeCar="card.typeCar"
+          :car="card.car"
+          :passenger="card.passenger"
+          :price="card.price"
+          :boardedPlaces="card.boardedPlaces"
         >
         </app-transfer-card>
+        <h1 v-if="message">{{ message }}</h1>
       </div>
     </div>
-    
+
     <div class="transfers"></div>
     <div v-if="admin" class="create-transfer">
       <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
@@ -81,7 +101,7 @@ export default {
 </template>
 
 <style scoped>
-.cards{
+.cards {
   width: 80%;
   padding: 10px;
   height: 250px;
@@ -89,10 +109,10 @@ export default {
   gap: 30px;
   display: grid;
 }
-.cards::-webkit-scrollbar{
+.cards::-webkit-scrollbar {
   display: none;
 }
-.transfer-card-wrapper{
+.transfer-card-wrapper {
   display: flex;
   justify-content: center;
 }
@@ -191,7 +211,7 @@ input::placeholder {
   transition: scale 500ms;
 }
 
-.create-transfer a:hover{
+.create-transfer a:hover {
   scale: 1.06;
 }
 
