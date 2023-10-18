@@ -104,6 +104,8 @@ NumberModel.init(
         children:       { type: DataTypes.INTEGER, allowNull: false, },
         description:    { type: DataTypes.STRING,  allowNull: false, },
         bookings:       { type: DataTypes.JSON,    allowNull: false, },
+        // количество номеров тарифа
+        value:          { type: DataTypes.INTEGER, allowNull: false, },
     }, 
     { sequelize, modelName: 'NumberModel', }
 );

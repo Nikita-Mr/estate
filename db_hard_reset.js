@@ -63,16 +63,16 @@ const THE_FUCKING_CURE = async () =>
         p:              'uhuh what',
         phone:          'uhuh what',
         address:        'uhuh what',
-        // кастомные поля, которые уже отличаются от CardModel
-        numbers:        { },
     }, );
     
     const newNumber = await NumberModel.create({
         name:           'uhuh what',
-        adults:          0,
-        children:        0,
+        adults:         0,
+        children:       0,
         description:    'uhuh what',
-        HotelModelId:    1,
+        bookings:       {},
+        value:          2,
+        HotelModelId:   1,
     }, );
     
     await newCard.save();

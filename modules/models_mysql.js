@@ -30,13 +30,15 @@ UserModel.init(
     { sequelize, modelName: 'UserModel', }
 );
 
+// cards
+
 class CardModel extends Model { }
 CardModel.init(
     {
-        category:       { type: DataTypes.STRING,  allowNull: false, }, // создать subcategory
+        category:       { type: DataTypes.STRING,  allowNull: false, },
         subcategory:    { type: DataTypes.STRING,  allowNull: false, },
         title:          { type: DataTypes.STRING,  allowNull: false, },
-        img:            { type: DataTypes.STRING,  allowNull: false, },
+        img:            { type: DataTypes.JSON,    allowNull: false, },
         p:              { type: DataTypes.STRING,  allowNull: false, },
         price:          { type: DataTypes.INTEGER, allowNull: false, },
         phone:          { type: DataTypes.STRING,  allowNull: false, },
@@ -47,11 +49,83 @@ CardModel.init(
     { sequelize, modelName: 'CardModel', }
 );
 
-class CardImage extends Model { }
-CardImage.init(
-    { src:   { type: DataTypes.STRING,  allowNull: false, }, }, 
-    { sequelize, modelName: 'CardImage', }
+class CardTransfer extends Model { }
+CardTransfer.init(
+    {
+        name:                   { type: DataTypes.STRING,  allowNull: false, },
+        cityfrom:               { type: DataTypes.STRING,  allowNull: false, },
+        cityto:                 { type: DataTypes.STRING,  allowNull: false, },
+        datefrom:               { type: DataTypes.STRING,  allowNull: false, },
+        dateto:                 { type: DataTypes.STRING,  allowNull: false, },
+        timefrom:               { type: DataTypes.STRING,  allowNull: false, },
+        timeto:                 { type: DataTypes.STRING,  allowNull: false, },
+        typeCar:                { type: DataTypes.STRING,  allowNull: false, },
+        car:                    { type: DataTypes.STRING,  allowNull: false, },
+        passenger:              { type: DataTypes.INTEGER, allowNull: false, },
+        price:                  { type: DataTypes.INTEGER, allowNull: false, },
+        boardedPlaces:          { type: DataTypes.INTEGER, allowNull: true,  },
+    }, 
+    { sequelize, modelName: 'CardTransfer', }
 );
 
+class CardService extends Model { }
+CardService.init(
+    {
+        name:                   { type: DataTypes.STRING,  allowNull: false, },
+        phone:                  { type: DataTypes.STRING,  allowNull: false, },
+        description:            { type: DataTypes.STRING,  allowNull: false, },
+        img:                    { type: DataTypes.JSON,    allowNull: false, },
+    }, 
+    { sequelize, modelName: 'CardService', }
+);
 
-module.exports = { sequelize, NewsModel, UserModel, CardModel }
+//booking
+
+class HotelModel extends Sequelize.Model { }
+HotelModel.init(
+    {
+        category:       { type: DataTypes.STRING,  allowNull: false, },
+        subcategory:    { type: DataTypes.STRING,  allowNull: false, },
+        title:          { type: DataTypes.STRING,  allowNull: false, },
+        img:            { type: DataTypes.JSON,    allowNull: false, },
+        p:              { type: DataTypes.STRING,  allowNull: false, },
+        phone:          { type: DataTypes.STRING,  allowNull: false, },
+        address:        { type: DataTypes.STRING,  allowNull: false, },
+    }, 
+    { sequelize, modelName: 'HotelModel', }
+);
+
+class NumberModel extends Sequelize.Model { }
+NumberModel.init(
+    {
+        name:           { type: DataTypes.STRING,  allowNull: false, },
+        adults:         { type: DataTypes.INTEGER, allowNull: false, },
+        children:       { type: DataTypes.INTEGER, allowNull: false, },
+        description:    { type: DataTypes.STRING,  allowNull: false, },
+        bookings:       { type: DataTypes.JSON,    allowNull: false, },
+    }, 
+    { sequelize, modelName: 'NumberModel', }
+);
+
+// finalizing hotel models
+HotelModel.hasMany(NumberModel, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    as:       'NumberModel',
+});
+NumberModel.belongsTo(HotelModel, {
+  foreignKey: 'HotelModelId',
+  as:         'HotelModel',
+});
+
+// finalize
+module.exports = { 
+    sequelize, 
+    NewsModel, 
+    UserModel, 
+    CardModel, 
+    CardTransfer, 
+    CardService, 
+    HotelModel, 
+    NumberModel 
+}
