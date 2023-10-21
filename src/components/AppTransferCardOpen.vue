@@ -22,7 +22,7 @@ export default defineComponent({
       target: 0,
       todaydate: dayjs(new Date()).format(`ddd, D MMM`),
       message: '',
-      passenger2: this.INFO.passenger / 2
+      passenger2: 0
     };
   },
   mounted() {
@@ -37,6 +37,7 @@ export default defineComponent({
         },
       });
       this.INFO = response.data.transfer;
+      this.passenger2 = this.INFO.passenger / 2
       this.admin = response.data.admin;
     },
     async deleteCard() {
