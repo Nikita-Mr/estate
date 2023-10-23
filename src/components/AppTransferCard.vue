@@ -16,11 +16,11 @@ export default {
     passenger: String,
     price: String,
     boardedPlaces: Number,
+    passenger2: Number
   },
   components: {},
   data() {
     return {
-      passenger2: this.passenger / 2,
     };
   },
   methods: {

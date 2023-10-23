@@ -103,7 +103,7 @@ NumberModel.init(
         adults:         { type: DataTypes.INTEGER, allowNull: false, },
         children:       { type: DataTypes.INTEGER, allowNull: false, },
         description:    { type: DataTypes.STRING,  allowNull: false, },
-        bookings:       { type: DataTypes.JSON,    allowNull: false, },
+        bookings:       { type: DataTypes.JSON,    allowNull: true, },
         // количество номеров тарифа
         value:          { type: DataTypes.INTEGER, allowNull: false, },
     }, 

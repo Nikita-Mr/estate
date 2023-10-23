@@ -81,7 +81,7 @@ export default defineComponent({
           this.error = e.data.message;
           this.status = e.data.status;
         });
-      if (this.status == '200') {
+      if (e.data.status == '200') {
         this.$router.push({ name: this.$route.query.name });
       }
     },

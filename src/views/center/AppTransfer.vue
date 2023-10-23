@@ -85,6 +85,7 @@ export default {
           :typeCar="card.typeCar"
           :car="card.car"
           :passenger="card.passenger"
+          :passenger2="card.passenger / 2"
           :price="card.price"
           :boardedPlaces="card.boardedPlaces"
         >

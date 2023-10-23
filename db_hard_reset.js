@@ -71,7 +71,7 @@ const THE_FUCKING_CURE = async () =>
         children:       0,
         description:    'uhuh what',
         bookings:       {},
-        value:          2,
+        value:          10,
         HotelModelId:   1,
     }, );
     

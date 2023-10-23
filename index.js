@@ -20,8 +20,12 @@ const {
   CardModel,
   CardTransfer,
   CardService,
+  HotelModel,
+  NumberModel,
 } = require('./modules/models');
 const { secret } = require(`./config`);
+
+const {tryBook, addNumber} = require(`./modules/booking`);
 
 let app = express();
 let port = process.env.PORT || 3005;
@@ -773,3 +777,26 @@ app.get(`/delete_service`, async function (req, res) {
     await service.destroy();
   }
 });
+
+app.post(`/trybook`, async function (req, res) {
+  let { phone, fromdate, todate } = req.body;
+  let singleHotel = await HotelModel.findByPk(1, { include: ['NumberModel'] });
+  console.log(singleHotel);
+  let gottaBook = singleHotel.NumberModel[0];
+  let checkin = new Date(fromdate);
+  let checkout = new Date(todate);
+  await tryBook(gottaBook, checkin, checkout, phone);
+});
+
+app.post(`/create-number`, async function(req, res){
+  try{
+    let {hotel, name, adults, children, description, value} = req.body
+    console.log(`creating number...`)
+    await addNumber(hotel, name, adults, children, description, value)
+    console.log(`number create`)
+    res.send({message: `Готово`, status: `200`})
+  }
+  catch(err){
+    res.send({error: err, status: `400`})
+  }
+})

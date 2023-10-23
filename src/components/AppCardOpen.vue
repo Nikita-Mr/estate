@@ -40,6 +40,16 @@ export default defineComponent({
       INFO: {},
       admin: ``,
       target: 0,
+      phone: '',
+      fromdate: Date,
+      todate: Date,
+      adults: ``,
+      children: ``,
+      name: ``,
+      description: ``,
+      value: ``,
+      message: ``,
+      status: ``,
     };
   },
   mounted() {
@@ -71,7 +81,24 @@ export default defineComponent({
     async edit() {
       this.$router.push({
         path: '/create-card',
-        query: { id: this.INFO.id, name: this.$route.query.name , edit: true },
+        query: { id: this.INFO.id, name: this.$route.query.name, edit: true },
+      });
+    },
+    async trybook() {
+      let response = await axios.post(`/trybook`, {
+        phone: this.phone,
+        fromdate: this.fromdate,
+        todate: this.todate,
+      });
+    },
+    async createNumber() {
+      let response = await axios.post(`/create-number`, {
+        name: this.name,
+        adults: this.adults,
+        children: this.children,
+        description: this.description,
+        hotel: this.$route.query.id,
+        value: this.value
       });
     },
   },
@@ -82,33 +109,50 @@ export default defineComponent({
   <div class="card-wrapper">
     <div class="card">
       <div class="modalDelete" :class="{ 'd-none': target == 0 }">
-        <div class="button-wrapper">
+        <div v-if="admin" class="button-wrapper">
           <button @click="deleteCard" class="delete" v-if="admin">
             Удалить
           </button>
           <button @click="target = 0" v-if="admin">Отмена</button>
         </div>
+        <div v-if="!admin" class="input-wrapper">
+          <form @submit.prevent="trybook">
+            <input
+              v-model="phone"
+              type="tel"
+              id="phone"
+              name="phone"
+              pattern="+7[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              placeholder="+7 (900)-900-99-99"
+              required
+            />
+            <input type="date" v-model="fromdate" placeholder="От" required />
+            <input type="date" v-model="todate" placeholder="До" required />
+            <button @click="target = 1" v-if="!admin">Забронировать</button>
+          </form>
+        </div>
       </div>
-      <div class="img">
-        <Carousel :autoplay="4000" :wrap-around="true">
-          <Slide v-for="slide in INFO.img" :key="slide">
-            <div class="carousel__item">
-              <img :src="`/dist/assets/img/user/` + slide" alt="" />
-            </div>
-          </Slide>
+      <div class="left">
+        <div class="img">
+          <Carousel :autoplay="4000" :wrap-around="true">
+            <Slide v-for="slide in INFO.img" :key="slide">
+              <div class="carousel__item">
+                <img :src="`/dist/assets/img/user/` + slide" alt="" />
+              </div>
+            </Slide>
 
-          <template #addons>
-            <Navigation />
-            <Pagination />
-          </template>
-        </Carousel>
-      </div>
-      <div class="wrapper">
+            <template #addons>
+              <Navigation />
+              <Pagination />
+            </template>
+          </Carousel>
+        </div>
         <div class="info">
           <span class="title">{{ INFO.title }}</span>
           <span class="price">{{ INFO.price }} руб</span>
           <span class="adress">{{ INFO.address }}</span>
-          <span class="phone mb-2">{{ INFO.phone }}</span>
+          <span class="phone">{{ INFO.phone }}</span>
+          <span class="description">{{ INFO.p }}</span>
           <div class="messengers">
             <a href="#" target="_blank">
               <img src="/src/assets/img/viber.png" alt="viber" />
@@ -121,16 +165,24 @@ export default defineComponent({
             </a>
           </div>
         </div>
+      </div>
+      <div class="wrapper">
+        <form v-if="admin" @submit.prevent="createNumber">
+          <input type="text" v-model="name" placeholder="Название номера" />
+          <input type="number" v-model="adults" placeholder="Кол-во взрослых" />
+          <input type="number" v-model="children" placeholder="Кол-во детей" />
+          <input type="text" v-model="description" placeholder="Описание" />
+          <input type="number" v-model="value" placeholder="Кол-во номеров в гостинице" />
+          <button>Забронировать</button>
+        </form>
         <!-- <div class="wrapper-for-map">
           <div id="customMap" class="map"></div>
         </div> -->
       </div>
-      <div class="body">
-        <span class="description">{{ INFO.p }}</span>
-      </div>
+      <div class="body"></div>
       <div class="reviews"></div>
       <div class="button-wrapper">
-        <button v-if="!admin">Купить</button>
+        <button @click="target = 1" v-if="!admin">Забронировать</button>
         <button @click="target = 1" class="delete" v-if="admin">Удалить</button>
         <button @click="edit" class="edit" v-if="admin">Редактировать</button>
       </div>
@@ -139,6 +191,44 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.left {
+  width: 50%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+form {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+.input-wrapper {
+  width: 100%;
+}
+.input-wrapper button {
+  position: absolute;
+  bottom: 20px;
+  left: calc(50% - 187px);
+}
+.input-wrapper input {
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+}
+.input-wrapper form {
+  padding: 50px;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  width: 100%;
+}
 .delete {
   background-color: rgba(230, 86, 86, 0.992);
   color: #fff;
@@ -170,13 +260,14 @@ export default defineComponent({
 }
 
 .img {
-  width: 50%;
+  width: 100%;
   height: auto;
   float: left;
   position: relative;
 }
 
 .card-wrapper {
+  display: flex;
   width: 80%;
   color: var(--mainColor);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
@@ -188,7 +279,18 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 10px;
   width: 50%;
+  overflow-y: scroll;
+}
+.wrapper input {
+  padding: 5px;
+  border-radius: 10px;
+  border: none;
+}
+.wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .wrapper-for-map {
@@ -197,15 +299,11 @@ export default defineComponent({
 }
 
 .info span {
-  font-size: 2rem;
+  font-size: 1.5rem;
   display: block;
 }
 
 .info {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
 }
 
 .price {
@@ -242,10 +340,6 @@ img {
   font-size: 15px;
 }
 
-.description {
-  margin-top: 10px;
-}
-
 .body {
   display: flex;
   flex-direction: column;
@@ -275,7 +369,7 @@ button:active {
 
 .messengers {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 20px;
 }
