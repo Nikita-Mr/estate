@@ -15,7 +15,7 @@ const { sequelize, HotelModel, NumberModel } = require('./models');
 let bookingDebug = true;
 
 // добавление номеров
-const addNumber = async (hotel, name, adults, children, description, value) => {
+const addNumber = async (hotel, name, adults, children, description, value, price) => {
   if (bookingDebug)
     console.log(hotel);
   //   let newNumber = await NumberModel.create({
@@ -29,6 +29,7 @@ const addNumber = async (hotel, name, adults, children, description, value) => {
   //   });
   //   await newNumber.save();
   const newNumber = await NumberModel.create({
+    price: price,
     name: name,
     adults: adults,
     children: children,

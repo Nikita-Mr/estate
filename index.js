@@ -201,7 +201,7 @@ app.get(`/habitation`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -265,7 +265,7 @@ app.post(`/upload`, async function (req, res) {
       //console.log(card);
       await service.save();
     } else {
-      let card = await CardModel.findOne({ where: { id: timeId } });
+      let card = await HotelModel.findOne({ where: { id: timeId } });
       card.img = file.name;
       //console.log(card);
       await card.save();
@@ -312,12 +312,12 @@ app.post(`/upload`, async function (req, res) {
     return res.send({ message: 'Успешно', status: '200' });
   } else {
     if (name) {
-      let card = await CardModel.findOne({ where: { id: id } });
+      let card = await HotelModel.findOne({ where: { id: id } });
       card.img = imgName;
       await card.save();
       return res.send({ message: 'Успешно', status: '200' });
     }
-    let card = await CardModel.findOne({ where: { id: id } });
+    let card = await HotelModel.findOne({ where: { id: id } });
     card.img = imgName;
     console.log(card);
     await card.save();
@@ -360,7 +360,7 @@ app.post(`/create-card`, async function (req, res) {
     console.log('request received...');
 
     if (edit) {
-      let card = await CardModel.findOne({ where: { id: id } });
+      let card = await HotelModel.findOne({ where: { id: id } });
       card.title = title;
       card.price = price;
       card.p = p;
@@ -373,7 +373,7 @@ app.post(`/create-card`, async function (req, res) {
     }
     try {
       console.log('building card...');
-      let card = await CardModel.build({
+      let card = await HotelModel.build({
         img: {},
         category: category,
         subcategory: subcategory,
@@ -495,7 +495,7 @@ app.post(`/login`, async function (req, res) {
 app.post(`/deleteCard`, async function (req, res) {
   try {
     let { id, name } = req.body;
-    let card = await CardModel.findOne({ where: { id: id } });
+    let card = await HotelModel.findOne({ where: { id: id } });
     await card.destroy();
     res.send({ status: '200' });
   } catch (e) {
@@ -518,7 +518,7 @@ app.get(`/card`, async function (req, res) {
       }
     });
   }
-  card = await CardModel.findOne({ where: { id: id } });
+  card = await HotelModel.findOne({ where: { id: id } });
   res.send({ card, admin });
 });
 
@@ -534,7 +534,7 @@ app.get(`/instructor-tours`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -563,7 +563,7 @@ app.get(`/forChildren`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -591,7 +591,7 @@ app.get(`/rental`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -620,7 +620,7 @@ app.get(`/event`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -779,8 +779,8 @@ app.get(`/delete_service`, async function (req, res) {
 });
 
 app.post(`/trybook`, async function (req, res) {
-  let { phone, fromdate, todate } = req.body;
-  let singleHotel = await HotelModel.findByPk(1, { include: ['NumberModel'] });
+  let { phone, fromdate, todate,id } = req.body;
+  let singleHotel = await HotelModel.findByPk(id, { include: ['NumberModel'] });
   console.log(singleHotel);
   let gottaBook = singleHotel.NumberModel[0];
   let checkin = new Date(fromdate);
@@ -790,13 +790,22 @@ app.post(`/trybook`, async function (req, res) {
 
 app.post(`/create-number`, async function(req, res){
   try{
-    let {hotel, name, adults, children, description, value} = req.body
+    let {hotel, name, adults, children, description, value, price} = req.body
     console.log(`creating number...`)
-    await addNumber(hotel, name, adults, children, description, value)
+    await addNumber(hotel, name, adults, children, description, value, price)
     console.log(`number create`)
     res.send({message: `Готово`, status: `200`})
   }
   catch(err){
     res.send({error: err, status: `400`})
+  }
+})
+app.get(`/number`, async function(req,res){
+  try{
+    let {id} = req.query
+    let number = await NumberModel.findAll({where: {HotelModelId: id}})
+    return res.send({number})
+  } catch (err){
+    return res.send({error: err})
   }
 })

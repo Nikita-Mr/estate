@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
+import AppCard from '/src/components/AppCard.vue';
 
 import 'vue3-carousel/dist/carousel.css';
 
@@ -34,10 +35,13 @@ export default defineComponent({
     Slide,
     Navigation,
     Pagination,
+    AppCard,
   },
   data() {
     return {
       INFO: {},
+      NUMBER: {},
+      price: ``,
       admin: ``,
       target: 0,
       phone: '',
@@ -54,6 +58,7 @@ export default defineComponent({
   },
   mounted() {
     this.loadCard();
+    this.loadNumber();
   },
   methods: {
     async loadCard() {
@@ -86,6 +91,7 @@ export default defineComponent({
     },
     async trybook() {
       let response = await axios.post(`/trybook`, {
+        id: this.$route.query.id,
         phone: this.phone,
         fromdate: this.fromdate,
         todate: this.todate,
@@ -98,8 +104,15 @@ export default defineComponent({
         children: this.children,
         description: this.description,
         hotel: this.$route.query.id,
-        value: this.value
+        value: this.value,
+        price: this.price,
       });
+    },
+    async loadNumber() {
+      let response = await axios.get(`/number`, {
+        params: { id: this.$route.query.id },
+      });
+      this.NUMBER = response.data.number;
     },
   },
 });
@@ -148,8 +161,10 @@ export default defineComponent({
           </Carousel>
         </div>
         <div class="info">
-          <span class="title">{{ INFO.title }}</span>
-          <span class="price">{{ INFO.price }} руб</span>
+          <div class="nameWrapp">
+            <span class="title">{{ INFO.title }}</span>
+            <span class="price">{{ INFO.price }} руб</span>
+          </div>
           <span class="adress">{{ INFO.address }}</span>
           <span class="phone">{{ INFO.phone }}</span>
           <span class="description">{{ INFO.p }}</span>
@@ -169,12 +184,29 @@ export default defineComponent({
       <div class="wrapper">
         <form v-if="admin" @submit.prevent="createNumber">
           <input type="text" v-model="name" placeholder="Название номера" />
+          <input type="number" v-model="price" placeholder="Цена" />
           <input type="number" v-model="adults" placeholder="Кол-во взрослых" />
           <input type="number" v-model="children" placeholder="Кол-во детей" />
           <input type="text" v-model="description" placeholder="Описание" />
-          <input type="number" v-model="value" placeholder="Кол-во номеров в гостинице" />
+          <input
+            type="number"
+            v-model="value"
+            placeholder="Кол-во номеров в гостинице"
+          />
           <button>Забронировать</button>
         </form>
+        <app-card
+          @click="target = 1"
+          v-if="!admin"
+          v-for="(item, index) in NUMBER"
+          :i="index"
+          :title="item.name"
+          :price="item.price"
+          :children="item.children"
+          :adults="item.adults"
+          :p="item.description"
+          :id="item.id"
+        ></app-card>
         <!-- <div class="wrapper-for-map">
           <div id="customMap" class="map"></div>
         </div> -->
@@ -182,7 +214,7 @@ export default defineComponent({
       <div class="body"></div>
       <div class="reviews"></div>
       <div class="button-wrapper">
-        <button @click="target = 1" v-if="!admin">Забронировать</button>
+        <!-- <button @click="target = 1" v-if="!admin">Забронировать</button> -->
         <button @click="target = 1" class="delete" v-if="admin">Удалить</button>
         <button @click="edit" class="edit" v-if="admin">Редактировать</button>
       </div>
@@ -191,6 +223,14 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.nameWrapp{
+  display: flex;
+  justify-content: space-between;
+}
+.wrapper .card {
+  width: 100%;
+  min-height: 130px;
+}
 .left {
   width: 50%;
   height: fit-content;
@@ -268,6 +308,7 @@ form {
 
 .card-wrapper {
   display: flex;
+  justify-content: center;
   width: 80%;
   color: var(--mainColor);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
@@ -372,6 +413,9 @@ button:active {
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+}
+.messengers a {
+  width: auto;
 }
 
 .messengers img {

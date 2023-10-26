@@ -30,7 +30,6 @@ export default {
         if (this.status == '200') {
           this.$refs.form.reset();
           document.cookie = new String();
-
           this.$router.push({ name: 'login' });
         }
       }, 1000);

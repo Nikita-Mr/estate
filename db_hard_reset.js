@@ -73,6 +73,7 @@ const THE_FUCKING_CURE = async () =>
         bookings:       {},
         value:          10,
         HotelModelId:   1,
+        price:          1,
     }, );
     
     await newCard.save();
