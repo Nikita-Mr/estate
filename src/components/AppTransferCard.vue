@@ -1,6 +1,7 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router';
-
+import * as dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 export default {
   props: {
     name: String,
@@ -15,6 +16,7 @@ export default {
     passenger: String,
     price: String,
     boardedPlaces: Number,
+    passenger2: Number
   },
   components: {},
   data() {
@@ -22,7 +24,14 @@ export default {
       passenger2: this.passenger/2
     };
   },
-  methods: {},
+  methods: {
+    getDate(data) {
+      let date = new Date(data);
+      let day = dayjs(date)
+      dayjs.locale('ru')
+      return day.format(`dd, D MMM`);
+    },
+  },
   mounted() {},
 };
 </script>
@@ -35,11 +44,11 @@ export default {
           <div class="time">
             <div class="first">
               <span>{{ timefrom }}</span>
-              <span class="sub">{{datefrom}}</span>
+              <span class="sub">{{ getDate(datefrom) }}</span>
             </div>
             <div class="second">
               <span>{{ timeto }}</span>
-              <span class="sub">{{dateto}}</span>
+              <span class="sub">{{ getDate(dateto) }}</span>
             </div>
           </div>
           <div class="line"></div>
@@ -64,8 +73,13 @@ export default {
                   class="circlesvg"
                   :class="{
                     yellow:
-                      boardedPlaces >= passenger2 - 2 && boardedPlaces <= passenger2 + 2  && typeCar == `bus`,
-                    yellow: boardedPlaces >= passenger2 - 1  && boardedPlaces <= passenger1  + 1 && typeCar == `car`,
+                      boardedPlaces >= passenger2 - 2 &&
+                      boardedPlaces <= passenger2 + 2 &&
+                      typeCar == `bus`,
+                    yellow:
+                      boardedPlaces >= passenger2 - 1 &&
+                      boardedPlaces <= passenger1 + 1 &&
+                      typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
@@ -73,8 +87,14 @@ export default {
                 <div
                   class="circlesvg"
                   :class="{
-                    red: boardedPlaces <= passenger && boardedPlaces > passenger2 && typeCar == `bus`,
-                    red: boardedPlaces <= passenger && boardedPlaces > passenger2 && typeCar == `car`,
+                    red:
+                      boardedPlaces <= passenger &&
+                      boardedPlaces > passenger2 &&
+                      typeCar == `bus`,
+                    red:
+                      boardedPlaces <= passenger &&
+                      boardedPlaces > passenger2 &&
+                      typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
@@ -93,8 +113,11 @@ export default {
       </div>
       <div class="wrapprice">
         <div class="price">
-          <span>{{ price }}₽</span>
-          <span class="sub discount">{{ price - 1000 }}₽</span>
+          <span v-if="boardedPlaces != passenger">{{ price }}₽</span>
+          <span v-if="boardedPlaces == passenger">Нет мест</span>
+          <span v-if="boardedPlaces != passenger" class="sub discount"
+            >{{ price - 1000 }}₽</span
+          >
         </div>
         <div class="content">
           <img src="" alt="" />
@@ -106,6 +129,12 @@ export default {
 </template>
 
 <style scoped>
+.time {
+  width: 70px;
+}
+.city {
+  width: min-content;
+}
 .cardTransfer {
   display: flex;
   justify-content: space-between;
@@ -126,8 +155,8 @@ export default {
   margin-bottom: 10px;
   min-width: 230px;
 }
-.first span{
-    width: 100%;
+.first span {
+  width: 100%;
 }
 .first {
   height: 50%;
@@ -146,12 +175,13 @@ span:not(.sub, .cars span) {
   transform: rotate(90deg);
   align-self: center;
   margin-bottom: 25px;
-  max-width: 20%;
+  left: -10px;
+  max-width: 40px;
   background: black;
   position: relative;
 }
 .line::after {
-  content: ' ';
+  content: " ";
   position: absolute;
   top: -4px;
   left: -10px;
@@ -162,7 +192,7 @@ span:not(.sub, .cars span) {
   border-radius: 100%;
 }
 .line::before {
-  content: ' ';
+  content: " ";
   position: absolute;
   bottom: -4px;
   left: 100%;

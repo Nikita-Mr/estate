@@ -29,7 +29,8 @@ export default {
       setTimeout(() => {
         if (this.status == '200') {
           this.$refs.form.reset();
-          this.$router.push({name: "login"})
+          document.cookie = new String();
+          this.$router.push({ name: 'login' });
         }
       }, 1000);
       setTimeout(() => {

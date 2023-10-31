@@ -22,7 +22,7 @@ export default {
       this.status = error.data.status;
       this.token = error.data.token;
       if (this.token) {
-        document.cookie = `token=${document.cookie.replace(`token=`, ``)}; max-age=0`;
+        document.cookie = new String();
         document.cookie = `token=${this.token}; max-age=1123200`;
       }
       setTimeout(() => {

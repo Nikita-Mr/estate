@@ -136,8 +136,7 @@ a {
   align-items: center;
 }
 
-
-.container::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
 }
 
@@ -145,8 +144,18 @@ a {
   /* .container {
     display: block;
   } */
+
+  .event {
+    height: 75px !important;
+  }
+
   .list-events {
-    display: block !important;
+    flex-direction: column;
+    overflow: scroll;
+  }
+
+  .item-event {
+    width: 100%;
   }
 }
 

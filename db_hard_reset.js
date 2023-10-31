@@ -1,4 +1,4 @@
-let { sequelize, NewsModel, UserModel, CardModel } = require('./modules/models');
+let { sequelize, NewsModel, UserModel, CardModel, HotelModel, NumberModel } = require('./modules/models');
 
 // ЭТА ХЕРНЯ ПОЧИНИТ БАЗЫ, ПЕРЕСОЗДАСТ ИХ, ВЫЛЕЧИТ ПРОСТАТИТ, 
 // ПОДАРИТ ТЕБЕ ПЛОЙКУ И СЕКС, ВСЕГО ДВЕ ЛОЖКИ db_hard_reset.js И ГЛИСТЫ КОМОМ ВЫЙДУТ 
@@ -36,6 +36,15 @@ const THE_FUCKING_CURE = async () =>
         password: 'членовещание',
         role: "ADMIN"
     }, );
+    
+    const otherUser = await UserModel.create({
+        username: 'name',
+        surname: 'surname',
+        email: 'name@mail.ru',
+        phone: 'phone',
+        password: 'password',
+        role: "ADMIN"
+    }, );
 
     console.log('created user...');
 
@@ -46,10 +55,39 @@ const THE_FUCKING_CURE = async () =>
 
     console.log('created new...');
     
+    const newHotel = await HotelModel.create({
+        category:       'uhuh what',
+        subcategory:    'uhuh what',
+        title:          'uhuh what',
+        img:            { },
+        p:              'uhuh what',
+        phone:          'uhuh what',
+        address:        'uhuh what',
+    }, );
+    
+    const newNumber = await NumberModel.create({
+        name:           'uhuh what',
+        adults:         0,
+        children:       0,
+        description:    'uhuh what',
+        bookings:       {},
+        value:          10,
+        HotelModelId:   1,
+        price:          1,
+    }, );
+    
     await newCard.save();
     await newUser.save();
+    await otherUser.save();
     await newNew.save();
     
+    //hotels
+    await newHotel.save();
+    await newNumber.save();
+    
+    //newHotel.findById(1, { include: ["NumberModel"] }).then()
+    //newHotel.findAll({ include: ["NumberModel"] });
+  
     console.log('done.');
 }
 

@@ -20,8 +20,12 @@ const {
   CardModel,
   CardTransfer,
   CardService,
+  HotelModel,
+  NumberModel,
 } = require('./modules/models');
 const { secret } = require(`./config`);
+
+const {tryBook, addNumber} = require(`./modules/booking`);
 
 let app = express();
 let port = process.env.PORT || 3005;
@@ -116,17 +120,58 @@ app.get('/newsDebug', async function (req, res) {
   res.send({ news });
 });
 
+app.get(`/filter`, async function (req, res) {
+  let { namefilter, cityfrom, cityto, datefrom, passenger } = req.query;
+  let filter;
+  filter = await CardTransfer.findAll({
+    where: {
+      cityfrom: cityfrom,
+      cityto: cityto,
+      datefrom: datefrom,
+    },
+  });
+  filter.forEach((element) => {
+    if (passenger <= element.passenger) {
+      filter.push(element);
+    } else {
+      res.send({ message: 'Столько мест нет' });
+      return;
+    }
+  });
+  if (!filter) {
+    res.send({ message: 'В это время поездок нет' });
+    return;
+  }
+  res.send({ filter });
+});
+
 app.get(`/transfer`, async function (req, res) {
-  // let token = req.headers.authorization;
-  // let { role: userRoles } = jwt.verify(token, secret);
+  let token = req.headers.authorization;
+  let { id, book } = req.query;
+  let { role: userRoles } = jwt.verify(token, secret);
   let admin;
-  // if (token) {
-  //   userRoles.forEach((role) => {
-  //     if (role == 'ADMIN') admin = true;
-  //   });
-  // }
+  if (token) {
+    userRoles.forEach((role) => {
+      if (role == 'ADMIN') admin = true;
+    });
+  }
+  if (book && id) {
+    let transfer = await CardTransfer.findOne({ where: { id: id } });
+    if (transfer.boardedPlaces >= transfer.passenger) {
+      return res.send({ message: 'Мест нет' });
+    }
+    transfer.boardedPlaces += 1;
+    await transfer.save();
+    res.send({ transfer, admin });
+    return;
+  }
+  if (id && !book) {
+    let transfer = await CardTransfer.findOne({ where: { id: id } });
+    res.send({ transfer, admin });
+    return;
+  }
   let transfer = await CardTransfer.findAll();
-  transfer.reverse()
+  transfer.reverse();
   res.send({ transfer, admin });
 });
 
@@ -156,7 +201,7 @@ app.get(`/habitation`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -220,7 +265,7 @@ app.post(`/upload`, async function (req, res) {
       //console.log(card);
       await service.save();
     } else {
-      let card = await CardModel.findOne({ where: { id: timeId } });
+      let card = await HotelModel.findOne({ where: { id: timeId } });
       card.img = file.name;
       //console.log(card);
       await card.save();
@@ -261,18 +306,18 @@ app.post(`/upload`, async function (req, res) {
     });
   }
   if (model == 'taxi') {
-      let card = await CardService.findOne({ where: { id: id } });
-      card.img = imgName;
-      await card.save();
-      return res.send({ message: 'Успешно', status: '200' });
+    let card = await CardService.findOne({ where: { id: id } });
+    card.img = imgName;
+    await card.save();
+    return res.send({ message: 'Успешно', status: '200' });
   } else {
     if (name) {
-      let card = await CardModel.findOne({ where: { id: id } });
+      let card = await HotelModel.findOne({ where: { id: id } });
       card.img = imgName;
       await card.save();
       return res.send({ message: 'Успешно', status: '200' });
     }
-    let card = await CardModel.findOne({ where: { id: id } });
+    let card = await HotelModel.findOne({ where: { id: id } });
     card.img = imgName;
     console.log(card);
     await card.save();
@@ -280,10 +325,9 @@ app.post(`/upload`, async function (req, res) {
   }
 });
 
-
 app.post(`/create_news`, async function (req, res) {
   try {
-    let { title, content } = req.body
+    let { title, content } = req.body;
     let news = await NewsModel.create({
       title,
       content,
@@ -296,7 +340,7 @@ app.post(`/create_news`, async function (req, res) {
   } catch (err) {
     res.json({ message: 'Ошибка создания новости', err });
   }
-})
+});
 
 app.post(`/create-card`, async function (req, res) {
   try {
@@ -316,7 +360,7 @@ app.post(`/create-card`, async function (req, res) {
     console.log('request received...');
 
     if (edit) {
-      let card = await CardModel.findOne({ where: { id: id } });
+      let card = await HotelModel.findOne({ where: { id: id } });
       card.title = title;
       card.price = price;
       card.p = p;
@@ -329,7 +373,7 @@ app.post(`/create-card`, async function (req, res) {
     }
     try {
       console.log('building card...');
-      let card = await CardModel.build({
+      let card = await HotelModel.build({
         img: {},
         category: category,
         subcategory: subcategory,
@@ -451,7 +495,7 @@ app.post(`/login`, async function (req, res) {
 app.post(`/deleteCard`, async function (req, res) {
   try {
     let { id, name } = req.body;
-    let card = await CardModel.findOne({ where: { id: id } });
+    let card = await HotelModel.findOne({ where: { id: id } });
     await card.destroy();
     res.send({ status: '200' });
   } catch (e) {
@@ -474,7 +518,7 @@ app.get(`/card`, async function (req, res) {
       }
     });
   }
-  card = await CardModel.findOne({ where: { id: id } });
+  card = await HotelModel.findOne({ where: { id: id } });
   res.send({ card, admin });
 });
 
@@ -490,7 +534,7 @@ app.get(`/instructor-tours`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -519,7 +563,7 @@ app.get(`/forChildren`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -547,7 +591,7 @@ app.get(`/rental`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -576,7 +620,7 @@ app.get(`/event`, async function (req, res) {
     console.log(userRoles);
 
     if (name) {
-      cards = await CardModel.findAll({
+      cards = await HotelModel.findAll({
         where: { category: category, subcategory: name },
       });
       if (token) {
@@ -603,7 +647,7 @@ app.get(`/create_roles`, async function (req, res) {
 
 app.post(`/create_news`, async function (req, res) {
   try {
-    let { title, content } = req.body
+    let { title, content } = req.body;
     let news = await NewsModel.create({
       title,
       content,
@@ -617,23 +661,35 @@ app.post(`/create_news`, async function (req, res) {
   } catch (err) {
     res.send({ message: 'Ошибка создания новости', show: false, err });
   }
-})
+});
 
 app.post(`/delete-news`, async function (req, res) {
   try {
-    let id = req.body.id
-    let newsDelete = await NewsModel.findOne({ where: { id: id } })
-    console.log(newsDelete, id)
-    await newsDelete.destroy()
-    res.json({ message: 'Удаление прошло успешно', status: 200 })
+    let id = req.body.id;
+    let newsDelete = await NewsModel.findOne({ where: { id: id } });
+    console.log(newsDelete, id);
+    await newsDelete.destroy();
+    res.json({ message: 'Удаление прошло успешно', status: 200 });
   } catch (err) {
     res.json({ message: 'Ошибка удаления новости', err });
   }
-})
+});
 
 app.post(`/create_transfer`, async function (req, res) {
   try {
-    let { name, cityfrom, cityto, datefrom, dateto, timefrom, timeto, car, typeCar, passenger, price } = req.body
+    let {
+      name,
+      cityfrom,
+      cityto,
+      datefrom,
+      dateto,
+      timefrom,
+      timeto,
+      car,
+      typeCar,
+      passenger,
+      price,
+    } = req.body;
     let transfer = await CardTransfer.create({
       name: name,
       cityfrom: cityfrom,
@@ -646,7 +702,7 @@ app.post(`/create_transfer`, async function (req, res) {
       typeCar: typeCar,
       passenger: passenger,
       price: price,
-    })
+    });
     await transfer.save();
     return res.send({
       message: 'Трансфер успешно создан',
@@ -656,18 +712,18 @@ app.post(`/create_transfer`, async function (req, res) {
   } catch (err) {
     res.send({ message: 'Ошибка создания трансфера', show: false, err });
   }
-})
+});
 
 app.post(`/create_service`, async function (req, res) {
   try {
-    let { name, phone, description } = req.body
+    let { name, phone, description } = req.body;
     try {
       console.log('building card...');
       let card = await CardService.build({
         img: {},
         name: name,
         phone: phone,
-        description: description
+        description: description,
       });
       console.log('saving card...');
       try {
@@ -707,17 +763,59 @@ app.post(`/create_service`, async function (req, res) {
   } catch (err) {
     res.send({ message: 'Ошибка создания услуги', show: false, err });
   }
-})
+});
 
 app.get(`/services`, async function (req, res) {
-  let services = await CardService.findAll()
-  res.send({services})
+  let services = await CardService.findAll();
+  res.send({ services });
+});
+
+app.get(`/service-card`, async function(req, res) {
+  try {
+    let id = req.body.id
+    let card = await CardService.findOne({ where: { id: id } })
+    res.send({ card })
+  } catch (err) {
+    res.send({ message: 'Такой услуги не найдено', show: false, err });
+  }
 })
 
-app.get(`/delete_service`, async function(req, res) {
-  let services = await CardService.findAll()
+app.get(`/delete_service`, async function (req, res) {
+  let services = await CardService.findAll();
   for (let i = 0; i < services.length; i++) {
-    let service = services[i]
-    await service.destroy()
+    let service = services[i];
+    await service.destroy();
+  }
+});
+
+app.post(`/trybook`, async function (req, res) {
+  let { phone, fromdate, todate,id } = req.body;
+  let singleHotel = await HotelModel.findByPk(id, { include: ['NumberModel'] });
+  console.log(singleHotel);
+  let gottaBook = singleHotel.NumberModel[0];
+  let checkin = new Date(fromdate);
+  let checkout = new Date(todate);
+  await tryBook(gottaBook, checkin, checkout, phone);
+});
+
+app.post(`/create-number`, async function(req, res){
+  try{
+    let {hotel, name, adults, children, description, value, price} = req.body
+    console.log(`creating number...`)
+    await addNumber(hotel, name, adults, children, description, value, price)
+    console.log(`number create`)
+    res.send({message: `Готово`, status: `200`})
+  }
+  catch(err){
+    res.send({error: err, status: `400`})
+  }
+})
+app.get(`/number`, async function(req,res){
+  try{
+    let {id} = req.query
+    let number = await NumberModel.findAll({where: {HotelModelId: id}})
+    return res.send({number})
+  } catch (err){
+    return res.send({error: err})
   }
 })

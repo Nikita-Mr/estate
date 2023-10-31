@@ -25,6 +25,7 @@ import AppCreateNews from '../components/AppCreateNews.vue'
 import AppCreateTransfer from '../components/AppCreateTransfer.vue'
 import AppCreateService from '../components/AppCreateService.vue'
 import AppTransferCardOpen from '../components/AppTransferCardOpen.vue'
+import ServiceCard from '../components/ServiceCard.vue'
 
 
 const router = createRouter({
@@ -146,6 +147,11 @@ const router = createRouter({
       component: AppTaxiDelivery,
     },
     {
+      path: '/taxi-delivery/card',
+      name: 'serviceCardOpen',
+      component: ServiceCard,
+    },
+    {
       path: '/card',
       name: 'card',
       component: AppCardOpen,
@@ -172,7 +178,7 @@ const router = createRouter({
     },
     {
       path: '/transfer/card',
-      name: 'AppTransferCardOpen',
+      name: 'transfercard',
       component: AppTransferCardOpen,
     },
   ]
