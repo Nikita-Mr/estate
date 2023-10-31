@@ -766,6 +766,16 @@ app.get(`/services`, async function (req, res) {
   res.send({ services });
 });
 
+app.get(`/service-card`, async function(req, res) {
+  try {
+    let id = req.body.id
+    let card = await CardService.findOne({ where: { id: id } })
+    res.send({ card })
+  } catch (err) {
+    res.send({ message: 'Такой услуги не найдено', show: false, err });
+  }
+})
+
 app.get(`/delete_service`, async function (req, res) {
   let services = await CardService.findAll();
   for (let i = 0; i < services.length; i++) {

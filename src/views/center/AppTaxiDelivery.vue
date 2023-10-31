@@ -35,6 +35,7 @@ export default {
       <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
         <div v-for="(cardInfo, index) in INFO" class="cols">
           <AppService
+            @click="$router.push({ path: `/taxi-delivery/card`, query: { id: cardInfo.id } })"
             :img="cardInfo.img"
             :name="cardInfo.name"
             :phone="cardInfo.phone"
