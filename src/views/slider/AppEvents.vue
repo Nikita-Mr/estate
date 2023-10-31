@@ -118,6 +118,16 @@ export default {
 }
 
 @media (max-width: 995px) {
+
+  .list-events {
+    padding: 20px 0;
+    position: absolute;
+    overflow: scroll;
+  }
+
+  .event {
+    height: 100px;
+  }
   .item-event {
     line-height: 1;
     font-size: 13px;
@@ -139,7 +149,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100px;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 550;
     padding: 7px 10px;
     color: #d5d5d5;
@@ -159,5 +169,15 @@ export default {
     justify-content: center;
     align-items: center;
   }
+}
+
+@media (max-width: 420px) {
+  .list-events {
+    padding: 20px 0;
+    position: absolute;
+    overflow: scroll;
+    display: grid;
+  }
+
 }
 </style>
