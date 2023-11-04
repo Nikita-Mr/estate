@@ -24,6 +24,9 @@ export default {
   methods: {
     async find() {
       let response = await axios.get(`/filter`, {
+        headers: {
+          Authorization: document.cookie.replace('token=', ``),
+        },
         params: {
           cityfrom: this.cityfrom,
           cityto: this.cityto,
@@ -32,8 +35,10 @@ export default {
           namefilter: 'transfer',
         },
       });
-      this.Transfer = response.data.filter;
+      this.Transfer = response.data.Array;
       this.message = response.data.message;
+      this.admin = response.data.admin;
+
     },
     async transferLoad() {
       let response = await axios.get(`/transfer`, {
@@ -41,7 +46,7 @@ export default {
           Authorization: document.cookie.replace('token=', ``),
         },
       });
-      this.Transfer = response.data.transfer;
+      // this.Transfer = response.data.transfer;
       this.admin = response.data.admin;
     },
   },
@@ -153,7 +158,7 @@ form input {
   border: 1px solid var(--mainColor);
   border-radius: 10px;
   box-shadow: 0px 0px 5px 0px #d5d5d5;
-  color: #7c7c7c;
+  color: #7c7c7c !important;
 }
 
 input:not(:first-child) {

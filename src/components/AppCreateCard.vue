@@ -59,7 +59,7 @@ export default defineComponent({
           let routeAppend = new String();
 
           console.log(`response info is: ${e.data.message}`);
-          if (!isNaN(e.data.message)) routeAppend = `?id=${e.data.message}`;
+          if (!isNaN(e.data.message)) routeAppend = `?id=${e.data.message}&category=${this.$route.query.category}`;
 
           let uploadRoute = `/upload${routeAppend}`
 
@@ -81,8 +81,8 @@ export default defineComponent({
           this.error = e.data.message;
           this.status = e.data.status;
         });
-      if (e.data.status == '200') {
-        this.$router.push({ name: this.$route.query.name });
+      if (this.status == '200') {
+        this.$router.go(-1)
       }
     },
     url(file) {
@@ -115,7 +115,7 @@ export default defineComponent({
         .post(`/create-card`, {
           img: this.img,
           id: this.$route.query.id,
-          name: this.$route.query.name,
+          category: this.$route.query.name,
           title: this.title,
           price: this.price,
           p: this.description,
@@ -129,7 +129,7 @@ export default defineComponent({
               .post('/upload', formData, {
                 params: {
                   id: this.$route.query.id,
-                  name: this.$route.query.name,
+                  category: this.$route.query.name,
                 },
                 headers: {
                   'Content-Type': 'multipart/form-data',
@@ -249,16 +249,27 @@ export default defineComponent({
           id=""
         ></textarea>
       </div>
-      <div class="reviews"></div>
       <div class="button-wrapper">
         <button v-if="!edit" @click="submitFiles">Создать</button>  
         <button v-if="edit" @click="editCard">Сохранить</button>
       </div>
+      <div :class="{success: status == 200, error: status != 200}">{{ error }}</div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.error{
+  position: absolute;
+  bottom: -100px;
+  color: crimson;
+}
+.success{
+  position: absolute;
+  bottom: -100px;
+  color: #62A87C;
+  
+}
 
 .button-wrapper button {
   padding: 5px 15px;

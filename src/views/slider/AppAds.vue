@@ -12,17 +12,17 @@ export default {
 <template>
   <ul class="list-events">
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/ads/items?name=found">
         <div class="event">Найдено</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/ads/items?name=lost">
         <div class="event">Потеряно</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/ads/items?name=selling">
         <div class="event">
           Продам <br />
           Сдам в аренду
@@ -30,7 +30,7 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/ads/items?name=willbuy">
         <div class="event">
           Куплю <br />
           Возьму в аренду

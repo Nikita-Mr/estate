@@ -54,6 +54,7 @@ export default defineComponent({
       value: ``,
       message: ``,
       status: ``,
+      numberid: ``,
     };
   },
   mounted() {
@@ -92,6 +93,7 @@ export default defineComponent({
     async trybook() {
       let response = await axios.post(`/trybook`, {
         id: this.$route.query.id,
+        number: this.numberid,
         phone: this.phone,
         fromdate: this.fromdate,
         todate: this.todate,
@@ -141,7 +143,9 @@ export default defineComponent({
             />
             <input type="date" v-model="fromdate" placeholder="От" required />
             <input type="date" v-model="todate" placeholder="До" required />
-            <button @click="target = 1" v-if="!admin">Забронировать</button>
+            <div class="center">
+              <button @click="target = 1" v-if="!admin">Забронировать</button>
+            </div>
           </form>
         </div>
       </div>
@@ -182,7 +186,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="wrapper">
-        <form v-if="admin" @submit.prevent="createNumber">
+        <form v-if="admin && $route.query.name == `habitation`" @submit.prevent="createNumber">
           <input type="text" v-model="name" placeholder="Название номера" />
           <input type="number" v-model="price" placeholder="Цена" />
           <input type="number" v-model="adults" placeholder="Кол-во взрослых" />
@@ -196,9 +200,9 @@ export default defineComponent({
           <button>Забронировать</button>
         </form>
         <app-card
-          @click="target = 1"
           v-if="!admin"
           v-for="(item, index) in NUMBER"
+          @click="target = 1, numberid = index"
           :i="index"
           :title="item.name"
           :price="item.price"
@@ -223,7 +227,8 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.nameWrapp{
+
+.nameWrapp {
   display: flex;
   justify-content: space-between;
 }
@@ -236,6 +241,7 @@ export default defineComponent({
   height: fit-content;
   display: flex;
   flex-direction: column;
+  padding: 20px;
 }
 form {
   width: 100%;
@@ -250,10 +256,13 @@ form {
 .input-wrapper {
   width: 100%;
 }
-.input-wrapper button {
+.input-wrapper .center {
   position: absolute;
   bottom: 20px;
-  left: calc(50% - 187px);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .input-wrapper input {
   border-radius: 10px;
@@ -316,7 +325,7 @@ form {
 }
 
 .wrapper {
-  padding: 10px;
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -360,6 +369,7 @@ form {
   border: none;
   min-height: 400px;
   position: relative;
+  width: 100%;
 }
 
 .carousel__slide {

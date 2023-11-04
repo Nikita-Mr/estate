@@ -137,6 +137,11 @@ const router = createRouter({
       component: AppAds,
     },
     {
+      path: '/ads/items',
+      name: 'adsItems',
+      component: AppHotel,
+    },
+    {
       path: '/transfer',
       name: 'transfer',
       component: AppTransfer,

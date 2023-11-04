@@ -77,6 +77,17 @@ export default {
         this.admin = InstructorTours.data.admin;
         this.expired = InstructorTours.data.expired;
       }
+      if (this.$route.path == `/ads/items`) {
+        let ads = await axios.get(`/ads`, {
+          params: {category: this.$route.path.slice(1, -6) , name: this.$route.query.name },
+          headers: {
+            Authorization: document.cookie.replace('token=', ``),
+          },
+        });
+        this.INFO = ads.data.cards;
+        this.admin = ads.data.admin;
+        this.expired = ads.data.expired;
+      }
     },
     open(id) {
       this.$router.push({
@@ -117,6 +128,7 @@ export default {
 </template>
 
 <style scoped>
+
 .cross {
   border: 4px dotted var(--mainColor);
   min-height: 290px;
