@@ -107,8 +107,23 @@ NumberModel.init(
         price:          { type: DataTypes.INTEGER, allowNull: true,  },
         // количество номеров тарифа
         value:          { type: DataTypes.INTEGER, allowNull: false, },
-    }, 
+    },
     { sequelize, modelName: 'NumberModel', }
+);
+
+
+class LiftModel extends Sequelize.Model { }
+LiftModel.init(
+    {
+        title:                    { type: DataTypes.STRING,  allowNull: false, },
+        geo:                      { type: DataTypes.STRING, allowNull: false, },
+        lifting_time:             { type: DataTypes.STRING, allowNull: false, },
+        phone:                    { type: DataTypes.STRING,  allowNull: false, },
+        price:                    { type: DataTypes.INTEGER,    allowNull: true,  },
+        working_hours_start:      { type: DataTypes.STRING, allowNull: true,  },
+        working_hours_finish:     { type: DataTypes.STRING, allowNull: false, },
+    }, 
+    { sequelize, modelName: 'LiftModel', }
 );
 
 // finalizing hotel models
@@ -131,5 +146,6 @@ module.exports = {
     CardTransfer, 
     CardService, 
     HotelModel, 
-    NumberModel 
+    NumberModel,
+    LiftModel
 }

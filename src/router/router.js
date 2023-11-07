@@ -26,6 +26,13 @@ import AppCreateTransfer from '../components/AppCreateTransfer.vue'
 import AppCreateService from '../components/AppCreateService.vue'
 import AppTransferCardOpen from '../components/AppTransferCardOpen.vue'
 import ServiceCard from '../components/ServiceCard.vue'
+import AppLift from '../views/info/AppLift.vue'
+import AppCreateLift from '../views/info/AppCreateLift.vue'
+import AppCameras from '../views/info/AppCameras.vue'
+import AppMap from '../views/info/AppMap.vue'
+import AppEmergency from '../views/info/AppEmergency.vue'
+import AppSkipass from '../views/info/AppSkipass.vue'
+import AppSkipassCreate from '../views/info/AppSkipassCreate.vue'
 
 
 const router = createRouter({
@@ -180,6 +187,41 @@ const router = createRouter({
       path: '/transfer/card',
       name: 'transfercard',
       component: AppTransferCardOpen,
+    },
+    {
+      path: '/lift',
+      name: 'lift',
+      component: AppLift,
+    },
+    {
+      path: '/lift/create-lift',
+      name: 'appcreatelift',
+      component: AppCreateLift,
+    },
+    {
+      path: '/cameras',
+      name: 'appcameras',
+      component: AppCameras,
+    },
+    {
+      path: '/map',
+      name: 'appmap',
+      component: AppMap,
+    },
+    {
+      path: '/emergency',
+      name: 'appemergency',
+      component: AppEmergency,
+    },
+    {
+      path: '/skipass',
+      name: 'skipass',
+      component: AppSkipass,
+    },
+    {
+      path: '/skipass/create',
+      name: 'skipasscreate',
+      component: AppSkipassCreate,
     },
   ]
 })
