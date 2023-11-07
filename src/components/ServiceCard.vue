@@ -99,9 +99,6 @@ export default defineComponent({
             </a>
           </div>
         </div>
-        <!-- <div class="wrapper-for-map">
-          <div id="customMap" class="map"></div>
-        </div> -->
       </div>
       <div class="body">
         <span class="description">{{ INFO.p }}</span>

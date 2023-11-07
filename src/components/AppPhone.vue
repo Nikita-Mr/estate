@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <RouterLink to="emergencyPhone " class="wrapperPhone">Телефоны экстренных служб</RouterLink>
+  <RouterLink to="/emergency" class="wrapperPhone">Телефоны экстренных служб</RouterLink>
 </template>
 
 <style scoped>

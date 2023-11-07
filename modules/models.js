@@ -12,8 +12,8 @@ const sequelize = new Sequelize(
 class NewsModel extends Model { }
 NewsModel.init(
     {
-        title:       { type: DataTypes.STRING, allowNull: false, },
-        content:     { type: DataTypes.STRING, allowNull: false, }, 
+        title:                  { type: DataTypes.STRING, allowNull: false, },
+        content:                { type: DataTypes.STRING, allowNull: false, }, 
     }, 
     { sequelize, modelName: 'NewsModel', }
 );
@@ -21,12 +21,12 @@ NewsModel.init(
 class UserModel extends Model { }
 UserModel.init(
     {
-        username:    { type: DataTypes.STRING, allowNull: false, },
-        surname:     { type: DataTypes.STRING, allowNull: false, }, 
-        email:       { type: DataTypes.STRING, allowNull: false, }, 
-        phone:       { type: DataTypes.STRING, allowNull: false, }, 
-        password:    { type: DataTypes.STRING, allowNull: false, }, 
-        role:        { type: DataTypes.STRING, allowNull: false, }, 
+        username:               { type: DataTypes.STRING, allowNull: false, },
+        surname:                { type: DataTypes.STRING, allowNull: false, }, 
+        email:                  { type: DataTypes.STRING, allowNull: false, }, 
+        phone:                  { type: DataTypes.STRING, allowNull: false, }, 
+        password:               { type: DataTypes.STRING, allowNull: false, }, 
+        role:                   { type: DataTypes.STRING, allowNull: false, }, 
     }, 
     { sequelize, modelName: 'UserModel', }
 );
@@ -36,15 +36,15 @@ UserModel.init(
 class CardModel extends Model { }
 CardModel.init(
     {
-        category:       { type: DataTypes.STRING,  allowNull: false, },
-        subcategory:    { type: DataTypes.STRING,  allowNull: false, },
-        title:          { type: DataTypes.STRING,  allowNull: false, },
-        img:            { type: DataTypes.JSON,    allowNull: false, },
-        p:              { type: DataTypes.STRING,  allowNull: false, },
-        price:          { type: DataTypes.INTEGER, allowNull: false, },
-        phone:          { type: DataTypes.STRING,  allowNull: false, },
-        address:        { type: DataTypes.STRING,  allowNull: false, },
-        nameCard:       { type: DataTypes.STRING,  allowNull: false, },
+        category:               { type: DataTypes.STRING,  allowNull: false, }, 
+        subcategory:            { type: DataTypes.STRING,  allowNull: false, },
+        title:                  { type: DataTypes.STRING,  allowNull: false, },
+        img:                    { type: DataTypes.JSON,    allowNull: false, },
+        p:                      { type: DataTypes.STRING,  allowNull: false, },
+        price:                  { type: DataTypes.INTEGER, allowNull: false, },
+        phone:                  { type: DataTypes.STRING,  allowNull: false, },
+        address:                { type: DataTypes.STRING,  allowNull: false, },
+        nameCard:               { type: DataTypes.STRING,  allowNull: false, },
 
     }, 
     { sequelize, modelName: 'CardModel', }
@@ -107,8 +107,23 @@ NumberModel.init(
         price:          { type: DataTypes.INTEGER, allowNull: true,  },
         // количество номеров тарифа
         value:          { type: DataTypes.INTEGER, allowNull: false, },
-    }, 
+    },
     { sequelize, modelName: 'NumberModel', }
+);
+
+
+class LiftModel extends Sequelize.Model { }
+LiftModel.init(
+    {
+        title:                    { type: DataTypes.STRING,  allowNull: false, },
+        geo:                      { type: DataTypes.STRING, allowNull: false, },
+        lifting_time:             { type: DataTypes.STRING, allowNull: false, },
+        phone:                    { type: DataTypes.STRING,  allowNull: false, },
+        price:                    { type: DataTypes.INTEGER,    allowNull: true,  },
+        working_hours_start:      { type: DataTypes.STRING, allowNull: true,  },
+        working_hours_finish:     { type: DataTypes.STRING, allowNull: false, },
+    }, 
+    { sequelize, modelName: 'LiftModel', }
 );
 
 // finalizing hotel models
@@ -131,5 +146,6 @@ module.exports = {
     CardTransfer, 
     CardService, 
     HotelModel, 
-    NumberModel 
+    NumberModel,
+    LiftModel
 }

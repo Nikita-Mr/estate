@@ -28,7 +28,7 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/lift">
       <div class="event">
         График работы подъемников, <br>
         оперативная информация
@@ -36,28 +36,28 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/cameras">
       <div class="event">
         ВЕБ-камеры
       </div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/skipass">
       <div class="event">
         Стоимость проезда <br> на подъемниках, СКИ-пасы
       </div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/map">
       <div class="event">
         Карта курорта
       </div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/">
+      <RouterLink to="/emergency">
       <div class="event">
         Контакты экстренных служб
       </div>

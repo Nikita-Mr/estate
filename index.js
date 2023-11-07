@@ -22,6 +22,7 @@ const {
   CardService,
   HotelModel,
   NumberModel,
+  LiftModel,
 } = require('./modules/models');
 const { secret } = require(`./config`);
 
@@ -950,4 +951,101 @@ app.get(`/number`, async function (req, res) {
   } catch (err) {
     return res.send({ error: err });
   }
+
+})
+app.get(`/number`, async function(req,res){
+  try{
+    let {id} = req.query
+    let number = await NumberModel.findAll({where: {HotelModelId: id}})
+    return res.send({number})
+  } catch (err){
+    return res.send({error: err})
+  }
+})
+
+app.post(`/create_lift`, async function(req, res) {
+  try {
+    let { title, geo, lifting_time, phone, price, working_hours_start, working_hours_finish } = req.body
+    try {
+      console.log('building card...');
+      let card = await LiftModel.build({
+        title: title,
+        geo: geo,
+        lifting_time: lifting_time,
+        phone: phone,
+        price: price,
+        working_hours_start: working_hours_start,
+        working_hours_finish: working_hours_finish,
+      });
+      console.log('saving card...');
+      try {
+        card.save().then((e) => {
+          try {
+            console.log('binding id...');
+            timeId = card.id;
+          } catch (e) {
+            console.log(`Ошибка создания timeId: ${e} `);
+            return res.send({
+              message: `Ошибка создания timeId: ${e} `,
+              status: '400',
+            });
+          }
+
+          console.log('done.');
+          return res.send({
+            //message: `Создание карты завершено, timeId: ${timeId}`,
+            message: timeId,
+            status: '200',
+          });
+        });
+      } catch (e) {
+        console.log(`сохранение не работает: ${e} `);
+        return res.send({
+          message: `сохранение не работает: ${e} `,
+          status: '400',
+        });
+      }
+    } catch (e) {
+      console.log(`Ошибка создания карточки: ${e} `);
+      return res.send({
+        message: `Ошибка создания карточки: ${e} `,
+        status: '400',
+      });
+    }
+  } catch (err) {
+    return res.send({error: err})
+  }
+})
+
+app.post(`/lifts`, async function(req, res) {
+  let lifts = await LiftModel.findAll()
+  res.send({ lifts })
+})
+
+app.post(`/delete_lift`, async function (req, res) {
+  try {
+    let id = req.body.id;
+    let liftDelete = await LiftModel.findOne({ where: { id: id } });
+    console.log(liftDelete, id);
+    await liftDelete.destroy();
+    res.json({ message: 'Удаление прошло успешно', status: 200 });
+  } catch (err) {
+    res.json({ message: 'Ошибка удаления подъёмника', err });
+  }
 });
+
+app.get(`/check_admin`, async function(req, res) {
+  try {
+    let token = req.headers.authorization;
+    let { role: userRoles } = jwt.verify(token, secret);
+    let admin;
+    if (token) {
+      userRoles.forEach((role) => {
+        if (role == 'ADMIN') admin = true;
+      });
+    }
+    res.send({ admin })
+  } catch(err) {
+    console.log(err)
+  }
+})

@@ -21,6 +21,7 @@ export default {
   components: {},
   data() {
     return {
+      passenger2: this.passenger/2
     };
   },
   methods: {
@@ -128,10 +129,10 @@ export default {
 </template>
 
 <style scoped>
-.time{
+.time {
   width: 70px;
 }
-.city{
+.city {
   width: min-content;
 }
 .cardTransfer {
@@ -180,7 +181,7 @@ span:not(.sub, .cars span) {
   position: relative;
 }
 .line::after {
-  content: ' ';
+  content: " ";
   position: absolute;
   top: -4px;
   left: -10px;
@@ -191,7 +192,7 @@ span:not(.sub, .cars span) {
   border-radius: 100%;
 }
 .line::before {
-  content: ' ';
+  content: " ";
   position: absolute;
   bottom: -4px;
   left: 100%;
