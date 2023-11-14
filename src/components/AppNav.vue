@@ -36,10 +36,10 @@ export default {
         <RouterLink to="/weather" @click="active = 0">
           <li class="list-item-nav">Погода</li></RouterLink
         >
-        <RouterLink to="/book_a_seat" @click="active = 0">
+        <RouterLink to="/habitation" @click="active = 0">
           <li class="list-item-nav">Забронировать место</li></RouterLink
         >
-        <RouterLink to="/book_a_transfer" @click="active = 0">
+        <RouterLink to="/transfer" @click="active = 0">
           <li class="list-item-nav">Забронировать трансфер</li></RouterLink
         >
         <RouterLink to="/search" @click="active = 0">

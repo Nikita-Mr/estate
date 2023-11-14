@@ -126,6 +126,17 @@ LiftModel.init(
     { sequelize, modelName: 'LiftModel', }
 );
 
+class SkipassModel extends Sequelize.Model { }
+SkipassModel.init(
+    {
+        title:                    { type: DataTypes.STRING,  allowNull: false, },
+        content:                  { type: DataTypes.STRING,  allowNull: false, },
+        price:                    { type: DataTypes.INTEGER, allowNull: true,  },
+    }, 
+    { sequelize, modelName: 'SkipassModel', }
+);
+
+
 // finalizing hotel models
 HotelModel.hasMany(NumberModel, {
     onDelete: 'CASCADE',
@@ -147,5 +158,6 @@ module.exports = {
     CardService, 
     HotelModel, 
     NumberModel,
-    LiftModel
+    LiftModel,
+    SkipassModel
 }

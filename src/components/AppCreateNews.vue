@@ -5,7 +5,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      show: false,
+      success: false,
       message: '',
       title: '',
       content: ''
@@ -17,19 +17,16 @@ export default {
         title: this.title,
         content: this.content
       })
-      this.show = response.data.show
+      this.success = response.data.success
       this.message = response.data.message
-
-      setTimeout(() => {
-        this.show = false;
-        this.message = ''
-      }, 3000);
+      if (this.success) {
+        setTimeout(() => {
+          this.success = false;
+          this.message = ''
+          this.$router.go(-1)
+        }, 1500);
+      }
     },
-    showMessage(message) {
-      this.message = message;
-      this.show = true;
-    },
-
   }
 };
 
@@ -41,7 +38,7 @@ export default {
 
     <textarea v-model="content" name="content" id="" class="contentTextarea" placeholder="контент" cols="50"
       rows="10"></textarea>
-      <div class="create-news" v-if="show">{{ message }}</div>
+      <div class="create-news" v-if="success">{{ message }}</div>
     <button v-else class="create-news" @click="createNews">Создать</button>
   </div>
 </template>

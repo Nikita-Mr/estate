@@ -61,7 +61,7 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event ">
+      <RouterLink to="/events">
       <div class="event">
         Развлечения
       </div>
