@@ -185,37 +185,39 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="wrapper">
-        <form v-if="admin && $route.query.name == `habitation`" @submit.prevent="createNumber">
-          <input type="text" v-model="name" placeholder="Название номера" />
-          <input type="number" v-model="price" placeholder="Цена" />
-          <input type="number" v-model="adults" placeholder="Кол-во взрослых" />
-          <input type="number" v-model="children" placeholder="Кол-во детей" />
-          <input type="text" v-model="description" placeholder="Описание" />
-          <input
-            type="number"
-            v-model="value"
-            placeholder="Кол-во номеров в гостинице"
-          />
-          <button>Забронировать</button>
-        </form>
-        <app-card
-          v-if="!admin"
-          v-for="(item, index) in NUMBER"
-          @click="target = 1, numberid = index"
-          :i="index"
-          :title="item.name"
-          :price="item.price"
-          :children="item.children"
-          :adults="item.adults"
-          :p="item.description"
-          :id="item.id"
-        ></app-card>
-        <!-- <div class="wrapper-for-map">
-          <div id="customMap" class="map"></div>
-        </div> -->
+      <div class="right">
+        <div class="wrapper">
+          <form v-if="admin && $route.query.name == `habitation`" @submit.prevent="createNumber">
+            <input type="text" v-model="name" placeholder="Название номера" />
+            <input type="number" v-model="price" placeholder="Цена" />
+            <input type="number" v-model="adults" placeholder="Кол-во взрослых" />
+            <input type="number" v-model="children" placeholder="Кол-во детей" />
+            <input type="text" v-model="description" placeholder="Описание" />
+            <input
+              type="number"
+              v-model="value"
+              placeholder="Кол-во номеров в гостинице"
+            />
+            <button>Забронировать</button>
+          </form>
+          <app-card
+            v-if="!admin"
+            v-for="(item, index) in NUMBER"
+            @click="target = 1, numberid = index"
+            :i="index"
+            :title="item.name"
+            :price="item.price"
+            :children="item.children"
+            :adults="item.adults"
+            :p="item.description"
+            :id="item.id"
+          ></app-card>
+          <!-- <div class="wrapper-for-map">
+            <div id="customMap" class="map"></div>
+          </div> -->
+        </div>
+        <div class="body"></div>
       </div>
-      <div class="body"></div>
       <div class="reviews"></div>
       <div class="button-wrapper">
         <!-- <button @click="target = 1" v-if="!admin">Забронировать</button> -->
@@ -227,6 +229,14 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.info{
+  overflow-y: scroll !important;
+  height: 140px;
+}
+
+.right{
+  width: 50%;
+}
 
 .nameWrapp {
   display: flex;
@@ -236,6 +246,7 @@ export default defineComponent({
   width: 100%;
   min-height: 130px;
 }
+
 .left {
   width: 50%;
   height: fit-content;
@@ -331,8 +342,9 @@ form {
   align-items: center;
   flex-direction: column;
   gap: 10px;
-  width: 50%;
+  width: 100%;
   overflow-y: scroll;
+  height: 400px;
 }
 .wrapper input {
   padding: 5px;

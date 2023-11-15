@@ -47,6 +47,7 @@ input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s !important;
   box-shadow: inset 0 0 20px 20px #23232300 !important;
 }
+
 /* input{
   color: #ffffff !important; 
 } */
