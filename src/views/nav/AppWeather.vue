@@ -10,6 +10,8 @@ export default {
       time: ``,
       icon: ``,
       find: ``,
+      list: [],
+      weatherDays: [],
     };
   },
   methods: {
@@ -21,14 +23,35 @@ export default {
           }&lang=ru&units=metric&appid=309ce2e3109b0cdf1a61910a9719cee0`
         )
         .then((res) => {
+          this.list = res.data.list.slice(0, 11);
           /* this.weather = res.data.main.temp; this.alerts = res.data.weather[0].description; this.icon = res.data.weather[0].icon;*/ console.log(
-            res
+            res.data.list.slice(0, 10)
           );
         });
+    },
+    days(day) {
+      // if (day < 1) {
+      //   return 'Сегодня';
+      // }
+      // if (day > 0 && day < 4) {
+      //   return '3 дня';
+      // }
+    },
+    weatherdays(e) {
+      if (e == 1) {
+        this.weatherDays = this.list.slice(0, 1);
+      }
+      if (e == 3) {
+        this.weatherDays = this.list.slice(1, 4);
+      }
+      if (e == 7) {
+        this.weatherDays = this.list.slice(4, 11);
+      }
     },
   },
   mounted() {
     this.loadWeather();
+    this.weatherdays(1)
   },
 };
 </script>
@@ -44,23 +67,69 @@ export default {
       />
       <button @click="loadWeather" type="submit">Поиск</button>
     </div>
-    <div class="card">
-      <span class="city">{{ !find ? 'Шерегеш' : find }}</span>
-      <div class="icon">
-        <img
-          :src="`https://openweathermap.org/img/wn/` + icon + `@2x.png`"
-          alt=""
-        />
-      </div>
-      <div class="card-title">
-        <span class="weather">{{ weather }}°C</span>
-        <span class="title">{{ alerts }}</span>
+    <span class="city">{{ !find ? 'Шерегеш' : find }}</span>
+    <div class="wrapp">
+      <button class="nav" @click="weatherdays(1)">Сегодня</button>
+      <button class="nav" @click="weatherdays(3)">3-дня</button>
+      <button class="nav" @click="weatherdays(7)">7-дня</button>
+    </div>
+    <div class="wrapper">
+      <div class="card" v-for="(item, i) in weatherDays">
+        <div class="icon">
+          <img
+            :src="
+              `https://openweathermap.org/img/wn/` +
+              item.weather[0].icon +
+              `@2x.png`
+            "
+            alt=""
+          />
+        </div>
+        <div class="card-title">
+          <span class="weather">{{ item.main.temp }}°C</span>
+          <span class="title">{{ alerts }}</span>
+          <span class="days">{{ days(i) }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.wrapp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.nav {
+  padding: 0 10px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background: #fff;
+}
+.nav:focus {
+  filter: brightness(80%);
+  transition: filter 200ms;
+  cursor: pointer;
+}
+
+.city {
+  color: #d5d5d5;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+.wrapper {
+  display: flex;
+  gap: 50px;
+  overflow-x: scroll;
+  padding: 10px 10px;
+  height: 300px;
+}
 .wrapper-input {
   width: 100%;
   display: flex;
@@ -91,7 +160,7 @@ export default {
   height: 100%;
 }
 .card {
-  width: 400px;
+  min-width: 300px;
   height: 100%;
   background-color: transparent;
   border: none;
