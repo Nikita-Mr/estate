@@ -6,77 +6,76 @@ export default {
   components: {},
   data() {
     return {
-      LIFTS: ``,
+      skipass: ``,
       admin: false,
     };
   },
   methods: {
-    async loadLift() {
-      await axios
-        .post(`/lifts`, {
-          headers: {
-            Authorization: document.cookie.replace("token=", ``),
-          },
-        })
-        .then((e) => {
-          this.LIFTS = e.data.lifts;
-        });
-    },
-
-    async delete_lift(id) {
-      await axios.post(`/delete_lift`, {
-        id: id,
-      });
-      this.loadLift();
-    },
-
-    async check_admin() {
-      let response = await axios.get(`/check_admin`, {
+    async loadInfo() {
+      let response = await axios.post(`/skipass`, {
         headers: {
           Authorization: document.cookie.replace("token=", ``),
         },
       });
-      this.admin = response.data;
+      this.skipass = response.data.skipass
+    },
+
+    async check_admin() {
+			let response = await axios.get(`/check_admin`, {
+        headers: {
+          Authorization: document.cookie.replace("token=", ``),
+        },
+      });
+			this.admin = response.data.admin
+    },
+
+    async delete_skipass(id) {
+      await axios.post(`/delete_skipass`, {
+        id: id,
+      });
+      this.loadInfo();
     },
   },
   mounted() {
-    this.check_admin();
-    this.loadLift();
+		this.check_admin()
+    this.loadInfo();
   },
 };
 </script>
 
 <template>
-  <div class="wrapperLifts">
+  <div class="wrapperNews">
     <div v-if="admin" class="create-news">
-      <RouterLink to="/skipass/create">Опубликовать информацию</RouterLink>
+      <RouterLink to="/skipass/create">Создать ски-пасс</RouterLink>
     </div>
-    <div class="content">
-      <div class="wrapper" v-for="item in LIFTS">
-        <div class="box">
-          <div class="title">{{ item.title }}</div>
-          <div class="price">{{ item.price }} ₽/разовый подъём</div>
-        </div>
-        <div class="box">
-          <div class="text">Местоположение:</div>
-          <div class="geo">{{ item.geo }}</div>
-        </div>
-        <div class="box">
-          <div class="text">Время работы</div>
-          <div class="working_hours">
-            с {{ item.working_hours_start }} до {{ item.working_hours_finish }}
+    <div class="accordion" id="accordionExample">
+      <div class="accordion-item" v-for="(item, i) in skipass">
+        <h2 class="accordion-header" :id="'heading' + i">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            :data-bs-target="'#collapse' + i"
+            aria-expanded="true"
+            :aria-controls="'collapse' + i"
+          >
+            {{ item.title }}
+            <div class="divDelete">
+              <button v-if="admin" class="delete" @click="delete_skipass(item.id)">
+                Удалить
+              </button>
+            </div>
+          </button>
+        </h2>
+        <div
+          :id="'collapse' + i"
+          class="accordion-collapse collapse"
+          :aria-labelledby="'heading' + i"
+          data-bs-parent="#accordionExample"
+        >
+          <div class="accordion-body">
+            {{ item.content }}
           </div>
-        </div>
-        <div class="box">
-          <div class="text">Время подъёма:</div>
-          <div class="lifting_time">{{ item.lifting_time }}</div>
-        </div>
-        <div class="box">
-          <div class="text">Номер телефона:</div>
-          <div class="phone">{{ item.phone }}</div>
-        </div>
-        <div v-if="admin" class="delete_lift">
-            <button type="button" @click="delete_lift" class="btn btn-outline-danger">Удалить</button>
         </div>
       </div>
     </div>
@@ -132,64 +131,61 @@ a:hover {
   scale: 1.05;
 }
 
-.wrapperLifts {
+.wrapperNews {
   margin-top: 10px;
-  width: 90%;
+  width: 100%;
   max-height: 600px;
   min-height: 600px;
   overflow-y: scroll;
 }
 
-.wrapperLifts::-webkit-scrollbar {
+.accordion-body {
+  color: var(--mainColor);
+}
+
+.wrapperNews::-webkit-scrollbar {
   width: 0;
 }
 
-.content {
-  width: 100%;
-  padding: 7px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
+.accordion-item {
+  background: transparent;
+  border: 1px solid var(--mainColor);
 }
 
-.wrapper {
-  padding: 20px;
-  flex: 40%;
-  border: 1px solid #fff;
-  border-radius: 15px;
-  box-shadow: 0px 0 10px 0 #ffffff71;
-
-  transition: border 400ms;
-}
-
-.box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-}
-
-.box div {
-  width: 50%;
+.accordion-button {
+  border: none;
+  padding: 10px !important;
+  background: transparent;
   color: var(--mainColor);
-  font-weight: 600;
-  
-  transition: color 400ms;
+  z-index: 9;
 }
 
-.box div:hover {
-  color: black;
+.accordion-button:focus {
+  box-shadow: none;
+  border: none;
 }
 
-.title {
-  font-size: 1.5rem;
+.accordion-button::after {
+  background-image: url("/src/assets/img/arrow-down-sign-to-navigate.png");
+  transform: rotate(0);
 }
 
-.price {
-  font-size: 1.2rem;
+.accordion-button:not(.collapsed)::after {
+  background-image: url("/src/assets/img/arrow-down-sign-to-navigate.png");
+  transform: rotate(-180deg);
 }
 
-.wrapper:hover {
-  border: 1px solid black;
+@media screen and (width <=600px) {
+  .delete {
+    width: fit-content;
+    position: absolute;
+    background: transparent;
+    color: #ee2e31;
+    border: 1px solid #ee2e31;
+    border-radius: 10px;
+    padding: 5px 10px;
+    z-index: 1000000;
+    font-size: small;
+  }
 }
 </style>

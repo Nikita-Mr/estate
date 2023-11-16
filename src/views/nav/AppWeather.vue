@@ -2,8 +2,6 @@
 import { RouterLink, RouterView } from 'vue-router';
 import axios from 'axios';
 
-
-
 export default {
   data() {
     return {
@@ -16,8 +14,17 @@ export default {
   },
   methods: {
     async loadWeather() {
-      await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${!this.find? "Шерегеш" : this.find }&lang=ru&units=metric&appid=309ce2e3109b0cdf1a61910a9719cee0`)
-      .then(res => {this.weather = res.data.main.temp; this.alerts = res.data.weather[0].description; this.icon = res.data.weather[0].icon; console.log(res)})
+      await axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/forecast?q=${
+            !this.find ? 'Шерегеш' : this.find
+          }&lang=ru&units=metric&appid=309ce2e3109b0cdf1a61910a9719cee0`
+        )
+        .then((res) => {
+          /* this.weather = res.data.main.temp; this.alerts = res.data.weather[0].description; this.icon = res.data.weather[0].icon;*/ console.log(
+            res
+          );
+        });
     },
   },
   mounted() {
@@ -38,9 +45,12 @@ export default {
       <button @click="loadWeather" type="submit">Поиск</button>
     </div>
     <div class="card">
-      <span class="city">{{ !find?"Шерегеш" : find }}</span>
+      <span class="city">{{ !find ? 'Шерегеш' : find }}</span>
       <div class="icon">
-        <img :src="`https://openweathermap.org/img/wn/`+icon+`@2x.png`" alt="" />
+        <img
+          :src="`https://openweathermap.org/img/wn/` + icon + `@2x.png`"
+          alt=""
+        />
       </div>
       <div class="card-title">
         <span class="weather">{{ weather }}°C</span>

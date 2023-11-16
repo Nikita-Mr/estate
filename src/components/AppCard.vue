@@ -13,6 +13,7 @@ export default {
     id: Number,
     children: Number,
     adults: Number,
+    target: Number
   },
   components: {},
   data() {},
@@ -23,6 +24,9 @@ export default {
         query: { id: this.id, name: this.$route.path.slice(1, -6) },
       });
     },
+    sendVariable() {
+      this.$emit('variable', {target: 1, numberid: this.i});
+    }
   },
   mounted() {},
 };
@@ -70,7 +74,7 @@ export default {
                 Мест для взрослых: {{ adults }}
               </p>
               <p class="card-text">{{ p }}</p>
-              <button @click="" v-if="children">Забронировать</button>
+              <button @click="sendVariable" v-if="children">Забронировать</button>
             </div>
           </div>
         </div>

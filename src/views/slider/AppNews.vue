@@ -21,16 +21,24 @@ export default {
         })
         .then((e) => {
           this.NEWS = e.data.news;
-          this.admin = e.data.admin;
         });
     },
 
     async deleteNews(id) {
-      await axios.post(`delete-news`, {
+      await axios.post(`/delete_news`, {
         id: id
       })
       this.loadNews()
-    }
+    },
+
+    async check_admin() {
+			let response = await axios.get(`/check_admin`, {
+        headers: {
+          Authorization: document.cookie.replace("token=", ``),
+        },
+      });
+			this.admin = response.data.admin
+    },
   },
   mounted() {
     this.loadNews();
@@ -50,7 +58,7 @@ export default {
             :data-bs-target="'#collapse' + i" aria-expanded="true" :aria-controls="'collapse' + i">
             {{ news.title }}
             <div class="divDelete">
-              <button class="delete" @click="deleteNews(news.id)">Удалить</button>
+              <button class="delete" v-if="admin" @click="deleteNews(news.id)">Удалить</button>
             </div>
           </button>
         </h2>

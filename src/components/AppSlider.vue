@@ -28,7 +28,7 @@ export default {
             <RouterLink to="/transfer-taksi" @click="trigger = 0"><li class="list-item-nav">Трансфер/Такси</li></RouterLink>
             <RouterLink to="/habitation" @click="trigger = 0"><li class="list-item-nav">Проживание</li></RouterLink>
             <RouterLink to="/rental" @click="trigger = 0"><li class="list-item-nav">Прокат</li></RouterLink>
-            <RouterLink to="/event" @click="trigger = 0"><li class="list-item-nav">Развлечения</li></RouterLink>
+            <RouterLink to="/events" @click="trigger = 0"><li class="list-item-nav">Развлечения</li></RouterLink>
             <RouterLink to="/forChildren" @click="trigger = 0"><li class="list-item-nav">Детям</li></RouterLink>
             <RouterLink to="/instructor-tours" @click="trigger = 0"><li class="list-item-nav">Инструктор/Туры</li></RouterLink>
             <RouterLink to="/news" @click="trigger = 0"><li class="list-item-nav">Новости</li></RouterLink>

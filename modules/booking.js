@@ -106,7 +106,7 @@ const tryBook = async (number, checkin, checkout, phone) => {
   if (bookingDebug) console.log('done, number bookings: ', number.bookings);
 
   await number.save();
-  if (bookingDebug) console.log('number saved');
+  if (bookingDebug) console.log('number saved'); return {status: 200, message: "Вы забронировались"};
   return true;
 };
 

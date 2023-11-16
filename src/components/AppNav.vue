@@ -5,49 +5,57 @@ export default {
   data() {
     return {
       active: 0,
+      token: document.cookie 
     };
   },
-  methods:{
-    click(){
-        this.active == 1 ? this.active = 0 : this.active = 1
+  methods: {
+    click() {
+      this.active == 1 ? (this.active = 0) : (this.active = 1);
     },
-    close(){
-        if(this.active == 1){
-          this.active = 0
-        }
-    }
-  }
+    close() {
+      if (this.active == 1) {
+        this.active = 0;
+      }
+    },
+  },
 };
 </script>
 
 <template>
   <div class="wrapper-for-nav">
-    <button class="webBack" id="webBack" @click="$router.go(-1)"><img src="/src/assets/img/arrow-down-sign-to-navigate.png" alt=""></button>
-    <button @click="click" class="burger" :class="{'cross': active == 1}">
+    <button class="webBack" id="webBack" @click="$router.go(-1)">
+      <img src="/src/assets/img/arrow-down-sign-to-navigate.png" alt="" />
+    </button>
+    <button @click="click" class="burger" :class="{ cross: active == 1 }">
       <div class="line"></div>
       <div class="line"></div>
       <div class="line"></div>
     </button>
     <nav>
-      <ul class="list-nav" :class="{'active': this.active == 1}">
+      <ul class="list-nav" :class="{ active: this.active == 1 }">
         <RouterLink to="/" @click="active = 0">
           <li class="list-item-nav"><img src="../assets/img/logo.png" /></li
         ></RouterLink>
         <RouterLink to="/weather" @click="active = 0">
           <li class="list-item-nav">Погода</li></RouterLink
         >
-        <RouterLink to="/book_a_seat" @click="active = 0">
+        <RouterLink to="/habitation" @click="active = 0">
           <li class="list-item-nav">Забронировать место</li></RouterLink
         >
-        <RouterLink to="/book_a_transfer" @click="active = 0">
+        <RouterLink to="/transfer" @click="active = 0">
           <li class="list-item-nav">Забронировать трансфер</li></RouterLink
         >
         <RouterLink to="/search" @click="active = 0">
           <li class="list-item-nav">Поиск</li></RouterLink
         >
         <RouterLink to="/register" @click="active = 0">
-          <li class="list-item-nav">Регистрация/Вход</li></RouterLink
-        >
+          <li v-if="!token" class="list-item-nav">
+            Регистрация/Вход
+          </li>
+          <li v-if="token" class="profile">
+            <ion-icon name="person-outline"></ion-icon>
+          </li>
+        </RouterLink>
       </ul>
     </nav>
   </div>
@@ -55,11 +63,27 @@ export default {
 
 <style>
 @media (max-width: 1180px) {
-#webBack{
-  display: block !important;
+  #webBack {
+    display: block !important;
+  }
 }
+.profile{
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('../assets/img/elipse.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 100%;
 }
-#webBack{
+ion-icon{
+  height: 50px;
+  width: 30px;
+}
+#webBack {
   display: none;
 }
 .bg {
@@ -74,7 +98,7 @@ export default {
   background-size: cover;
   filter: brightness(60%);
 }
-nav{
+nav {
   z-index: 10;
 }
 .burger {
@@ -132,7 +156,7 @@ nav{
   background-repeat: no-repeat;
   background-size: cover;
 }
-.list-nav a:focus .list-item-nav{
+.list-nav a:focus .list-item-nav {
   filter: brightness(80%);
 }
 .list-item-nav img {
@@ -149,23 +173,23 @@ nav{
   z-index: 1;
 }
 
-.cross{
-    gap: 0;
-    position: relative;
+.cross {
+  gap: 0;
+  position: relative;
 }
-.cross .line:last-child{
-    display: none;
+.cross .line:last-child {
+  display: none;
 }
-.cross .line:nth-child(1){
-    transform: rotate(45deg);
-    position: absolute;
-    width: 80%;
+.cross .line:nth-child(1) {
+  transform: rotate(45deg);
+  position: absolute;
+  width: 80%;
 }
 
-.cross .line:nth-child(2){
-    transform: rotate(-45deg);
-    position: absolute;
-    width: 80%;
+.cross .line:nth-child(2) {
+  transform: rotate(-45deg);
+  position: absolute;
+  width: 80%;
 }
 
 .list-item-nav:hover {
@@ -188,7 +212,7 @@ body {
     display: flex;
     align-self: start;
   }
-  .list-nav{
+  .list-nav {
     display: none;
   }
   .wrapper-for-nav {

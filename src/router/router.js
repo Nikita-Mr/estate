@@ -104,7 +104,7 @@ const router = createRouter({
       component: AppHotel,
     }, 
     {
-      path: '/event',
+      path: '/events',
       name: 'event',
       component: AppEvents,
     }, 

@@ -55,6 +55,7 @@ export default defineComponent({
       message: ``,
       status: ``,
       numberid: ``,
+      buttonTarg: 0,
     };
   },
   mounted() {
@@ -98,6 +99,11 @@ export default defineComponent({
         fromdate: this.fromdate,
         todate: this.todate,
       });
+      this.status = response.data.status
+      this.message = response.data.message
+      if (response.data.status == 200) {
+        setTimeout(()=>{this.status = 0, this.target = 0}, 1500)
+      }
     },
     async createNumber() {
       let response = await axios.post(`/create-number`, {
@@ -109,12 +115,29 @@ export default defineComponent({
         value: this.value,
         price: this.price,
       });
+      if (response.data.status == 200) {
+        this.name = ``;
+        this.adults = ``;
+        this.children = ``;
+        this.description = ``;
+        this.value = ``;
+        this.price = ``;
+        this.buttonTarg = 1;
+        setTimeout(() => {
+          this.buttonTarg = 0;
+        }, 1000);
+      }
     },
     async loadNumber() {
       let response = await axios.get(`/number`, {
         params: { id: this.$route.query.id },
       });
       this.NUMBER = response.data.number;
+    },
+    handleVariable(variable) {
+      this.target = variable.target;
+      this.numberid = variable.numberid;
+      console.log(variable);
     },
   },
 });
@@ -140,11 +163,28 @@ export default defineComponent({
               pattern="+7[0-9]{3}-[0-9]{3}-[0-9]{4}"
               placeholder="+7 (900)-900-99-99"
               required
+              v-if="!status"
             />
-            <input type="date" v-model="fromdate" placeholder="От" required />
-            <input type="date" v-model="todate" placeholder="До" required />
+            <input
+              type="date"
+              v-model="fromdate"
+              placeholder="От"
+              required
+              v-if="!status"
+            />
+            <input
+              type="date"
+              v-model="todate"
+              placeholder="До"
+              required
+              v-if="!status"
+            />
+            <span v-if="status == 200">{{ message }}</span>
             <div class="center">
               <button @click="target = 1" v-if="!admin">Забронировать</button>
+              <button type="button" @click="target = 0" v-if="!admin">
+                Отмена
+              </button>
             </div>
           </form>
         </div>
@@ -187,24 +227,37 @@ export default defineComponent({
       </div>
       <div class="right">
         <div class="wrapper">
-          <form v-if="admin && $route.query.name == `habitation`" @submit.prevent="createNumber">
+          <form
+            v-if="admin && $route.query.name == `habitation`"
+            @submit.prevent="createNumber"
+          >
             <input type="text" v-model="name" placeholder="Название номера" />
             <input type="number" v-model="price" placeholder="Цена" />
-            <input type="number" v-model="adults" placeholder="Кол-во взрослых" />
-            <input type="number" v-model="children" placeholder="Кол-во детей" />
+            <input
+              type="number"
+              v-model="adults"
+              placeholder="Кол-во взрослых"
+            />
+            <input
+              type="number"
+              v-model="children"
+              placeholder="Кол-во детей"
+            />
             <input type="text" v-model="description" placeholder="Описание" />
             <input
               type="number"
               v-model="value"
               placeholder="Кол-во номеров в гостинице"
             />
-            <button>Забронировать</button>
+            <button v-if="buttonTarg == 0">Создать</button>
+            <span v-if="buttonTarg == 1">Созданно</span>
           </form>
           <app-card
             v-if="!admin"
             v-for="(item, index) in NUMBER"
-            @click="target = 1, numberid = index"
+            @variable="handleVariable"
             :i="index"
+            :target="target"
             :title="item.name"
             :price="item.price"
             :children="item.children"
@@ -229,12 +282,12 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.info{
+.info {
   overflow-y: scroll !important;
-  height: 140px;
+  height: 165px;
 }
 
-.right{
+.right {
   width: 50%;
 }
 
@@ -244,7 +297,8 @@ export default defineComponent({
 }
 .wrapper .card {
   width: 100%;
-  min-height: 130px;
+  min-height: 270px;
+  max-height: 290px;
 }
 
 .left {
@@ -271,6 +325,8 @@ form {
   position: absolute;
   bottom: 20px;
   width: 100%;
+  gap: 30px;
+  padding: 0 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -338,7 +394,6 @@ form {
 .wrapper {
   padding: 20px;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 10px;
@@ -379,7 +434,6 @@ form {
   padding: 10px;
   background: transparent;
   border: none;
-  min-height: 400px;
   position: relative;
   width: 100%;
 }
