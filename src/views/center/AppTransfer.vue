@@ -41,6 +41,7 @@ export default {
 
     },
     async transferLoad() {
+      console.log(document.cookie.replace('token=', ``))
       let response = await axios.get(`/transfer`, {
         headers: {
           Authorization: document.cookie.replace('token=', ``),

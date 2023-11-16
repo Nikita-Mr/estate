@@ -55,6 +55,7 @@ export default defineComponent({
       message: ``,
       status: ``,
       numberid: ``,
+      success: ''
     };
   },
   mounted() {
@@ -98,6 +99,7 @@ export default defineComponent({
         fromdate: this.fromdate,
         todate: this.todate,
       });
+
     },
     async createNumber() {
       let response = await axios.post(`/create-number`, {
