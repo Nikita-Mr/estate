@@ -18,6 +18,13 @@ export default {
       }
     },
   },
+  watch:{
+    token(newtoken, old){
+      if (newtoken.includes('token=')) {
+        this.token = newtoken
+      }
+    }
+  }
 };
 </script>
 

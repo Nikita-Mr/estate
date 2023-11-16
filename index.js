@@ -11,32 +11,7 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const fs = require("fs");
 const mkdirp = require("mkdirp");
-const nodemailer = require('nodemailer');
-
-// let transporter = nodemailer.createTransport({
-//    host: 'smtp.beget.com',
-//    port: 2525,
-//    secure: false,
-//    auth: {
-//        user: 'codered-it@coderedit.site',
-//        pass: 'Stas_2001',
-//    },
-// });
-
-// let mailOptions = {
-//    from: '"Node js" <codered-it@coderedit.site>',
-//    to: 'stanislavd491@gmail.com',
-//    subject: 'Message from Node js',
-//    text: 'This message was sent from Node js server.',
-//    html: 'This <i>message</i> was sent from <strong>Node js</strong> server.',
-// };
-
-// transporter.sendMail(mailOptions, (error, info) => {
-//    if (error) {
-//        return console.log(error);
-//    }
-//    console.log('Message sent: %s', info.messageId);
-// });
+const nodemailer = require("nodemailer");
 
 // модули самого бэкенда
 const {
@@ -54,6 +29,8 @@ const {
 const { secret } = require(`./config`);
 
 const { tryBook, addNumber } = require(`./modules/booking`);
+
+const { initPayment, awaitPayment } = require(`./modules/payments`);
 
 let app = express();
 let port = process.env.PORT || 3005;
@@ -1105,5 +1082,49 @@ app.post(`/delete_skipass`, async function (req, res) {
     });
   } catch (err) {
     res.send({ message: "Ошибка удаления ски-пасса", err, success: false });
+  }
+});
+
+app.post(`/payment`, async function (req, res) {
+  try {
+    let { price, name } = req.body;
+    let { paymentRef, payment } = await initPayment(price, name);
+    awaitPayment(payment);
+    return res.redirect(paymentRef);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post(`/send_mail`, async function (req, res) {
+  try {
+    let { email } = req.body;
+    let transporter = nodemailer.createTransport({
+      host: "smtp.beget.com",
+      port: 2525,
+      secure: false,
+      auth: {
+        user: "codered-it@coderedit.site",
+        pass: "Stas_2001",
+      },
+    });
+
+    let mailOptions = {
+      from: '"Node js" <codered-it@coderedit.site>',
+      to: email,
+      subject: "Message from Node js",
+      text: "This message was sent from Node js server.",
+      html: "This <i>message</i> was sent from <strong>Node js</strong> server.",
+    };ы
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+      console.log("Message sent: %s", info.messageId);
+    });
+    res.send({status: 200, success: true})
+  } catch (err) {
+    console.log(err);
   }
 });

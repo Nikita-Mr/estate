@@ -56,6 +56,7 @@ export default defineComponent({
       status: ``,
       numberid: ``,
       buttonTarg: 0,
+      success: ''
     };
   },
   mounted() {

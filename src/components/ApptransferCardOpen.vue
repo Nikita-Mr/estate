@@ -74,6 +74,14 @@ export default defineComponent({
       this.message = response.data.message;
       this.loadCard();
     },
+
+    async payment() {
+      let response = await axios.post(`/payment`, {
+        name: this.INFO.name,
+        price: this.INFO.price
+      }
+      )
+    }
   },
 });
 </script>
@@ -175,16 +183,23 @@ export default defineComponent({
       <div class="button-wrapper">
         <span v-if="message" class="text-center mt-3">{{ message }}</span>
         <button v-if="!admin" @click="book">Забронировать</button>
-        <button @click="target = 1" class="delete" v-if="admin">Удалить</button>
-        <button @click="edit" class="edit" v-if="admin">Редактировать</button>
+        <button @click="target = 1" class="btn btn-outline-danger" v-if="admin">
+          Удалить
+        </button>
+        <button @click="edit" class="btn btn-outline-light" v-if="admin">
+          Редактировать
+        </button>
+        <button @click="payment" class="btn btn-outline-success">
+          Оплатить
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.card{
-    color: #000;
+.card {
+  color: #000;
 }
 .driver span {
   border-bottom: 1px solid #ffffff72;
@@ -243,7 +258,7 @@ span:not(.sub, .cars span) {
   position: relative;
 }
 .line::after {
-  content: ' ';
+  content: " ";
   position: absolute;
   top: -4px;
   left: -10px;
@@ -254,7 +269,7 @@ span:not(.sub, .cars span) {
   border-radius: 100%;
 }
 .line::before {
-  content: ' ';
+  content: " ";
   position: absolute;
   bottom: -4px;
   left: 100%;
@@ -402,18 +417,19 @@ img {
   margin-top: 10px;
   width: 100%;
   display: flex;
-  align-items: flex-end;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
-button {
+/* button {
   display: block;
   margin: 0 auto;
   border: none;
-  width: 50%;
-  padding: 5px 0;
+  border-radius: 10px;
+  padding: 5px 7px;
   box-shadow: 0 0 10px 0 #00000037;
-}
+} */
 
 button:active {
   box-shadow: none;
