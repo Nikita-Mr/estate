@@ -16,12 +16,12 @@ export default {
     async loadWeather() {
       await axios
         .get(
-          `https://api.openweathermap.org/data/2.5/forecast?q=${
+          `https://api.openweathermap.org/data/2.5/weather?q=${
             !this.find ? 'Шерегеш' : this.find
           }&lang=ru&units=metric&appid=309ce2e3109b0cdf1a61910a9719cee0`
         )
         .then((res) => {
-          /* this.weather = res.data.main.temp; this.alerts = res.data.weather[0].description; this.icon = res.data.weather[0].icon;*/ console.log(
+          this.weather = res.data.main.temp; this.alerts = res.data.weather[0].description; this.icon = res.data.weather[0].icon; console.log(
             res
           );
         });

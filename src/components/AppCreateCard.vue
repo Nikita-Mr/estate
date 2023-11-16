@@ -20,6 +20,7 @@ export default defineComponent({
       img: '',
       title: ``,
       adress: ``,
+      email: '',
       phone: ``,
       price: null,
       description: ``,
@@ -50,6 +51,7 @@ export default defineComponent({
           p: this.description,
           phone: this.phone,
           adress: this.adress,
+          email: this.email,
           subcategory: this.$route.query.name,
           category: this.$route.query.category,
         })
@@ -121,6 +123,7 @@ export default defineComponent({
           p: this.description,
           phone: this.phone,
           adress: this.adress,
+          email: this.email,
           edit: true,
           login: true
         })
@@ -172,6 +175,7 @@ export default defineComponent({
         this.phone = this.INFO.phone;
         this.adress = this.INFO.address;
         this.description = this.INFO.p;
+        this.email = this.INFO.email
       }
     },
   },
@@ -241,6 +245,8 @@ export default defineComponent({
         <input v-model="adress" type="text" placeholder="Адрес" />
 
         <input v-model="phone" type="tel" placeholder="Номер телефона" />
+
+        <input v-model="email" type="email" placeholder="Почтовый адрес" />
       </div>
       <div class="body">
         <textarea
@@ -371,6 +377,11 @@ input:nth-child(3) {
 
 input:nth-child(4) {
   width: 85%;
+  height: 40px;
+}
+
+input:nth-child(5) {
+  width: 80%;
   height: 40px;
 }
 

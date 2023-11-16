@@ -22,7 +22,9 @@ export default defineComponent({
       target: 0,
       todaydate: dayjs(new Date()).format(`ddd, D MMM`),
       message: '',
-      passenger2: 0
+      passenger2: 0,
+      success: '',
+      paymentRef: ''
     };
   },
   mounted() {
@@ -79,8 +81,12 @@ export default defineComponent({
       let response = await axios.post(`/payment`, {
         name: this.INFO.name,
         price: this.INFO.price
+      })
+      this.paymentRef = response.data.paymentRef
+      this.success = response.data.success
+      if (this.success) {
+        window.location.href = this.paymentRef
       }
-      )
     }
   },
 });
