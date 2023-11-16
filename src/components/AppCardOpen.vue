@@ -2,6 +2,8 @@
 import { RouterLink, RouterView } from 'vue-router';
 import axios from 'axios';
 import { defineComponent } from 'vue';
+import * as dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
 import AppCard from '/src/components/AppCard.vue';
 
@@ -41,6 +43,7 @@ export default defineComponent({
     return {
       INFO: {},
       NUMBER: {},
+      user: '',
       price: ``,
       admin: ``,
       target: 0,
@@ -56,7 +59,8 @@ export default defineComponent({
       status: ``,
       numberid: ``,
       buttonTarg: 0,
-      success: ''
+      success: '',
+      email: ''
     };
   },
   mounted() {
@@ -73,6 +77,12 @@ export default defineComponent({
       });
       this.INFO = response.data.card;
       this.admin = response.data.admin;
+    },
+    getDate(data) {
+      let date = new Date(data);
+      let day = dayjs(date);
+      dayjs.locale('ru');
+      return day.format(`dd, D MMM`);
     },
     async deleteCard() {
       await axios
@@ -102,8 +112,20 @@ export default defineComponent({
       });
       this.status = response.data.status
       this.message = response.data.message
+      this.success = response.data.success
       if (response.data.status == 200) {
         setTimeout(()=>{this.status = 0, this.target = 0}, 1500)
+      }
+      if (this.success) {
+        this.email = this.INFO.email
+        this.fromdate = this.getDate(this.fromdate)
+        this.todate = this.getDate(this.todate)
+        await axios.post(`/send_mail`, {
+          email: this.email,
+          phone: this.phone,
+          fromdate: this.fromdate,
+          todate: this.todate
+        })
       }
     },
     async createNumber() {

@@ -228,6 +228,7 @@ app.get(`/habitation`, async function (req, res) {
 
     res.send({ cards, admin });
   } catch (e) {
+    console.log(e)
     res.send({ expired: true });
   }
 });
@@ -366,6 +367,7 @@ app.post(`/create-card`, async function (req, res) {
       id,
       phone,
       adress,
+      email,
       img,
       category,
     } = req.body;
@@ -380,6 +382,7 @@ app.post(`/create-card`, async function (req, res) {
         card.address = adress;
         card.phone = phone;
         card.img = img;
+        card.email = email
         await card.save();
         console.log(card);
         return res.json({ status: "200" });
@@ -395,6 +398,7 @@ app.post(`/create-card`, async function (req, res) {
           p: p,
           phone: phone,
           address: adress,
+          email: email,
           nameCard: "undef",
         });
         console.log("saving card...");
@@ -440,6 +444,7 @@ app.post(`/create-card`, async function (req, res) {
         card.p = p;
         card.address = adress;
         card.phone = phone;
+        card.email = email
         card.img = img;
         await card.save();
         console.log(card);
@@ -456,6 +461,7 @@ app.post(`/create-card`, async function (req, res) {
           p: p,
           phone: phone,
           address: adress,
+          email: email,
           nameCard: "undef",
         });
         console.log("saving card...");
@@ -1090,7 +1096,7 @@ app.post(`/payment`, async function (req, res) {
     let { price, name } = req.body;
     let { paymentRef, payment } = await initPayment(price, name);
     awaitPayment(payment);
-    return res.redirect(paymentRef);
+    res.send({ paymentRef, success: true })
   } catch (err) {
     console.log(err);
   }
@@ -1098,7 +1104,7 @@ app.post(`/payment`, async function (req, res) {
 
 app.post(`/send_mail`, async function (req, res) {
   try {
-    let { email } = req.body;
+    let { email, phone, fromdate, todate } = req.body;
     let transporter = nodemailer.createTransport({
       host: "smtp.beget.com",
       port: 2525,
@@ -1110,12 +1116,12 @@ app.post(`/send_mail`, async function (req, res) {
     });
 
     let mailOptions = {
-      from: '"Node js" <codered-it@coderedit.site>',
+      from: '<codered-it@coderedit.site>',
       to: email,
-      subject: "Message from Node js",
-      text: "This message was sent from Node js server.",
-      html: "This <i>message</i> was sent from <strong>Node js</strong> server.",
-    };ы
+      subject: "Бронирование",
+      text: "Прошло бронирование",
+      html: `Прошло бронирование на сайте http://sneg-info.ru по вашему объявлению.<br>Номер клиента: ${phone}.<br>С <b>${fromdate}</b> по <b>${todate}</b>`,
+    };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {

@@ -23,6 +23,7 @@ const THE_FUCKING_CURE = async () =>
         price: 1000,
         phone: "+79042065393",
         address: "Хуй внегородсикй",
+        email: 'zankov.vadik@yandex.ru',
         nameCard: "Если честно хз"
     });
 
@@ -63,6 +64,7 @@ const THE_FUCKING_CURE = async () =>
         p:              'uhuh what',
         phone:          'uhuh what',
         address:        'uhuh what',
+        email:          'zankov.vadik@yandex.ru'
     }, );
     
     const newNumber = await NumberModel.create({
