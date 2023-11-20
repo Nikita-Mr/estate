@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router';
 import axios from 'axios';
 import { defineComponent } from 'vue';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
 import AppCard from '/src/components/AppCard.vue';

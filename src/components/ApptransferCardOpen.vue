@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 
 import 'vue3-carousel/dist/carousel.css';

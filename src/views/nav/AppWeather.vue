@@ -18,7 +18,7 @@ export default {
     async loadWeather() {
       await axios
         .get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${
+          `https://api.openweathermap.org/data/2.5/forecast?q=${
             !this.find ? 'Шерегеш' : this.find
           }&lang=ru&units=metric&appid=309ce2e3109b0cdf1a61910a9719cee0`
         )
@@ -72,7 +72,7 @@ export default {
     <div class="wrapp">
       <button class="nav" @click="weatherdays(1)">Сегодня</button>
       <button class="nav" @click="weatherdays(3)">3-дня</button>
-      <button class="nav" @click="weatherdays(7)">7-дня</button>
+      <button class="nav" @click="weatherdays(7)">7-дней</button>
     </div>
     <div class="wrapper">
       <div class="card" v-for="(item, i) in weatherDays">
