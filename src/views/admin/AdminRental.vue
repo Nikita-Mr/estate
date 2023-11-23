@@ -19,7 +19,7 @@ export default {
 <template>
   <ul class="list-events">
     <li class="item-event">
-    <RouterLink to="/rental/items?name=inventory">
+    <RouterLink to="/admin/requests?nameModel=inventory&category=rental">
       <div class="event">
         Инвентарь <br>
         Экипировка
@@ -27,21 +27,21 @@ export default {
     </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=hookah">
+    <RouterLink to="/admin/requests?nameModel=hookah&category=rental">
       <div class="event">
         Кальян
       </div>
     </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=transport">
+    <RouterLink to="/admin/requests?nameModel=transport&category=rental">
       <div class="event">
         Транспорт
       </div>
     </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=other">
+    <RouterLink to="/admin/requests?nameModel=other&category=rental">
       <div class="event">
         Другое
       </div>
@@ -94,6 +94,7 @@ export default {
   border: 1px solid black;
   color: black;
 }
+
 @media (max-width: 995px) {
   .item-event {
     line-height: 1;

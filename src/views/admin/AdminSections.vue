@@ -1,51 +1,45 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from "vue-router";
 
 export default {
-  components: {
-  },
-  data() {
-
-  },
-  methods() {
-
-  },
-  mounted() {
-
-  }
-}
+  components: {},
+  data() {},
+  methods() {},
+  mounted() {},
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
-    <RouterLink to="/rental/items?name=inventory">
-      <div class="event">
-        Инвентарь <br>
-        Экипировка
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/transfer-taksi">
+        <div class="event">Трансфер/Такси</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=hookah">
-      <div class="event">
-        Кальян
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/habitation">
+        <div class="event">Проживание</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=transport">
-      <div class="event">
-        Транспорт
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/rental">
+        <div class="event">Прокат</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=other">
-      <div class="event">
-        Другое
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/for-children">
+        <div class="event">Детям</div>
+      </RouterLink>
+    </li>
+    <li class="item-event">
+      <RouterLink to="/admin/instructor-tours">
+        <div class="event">Инструктор/Туры</div>
+      </RouterLink>
+    </li>
+    <li class="item-event">
+      <RouterLink to="/admin/events">
+        <div class="event">Развлечения</div>
+      </RouterLink>
     </li>
   </ul>
 </template>
@@ -65,9 +59,9 @@ export default {
 
 .item-event {
   cursor: pointer;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   background-color: transparent;
-  flex-basis: 50%;
+  flex-basis: 33%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,19 +88,6 @@ export default {
   border: 1px solid black;
   color: black;
 }
-@media (max-width: 995px) {
-  .item-event {
-    line-height: 1;
-    font-size: 13px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    background-color: transparent;
-    flex-basis: 47%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
 
 @media (max-width: 670px) {
   .event {
@@ -116,7 +97,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100px;
-    font-size: 13px;
+    font-size: medium;
     font-weight: 550;
     padding: 7px 10px;
     color: #d5d5d5;
@@ -131,19 +112,7 @@ export default {
     cursor: pointer;
     margin-bottom: 10px;
     background-color: transparent;
-    flex-basis: 51%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
-@media (max-width: 330px) {
-  .item-event {
-    cursor: pointer;
-    margin-bottom: 10px;
-    background-color: transparent;
-    flex-basis: 51%;
+    flex-basis: 47%;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -46,7 +46,7 @@ CardModel.init(
         address:                { type: DataTypes.STRING,  allowNull: false, },
         email:                  { type: DataTypes.STRING,  allowNull: false, },
         nameCard:               { type: DataTypes.STRING,  allowNull: false, },
-
+        verified:               { type: DataTypes.BOOLEAN, allowNull: false, },
     }, 
     { sequelize, modelName: 'CardModel', }
 );
@@ -66,6 +66,7 @@ CardTransfer.init(
         passenger:              { type: DataTypes.INTEGER, allowNull: false, },
         price:                  { type: DataTypes.INTEGER, allowNull: false, },
         boardedPlaces:          { type: DataTypes.INTEGER, allowNull: true,  },
+        verified:               { type: DataTypes.BOOLEAN, allowNull: false, },
     }, 
     { sequelize, modelName: 'CardTransfer', }
 );
@@ -77,6 +78,8 @@ CardService.init(
         phone:                  { type: DataTypes.STRING,  allowNull: false, },
         description:            { type: DataTypes.STRING,  allowNull: false, },
         img:                    { type: DataTypes.JSON,    allowNull: false, },
+        verified:               { type: DataTypes.BOOLEAN, allowNull: false, },
+        
     }, 
     { sequelize, modelName: 'CardService', }
 );
@@ -94,6 +97,7 @@ HotelModel.init(
         phone:          { type: DataTypes.STRING,  allowNull: false, },
         address:        { type: DataTypes.STRING,  allowNull: false, },
         email:          { type: DataTypes.STRING,  allowNull: false, },
+        verified:       { type: DataTypes.BOOLEAN, allowNull: false, },
     }, 
     { sequelize, modelName: 'HotelModel', }
 );
@@ -118,16 +122,15 @@ class LiftModel extends Sequelize.Model { }
 LiftModel.init(
     {
         title:                    { type: DataTypes.STRING,  allowNull: false, },
-        geo:                      { type: DataTypes.STRING, allowNull: false, },
-        lifting_time:             { type: DataTypes.STRING, allowNull: false, },
+        geo:                      { type: DataTypes.STRING,  allowNull: false, },
+        lifting_time:             { type: DataTypes.STRING,  allowNull: false, },
         phone:                    { type: DataTypes.STRING,  allowNull: false, },
-        price:                    { type: DataTypes.INTEGER,    allowNull: true,  },
-        working_hours_start:      { type: DataTypes.STRING, allowNull: true,  },
-        working_hours_finish:     { type: DataTypes.STRING, allowNull: false, },
+        price:                    { type: DataTypes.INTEGER, allowNull: true,  },
+        working_hours_start:      { type: DataTypes.STRING,  allowNull: true,  },
+        working_hours_finish:     { type: DataTypes.STRING,  allowNull: false, },
     }, 
     { sequelize, modelName: 'LiftModel', }
 );
-
 class SkipassModel extends Sequelize.Model { }
 SkipassModel.init(
     {
@@ -161,5 +164,5 @@ module.exports = {
     HotelModel, 
     NumberModel,
     LiftModel,
-    SkipassModel
+    SkipassModel,
 }

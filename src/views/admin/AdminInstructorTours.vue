@@ -1,51 +1,35 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
 
 export default {
-  components: {
-  },
-  data() {
-
-  },
-  methods() {
-
-  },
-  mounted() {
-
-  }
-}
+  components: {},
+  data() {},
+  methods() {},
+  mounted() {},
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
-    <RouterLink to="/rental/items?name=inventory">
-      <div class="event">
-        Инвентарь <br>
-        Экипировка
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=instructorAdults&category=instructorTours">
+        <div class="event">Инструктор для взрослых</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=hookah">
-      <div class="event">
-        Кальян
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=instructorChildren&category=instructorTours">
+        <div class="event">Инструктор для детей</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=transport">
-      <div class="event">
-        Транспорт
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=winterTours&category=instructorTours">
+        <div class="event">Зимние туры</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=other">
-      <div class="event">
-        Другое
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=summerTours&category=instructorTours">
+        <div class="event">Летние туры</div>
+      </RouterLink>
     </li>
   </ul>
 </template>

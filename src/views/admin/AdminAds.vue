@@ -1,51 +1,41 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
 
 export default {
-  components: {
-  },
-  data() {
-
-  },
-  methods() {
-
-  },
-  mounted() {
-
-  }
-}
+  components: {},
+  data() { },
+  methods() { },
+  mounted() { },
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
-    <RouterLink to="/rental/items?name=inventory">
-      <div class="event">
-        Инвентарь <br>
-        Экипировка
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=found&category=ads">
+        <div class="event">Найдено</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=hookah">
-      <div class="event">
-        Кальян
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=lost&category=ads">
+        <div class="event">Потеряно</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=transport">
-      <div class="event">
-        Транспорт
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=selling&category=ads">
+        <div class="event">
+          Продам <br />
+          Сдам в аренду
+        </div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=other">
-      <div class="event">
-        Другое
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=willbuy&category=ads">
+        <div class="event">
+          Куплю <br />
+          Возьму в аренду
+        </div>
+      </RouterLink>
     </li>
   </ul>
 </template>
@@ -94,6 +84,7 @@ export default {
   border: 1px solid black;
   color: black;
 }
+
 @media (max-width: 995px) {
   .item-event {
     line-height: 1;

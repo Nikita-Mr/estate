@@ -68,7 +68,7 @@ export default {
       }
       if (this.$route.path == `/instructor-tours/items`) {
         let InstructorTours = await axios.get(`/instructor-tours`, {
-          params: {category: this.$route.path.slice(1, -6) , name: this.$route.query.name },
+          params: {category: 'instructorTours' , name: this.$route.query.name },
           headers: {
             Authorization: document.cookie.replace('token=', ``),
           },

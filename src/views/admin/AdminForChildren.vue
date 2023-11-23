@@ -19,28 +19,28 @@ export default {
 <template>
     <ul class="list-events">
         <li class="item-event">
-            <RouterLink to="/forChildren/items?name=childrenRooms">
+            <RouterLink to="/admin/requests?nameModel=childrenRooms&category=forChildren">
                 <div class="event">
                     Детские комнаты
                 </div>
             </RouterLink>
         </li>
         <li class="item-event">
-            <RouterLink to="/forChildren/items?name=nanny">
+            <RouterLink to="/admin/requests?nameModel=nanny&category=forChildren">
                 <div class="event">
                     Няня
                 </div>
             </RouterLink>
         </li>
         <li class="item-event">
-            <RouterLink to="/forChildren/items?name=otherEntertainment">
+            <RouterLink to="/admin/requests?nameModel=otherEntertainment&category=forChildren">
                 <div class="event">
                     Другие развлечения
                 </div>
             </RouterLink>
         </li>
         <li class="item-event">
-            <RouterLink to="/forChildren/items?name=instructor">
+            <RouterLink to="/admin/requests?nameModel=instructor&category=forChildren">
                 <div class="event">
                     Инструктор
                 </div>

@@ -1,7 +1,5 @@
 let { sequelize, NewsModel, UserModel, CardModel, HotelModel, NumberModel } = require('./modules/models');
 
-// ЭТА ХЕРНЯ ПОЧИНИТ БАЗЫ, ПЕРЕСОЗДАСТ ИХ, ВЫЛЕЧИТ ПРОСТАТИТ, 
-// ПОДАРИТ ТЕБЕ ПЛОЙКУ И СЕКС, ВСЕГО ДВЕ ЛОЖКИ db_hard_reset.js И ГЛИСТЫ КОМОМ ВЫЙДУТ 
 
 const THE_FUCKING_CURE = async () => 
 {
@@ -17,24 +15,25 @@ const THE_FUCKING_CURE = async () =>
     const newCard = await CardModel.create({
         category: "habitation",
         subcategory: 'hotel',
-        title: "Что то",
+        title: "Test",
         img: {},
         p: "Prototip",
         price: 1000,
         phone: "+79042065393",
-        address: "Хуй внегородсикй",
+        address: "ул Пушкина",
         email: 'zankov.vadik@yandex.ru',
-        nameCard: "Если честно хз"
+        nameCard: "simple",
+        verified: false
     });
 
     console.log('created card...');
 
     const newUser = await UserModel.create({
-        username: 'Никита',
-        surname: 'Лысенков',
+        username: 'Admin',
+        surname: 'Adminov',
         email: 'example@example.com',
         phone: '+79042065393',
-        password: 'членовещание',
+        password: 'admin123',
         role: "ADMIN"
     }, );
     
@@ -64,7 +63,8 @@ const THE_FUCKING_CURE = async () =>
         p:              'uhuh what',
         phone:          'uhuh what',
         address:        'uhuh what',
-        email:          'zankov.vadik@yandex.ru'
+        email:          'zankov.vadik@yandex.ru',
+        verified:        false
     }, );
     
     const newNumber = await NumberModel.create({

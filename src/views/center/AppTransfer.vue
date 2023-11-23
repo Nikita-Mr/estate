@@ -19,7 +19,7 @@ export default {
       datefrom: new Date().toLocaleDateString('en-CA'),
       passenger: 1,
       message: ``,
-    };
+    }
   },
   methods: {
     async find() {

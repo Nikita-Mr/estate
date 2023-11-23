@@ -24,7 +24,8 @@ export default defineComponent({
       message: '',
       passenger2: 0,
       success: '',
-      paymentRef: ''
+      paymentRef: '',
+      view: false
     };
   },
   mounted() {
@@ -32,6 +33,7 @@ export default defineComponent({
   },
   methods: {
     async loadCard() {
+      this.view = this.$route.query.view
       let response = await axios.get(`/transfer`, {
         params: { id: this.$route.query.id },
         headers: {
@@ -179,14 +181,11 @@ export default defineComponent({
         <div class="driver">
           <span class="text-center mt-3">{{ INFO.name }}</span>
           <span class="text-center mt-3">Иногда отменяет поездки</span>
-          <span class="text-center mt-3"
-            >Ваше бронирование будет подтверждено мгновенно</span
-          >
           <span class="text-center mt-3">Максимум двое сзади</span>
         </div>
       </div>
       <div class="reviews"></div>
-      <div class="button-wrapper">
+      <div class="button-wrapper" v-if="!view">
         <span v-if="message" class="text-center mt-3">{{ message }}</span>
         <button v-if="!admin" @click="book">Забронировать</button>
         <button @click="target = 1" class="btn btn-outline-danger" v-if="admin">

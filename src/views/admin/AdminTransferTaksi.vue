@@ -1,14 +1,25 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
+import axios from 'axios';
 
 export default {
   components: {
+    
   },
   data() {
-
+    return {
+      notification: false,
+      nameModel: 'transfer'
+    }
   },
-  methods() {
-
+  methods: {
+    async request() {
+      let response = await axios.post(`/notifications`, {
+        nameModel: this.nameModel
+      })
+      this.nameModel = response.data.nameModel
+      this.notification = response.data.notification
+    }
   },
   mounted() {
 
@@ -19,38 +30,27 @@ export default {
 <template>
   <ul class="list-events">
     <li class="item-event">
-    <RouterLink to="/rental/items?name=inventory">
-      <div class="event">
-        Инвентарь <br>
-        Экипировка
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=transfer">
+        <div class="event">
+          Трансфер
+        </div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=hookah">
-      <div class="event">
-        Кальян
-      </div>
-    </RouterLink>
-    </li>
-    <li class="item-event">
-    <RouterLink to="/rental/items?name=transport">
-      <div class="event">
-        Транспорт
-      </div>
-    </RouterLink>
-    </li>
-    <li class="item-event">
-    <RouterLink to="/rental/items?name=other">
-      <div class="event">
-        Другое
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=service">
+        <div class="event">
+          Такси/Доставка
+        </div>
+      </RouterLink>
     </li>
   </ul>
 </template>
 
 <style scoped>
+a{
+  width: 70%;
+  text-decoration: none;
+}
 .list-events {
   width: 100%;
   height: 100%;
@@ -75,7 +75,7 @@ export default {
 
 .event {
   text-align: center;
-  width: 70%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -87,6 +87,7 @@ export default {
   border: 1px solid #d5d5d5;
   box-shadow: 0px 0 10px 0 #ffffff71;
   border-radius: 15px;
+
   transition: color 400ms, border 400ms;
 }
 
@@ -94,6 +95,7 @@ export default {
   border: 1px solid black;
   color: black;
 }
+
 @media (max-width: 995px) {
   .item-event {
     line-height: 1;

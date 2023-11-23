@@ -9,28 +9,6 @@ import AppCard from '/src/components/AppCard.vue';
 
 import 'vue3-carousel/dist/carousel.css';
 
-// ymaps.ready(init); // когда апи готово, инициализируемя карту
-// var customMap; // объявим переменную для карты
-// async function init() {
-//   // функция инициализации
-//   customMap = new ymaps.Map('customMap', {
-//     // создадим карту выведем ее в див с id="customMap"
-//     center: [25.15, 55.18], // центра карты
-//     behaviors: ['default', 'scrollZoom'], // скроллинг колесом
-//     zoom: 10, // масштаб карты
-//     controls: ['zoomControl', 'fullscreenControl'], // элементы управления
-//   });
-//   myGeocoder.then(console.log(res.geoObjects.get(0).geometry.getCoordinates()));
-
-//   // customMap.controls.remove('geolocationControl'); // удаляем геолокацию
-//   // customMap.controls.remove('searchControl'); // удаляем поиск
-//   // customMap.controls.remove('trafficControl'); // удаляем контроль трафика
-//   // customMap.controls.remove('typeSelector'); // удаляем тип
-//   // customMap.controls.remove('fullscreenControl'); // удаляем кнопку перехода в полноэкранный режим
-//   // customMap.controls.remove('zoomControl'); // удаляем контрол зуммирования
-//   // customMap.controls.remove('rulerControl'); // удаляем контрол правил
-// }
-
 export default defineComponent({
   components: {
     Carousel,
@@ -60,7 +38,8 @@ export default defineComponent({
       numberid: ``,
       buttonTarg: 0,
       success: '',
-      email: ''
+      email: '',
+      view: false
     };
   },
   mounted() {
@@ -69,8 +48,14 @@ export default defineComponent({
   },
   methods: {
     async loadCard() {
+      this.view = this.$route.query.view
+      if (this.view == 'true') {
+        this.view = true
+      } else {
+        this.view = false
+      }
       let response = await axios.get(`/card`, {
-        params: { id: this.$route.query.id, name: this.$route.query.name },
+        params: { id: this.$route.query.id, name: this.$route.query.name, view: this.view },
         headers: {
           Authorization: document.cookie.replace(`token=`, ``),
         },
@@ -230,7 +215,7 @@ export default defineComponent({
         <div class="info">
           <div class="nameWrapp">
             <span class="title">{{ INFO.title }}</span>
-            <span class="price">{{ INFO.price }} руб</span>
+            <span v-if="INFO.price" class="price">{{ INFO.price }} руб</span>
           </div>
           <span class="adress">{{ INFO.address }}</span>
           <span class="phone">{{ INFO.phone }}</span>
@@ -249,7 +234,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="right">
-        <div class="wrapper">
+        <div class="wrapper" v-if="!view">
           <form
             v-if="admin && $route.query.name == `habitation`"
             @submit.prevent="createNumber"
@@ -295,7 +280,7 @@ export default defineComponent({
         <div class="body"></div>
       </div>
       <div class="reviews"></div>
-      <div class="button-wrapper">
+      <div class="button-wrapper" v-if="!view">
         <!-- <button @click="target = 1" v-if="!admin">Забронировать</button> -->
         <button @click="target = 1" class="delete" v-if="admin">Удалить</button>
         <button @click="edit" class="edit" v-if="admin">Редактировать</button>

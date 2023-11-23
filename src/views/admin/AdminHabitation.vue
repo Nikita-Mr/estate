@@ -1,51 +1,57 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import axios from 'axios';
+import { RouterLink, RouterView } from 'vue-router';
 
 export default {
-  components: {
-  },
+  components: {},
   data() {
+    return {
 
+    }
   },
-  methods() {
+  methods: {
 
   },
   mounted() {
-
-  }
-}
+  },
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
-    <RouterLink to="/rental/items?name=inventory">
-      <div class="event">
-        Инвентарь <br>
-        Экипировка
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=hotels&category=habitation">
+        <div class="event">Гостиницы</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=hookah">
-      <div class="event">
-        Кальян
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=cottage&category=habitation">
+        <div class="event">
+          Коттеджи <br />
+          Дома <br />
+          Шале
+        </div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=transport">
-      <div class="event">
-        Транспорт
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=flat&category=habitation">
+        <div class="event">Квартиры</div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/rental/items?name=other">
-      <div class="event">
-        Другое
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=rooms&category=habitation">
+        <div class="event">Комнаты</div>
+      </RouterLink>
+    </li>
+    <li class="item-event">
+      <RouterLink to="/admin/requests?nameModel=hostel&category=habitation">
+        <div class="event">Хостел</div>
+      </RouterLink>
+    </li>
+    <li class="item-event">
+      <RouterLink to="/admin/requests?nameModel=longterm&category=habitation">
+        <div class="event">На длительный срок</div>
+      </RouterLink>
     </li>
   </ul>
 </template>
@@ -65,9 +71,9 @@ export default {
 
 .item-event {
   cursor: pointer;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   background-color: transparent;
-  flex-basis: 50%;
+  flex-basis: 33%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,6 +100,7 @@ export default {
   border: 1px solid black;
   color: black;
 }
+
 @media (max-width: 995px) {
   .item-event {
     line-height: 1;
@@ -131,19 +138,7 @@ export default {
     cursor: pointer;
     margin-bottom: 10px;
     background-color: transparent;
-    flex-basis: 51%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
-@media (max-width: 330px) {
-  .item-event {
-    cursor: pointer;
-    margin-bottom: 10px;
-    background-color: transparent;
-    flex-basis: 51%;
+    flex-basis: 47%;
     display: flex;
     justify-content: center;
     align-items: center;
