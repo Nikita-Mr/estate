@@ -87,14 +87,11 @@ export default {
 <style scoped>
 .list-events {
   width: 100%;
-  height: 100%;
+  height: 500px;
   list-style-type: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
   margin: 0;
   padding: 0;
+  overflow-y: scroll;
 }
 
 .item-event {

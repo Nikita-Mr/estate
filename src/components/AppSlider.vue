@@ -44,6 +44,9 @@ export default {
 </template>
 
 <style scoped>
+a{
+    width: 100%;
+}
 .wrapper-for-slider{
     width: fit-content;
     position: absolute;

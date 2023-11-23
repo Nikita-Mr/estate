@@ -44,7 +44,7 @@ export default {
     <div class="card-body">
       <h5 class="card-title">
         <span class="title">{{ title }}</span>
-        <span class="price">{{ price }} руб</span>
+        <span class="price" v-if="price">{{ price }} руб</span>
       </h5>
       <div class="accordion" id="accordionExample">
         <div class="accordion-item">

@@ -230,7 +230,7 @@ export default defineComponent({
         <div class="info">
           <div class="nameWrapp">
             <span class="title">{{ INFO.title }}</span>
-            <span class="price">{{ INFO.price }} руб</span>
+            <span class="price" v-if="INFO.price">{{ INFO.price }} руб</span>
           </div>
           <span class="adress">{{ INFO.address }}</span>
           <span class="phone">{{ INFO.phone }}</span>
@@ -391,6 +391,16 @@ form {
 @media (max-width: 426px) {
   .wrapper {
     width: 100% !important;
+  }
+  .card{
+    overflow-y: scroll;
+    height: 500px;
+  }
+  .left{
+    width: 100%;
+  }
+  .right{
+    width: 100%;
   }
 
   .img {

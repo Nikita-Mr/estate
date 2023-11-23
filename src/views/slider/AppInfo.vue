@@ -68,7 +68,7 @@ export default {
 
 <style scoped>
 .list-events {
-  width: 100%;
+  width: 80%;
   height: 100%;
   list-style-type: none;
   display: flex;

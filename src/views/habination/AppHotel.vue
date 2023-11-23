@@ -135,6 +135,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
   cursor: pointer;
 }
 
@@ -150,7 +151,9 @@ export default {
   transform: rotate(90deg) !important;
   display: block;
 }
-
+.cross .line:last-child {
+    display: block;
+}
 .row {
   width: 100%;
   height: auto;

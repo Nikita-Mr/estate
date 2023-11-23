@@ -93,6 +93,7 @@ HotelModel.init(
         p:              { type: DataTypes.STRING,  allowNull: false, },
         phone:          { type: DataTypes.STRING,  allowNull: false, },
         address:        { type: DataTypes.STRING,  allowNull: false, },
+        price:          { type: DataTypes.INTEGER, allowNull: true,  },
         email:          { type: DataTypes.STRING,  allowNull: false, },
     }, 
     { sequelize, modelName: 'HotelModel', }

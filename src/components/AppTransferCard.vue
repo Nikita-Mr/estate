@@ -1,6 +1,6 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 export default {
   props: {

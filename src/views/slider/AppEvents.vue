@@ -80,13 +80,10 @@ export default {
 
 <style scoped>
 .list-events {
-  width: 100%;
+  width: 80%;
   height: 100%;
   list-style-type: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+
   margin: 0;
   padding: 0;
 }
@@ -176,7 +173,6 @@ export default {
     padding: 20px 0;
     position: absolute;
     overflow: scroll;
-    display: grid;
   }
 
 }

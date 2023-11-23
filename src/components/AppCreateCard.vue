@@ -240,7 +240,7 @@ export default defineComponent({
       <div class="info">
         <input v-model="title" type="text" placeholder="Название" />
 
-        <input v-model="price" type="number" placeholder="Цена" />
+        <input v-model="price" type="number" v-if="$route.query.name != 'hotels'" placeholder="Цена" />
 
         <input v-model="adress" type="text" placeholder="Адрес" />
 

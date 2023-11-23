@@ -69,6 +69,13 @@ export default {
 </template>
 
 <style>
+a{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+}
 @media (max-width: 1180px) {
   #webBack {
     display: block !important;
@@ -176,7 +183,7 @@ nav {
   display: flex !important;
   position: absolute;
   top: calc(50% - 260px);
-  right: 35px;
+  right: 10px;
   z-index: 1;
 }
 
@@ -211,7 +218,7 @@ body {
 
 @media (max-width: 1310px) {
   .list-nav {
-    gap: 20px;
+    gap: 10px;
   }
 }
 @media (max-width: 1180px) {
