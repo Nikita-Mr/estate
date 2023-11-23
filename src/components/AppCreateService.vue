@@ -1,11 +1,11 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
-import axios from 'axios';
-import { defineComponent } from 'vue';
-import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
+import { RouterLink, RouterView } from "vue-router";
+import axios from "axios";
+import { defineComponent } from "vue";
+import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
 
-import 'vue3-carousel/dist/carousel.css';
-import { param } from 'express-validator';
+import "vue3-carousel/dist/carousel.css";
+import { param } from "express-validator";
 
 export default defineComponent({
   components: {
@@ -17,7 +17,7 @@ export default defineComponent({
   data() {
     return {
       files: ``,
-      img: '',
+      img: "",
       name: ``,
       phone: ``,
       description: ``,
@@ -39,10 +39,10 @@ export default defineComponent({
       let formData = new FormData();
       for (var i = 0; i < this.files.length; i++) {
         let file = this.files[i];
-        formData.append('files', file);
+        formData.append("files", file);
       }
       await axios
-        .post('/create_service', {
+        .post("/create_service", {
           name: this.name,
           phone: this.phone,
           description: this.description,
@@ -53,29 +53,38 @@ export default defineComponent({
           let routeAppend = new String();
 
           console.log(`response info is: ${e.data.message}`);
-          if (!isNaN(e.data.message)) routeAppend = `?id=${e.data.message}&model=taxi`;
+          if (!isNaN(e.data.message))
+            routeAppend = `?id=${e.data.message}&model=taxi`;
 
-          let uploadRoute = `/upload${routeAppend}`
+          let uploadRoute = `/upload${routeAppend}`;
 
           console.log(`card creation response ${e.data.message}`);
           console.log(`upload route is ${uploadRoute}`);
-        
+
           axios
             .post(uploadRoute, formData, {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": "multipart/form-data",
               },
             })
-            .then(r => {
+            .then((r) => {
               console.log(`got code 200 on upload: ${e.data.text}`);
             })
-            .catch(r => {
+            .catch((r) => {
               console.log(`got code 400 on upload: ${e.data.text}`);
             });
           this.error = e.data.message;
           this.status = e.data.status;
+          this.success = e.data.success;
+          if (this.success) {
+            setTimeout(() => {
+              this.error = "";
+              this.status = "";
+              this.$router.go(-1);
+            }, 2000);
+          }
         });
-      if (this.status == '200') {
+      if (this.status == "200") {
         this.$router.push({ name: this.$route.query.name });
       }
     },
@@ -103,7 +112,7 @@ export default defineComponent({
       let formData = new FormData();
       for (var i = 0; i < this.files.length; i++) {
         let file = this.files[i];
-        formData.append('files', file);
+        formData.append("files", file);
       }
       await axios
         .post(`/create-card`, {
@@ -120,26 +129,26 @@ export default defineComponent({
         .then((e) => {
           if (formData) {
             axios
-              .post('/upload', formData, {
+              .post("/upload", formData, {
                 params: {
                   id: this.$route.query.id,
                   name: this.$route.query.name,
                 },
                 headers: {
-                  'Content-Type': 'multipart/form-data',
+                  "Content-Type": "multipart/form-data",
                 },
               })
               .then(function () {
-                console.log('SUCCESS!!');
+                console.log("SUCCESS!!");
               })
               .catch(function () {
-                console.log('FAILURE!!');
+                console.log("FAILURE!!");
               });
             this.error = e.data.message;
             this.status = e.data.status;
+            this.success = e.data.success;
           }
-
-          if (e.data.status == '200') {
+          if (e.data.status == "200") {
             this.$router.go(-1);
           }
         });
@@ -154,7 +163,7 @@ export default defineComponent({
             name: name,
           },
           headers: {
-            Authorization: document.cookie.replace('token=', ``),
+            Authorization: document.cookie.replace("token=", ``),
           },
         });
         this.edit = this.$route.query.edit;
@@ -229,7 +238,11 @@ export default defineComponent({
       <div class="info">
         <input v-model="name" type="text" placeholder="имя" />
         <input v-model="phone" type="text" placeholder="номер телефона" />
-        <input v-model="description" type="text" placeholder="описание услуги" />
+        <input
+          v-model="description"
+          type="text"
+          placeholder="описание услуги"
+        />
       </div>
       <!-- <div class="body">
         <textarea
@@ -241,21 +254,44 @@ export default defineComponent({
       </div> -->
       <div class="reviews"></div>
       <div class="button-wrapper">
-        <button v-if="!edit" @click="submitFiles">Опубликовать</button>  
+        <button v-if="!edit" @click="submitFiles">Опубликовать</button>
         <button v-if="edit" @click="editCard">Сохранить</button>
       </div>
+    </div>
+    <div
+      class="create-news"
+      :class="{ success: status == 200, error: !status }"
+      v-if="status"
+    >
+      {{ error }}
     </div>
   </div>
 </template>
 
 <style scoped>
 
+.success {
+  position: absolute;
+  bottom: -100px;
+  width: 300px;
+  text-align: center;
+  padding: 10px;
+  color: #a0dd75;
+}
+.error {
+  position: absolute;
+  bottom: -100px;
+  width: 300px;
+  text-align: center;
+  padding: 10px;
+  color: #dd7575;
+}
 .button-wrapper button {
   padding: 5px 15px;
   background-color: transparent;
-  border: 1px solid #62A87C;
+  border: 1px solid #62a87c;
   border-radius: 10px;
-  color: #62A87C;
+  color: #62a87c;
   font-weight: 600;
   transition: scale 500ms;
 }

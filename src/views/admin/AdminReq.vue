@@ -95,6 +95,16 @@ export default {
           </div>
         </div>
 
+        <div class="wrapper-for-item" @click="$router.push({ path: `/transfer/card`, query: { id: item.id, view: true } })"
+         v-if="nameModel == 'service'" v-for="item in requests">
+          <div class="title">{{item.name}}</div>
+          <div class="date">{{getDate(item.createdAt)}}</div>
+          <div class="buttons">
+            <button type="button" class="btn btn-danger" @click="reject(item.id, nameModel, $event)">Отклонить</button>
+            <button type="button" class="btn btn-success" @click="accept(item.id, nameModel, $event)">Принять</button>
+          </div>
+        </div>
+
         <div class="wrapper-for-item" @click="open(item.id)" v-else v-for="item in requests">
           <div class="title">{{item.title}}</div>
           <div class="date">{{getDate(item.createdAt)}}</div>
@@ -134,10 +144,9 @@ export default {
 .wrapper {
   width: 90%;
   min-height: 590px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  height: 590px;
   flex-basis: 100%;
+  overflow-y: scroll;
 }
 
 .btn {
@@ -154,6 +163,7 @@ export default {
   border-radius: 15px;
   cursor: pointer;
   box-shadow: 0px 0 10px 0 #ffffff71;
+  margin-bottom: 10px;
 
   transition: border 400ms;
 }

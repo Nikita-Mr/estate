@@ -20,25 +20,20 @@ export default defineComponent({
       target: 0,
     };
   },
-  mounted() {
-    this.loadCard();
-  },
   methods: {
     async loadCard() {
-      let response = await axios.get(`/service-card`, {
-        params: { id: this.$route.query.id },
-        headers: {
-          Authorization: document.cookie.replace(`token=`, ``),
-        },
+      let response = await axios.post(`/service-card`, {
+        id: this.$route.query.id
       });
-      this.INFO = response.data.card;
+      this.$nextTick(() => {
+        this.INFO = response.data.card;
+      })
       this.admin = response.data.admin;
     },
-    async deleteCard() {
+    async delete_service() {
       await axios
-        .post('/deleteCard', {
+        .post('/delete_service', {
           id: this.INFO.id,
-          name: this.$route.query.name,
         })
         .then((e) => {
           if (e.data.status == '200') {
@@ -53,6 +48,9 @@ export default defineComponent({
       });
     },
   },
+  mounted() {
+    this.loadCard();
+  },
 });
 </script>
 
@@ -61,7 +59,7 @@ export default defineComponent({
     <div class="card">
       <div class="modalDelete" :class="{ 'd-none': target == 0 }">
         <div class="button-wrapper">
-          <button @click="deleteCard" class="delete" v-if="admin">
+          <button @click="delete_service" class="delete" v-if="admin">
             Удалить
           </button>
           <button @click="target = 0" v-if="admin">Отмена</button>
@@ -83,9 +81,8 @@ export default defineComponent({
       </div>
       <div class="wrapper">
         <div class="info">
-          <span class="title">{{ INFO.title }}</span>
+          <span class="title">{{ INFO.name }}</span>
           <span class="price">{{ INFO.price }} руб</span>
-          <span class="adress">{{ INFO.address }}</span>
           <span class="phone mb-2">{{ INFO.phone }}</span>
           <div class="messengers">
             <a href="#" target="_blank">
@@ -101,13 +98,12 @@ export default defineComponent({
         </div>
       </div>
       <div class="body">
-        <span class="description">{{ INFO.p }}</span>
+        <span class="description">{{ INFO.description }}</span>
       </div>
       <div class="reviews"></div>
       <div class="button-wrapper">
         <button v-if="!admin">Купить</button>
-        <button @click="target = 1" class="delete" v-if="admin">Удалить</button>
-        <button @click="edit" class="edit" v-if="admin">Редактировать</button>
+        <button @click="delete_service" class="delete" v-if="admin">Удалить</button>
       </div>
     </div>
   </div>

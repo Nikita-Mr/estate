@@ -887,7 +887,9 @@ app.post(`/create_service`, async function (req, res) {
           return res.send({
             //message: `Создание карты завершено, timeId: ${timeId}`,
             message: timeId,
+            error: 'Запрос успешно добавлен',
             status: "200",
+            success: true
           });
         });
       } catch (e) {
@@ -905,7 +907,7 @@ app.post(`/create_service`, async function (req, res) {
       });
     }
   } catch (err) {
-    res.send({ message: "Ошибка создания услуги", show: false, err });
+    res.send({ message: "Ошибка создания услуги", show: false, err, success: false });
   }
 });
 
@@ -914,7 +916,7 @@ app.get(`/services`, async function (req, res) {
   res.send({ services });
 });
 
-app.get(`/service-card`, async function (req, res) {
+app.post(`/service-card`, async function (req, res) {
   try {
     let id = req.body.id;
     let card = await CardService.findOne({ where: { id: id } });
