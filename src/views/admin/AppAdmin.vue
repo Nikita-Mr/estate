@@ -3,19 +3,52 @@ import { RouterLink, RouterView } from "vue-router";
 
 export default {
   components: {},
-  data() {},
-  methods() {},
-  mounted() {},
+  data() {
+    return {
+      s: 0
+    }
+  },
+  methods: {
+    async notifications() {
+      let response = await axios.post(`/notifications`, {
+        nameModel: "ALL",
+      });
+
+      this.s = response.data.s;
+    },
+  },
+  mounted() {
+    this.notifications()
+  },
 };
 </script>
 
 <template>
-  <RouterLink to="/admin/sections" class="wrapperAdmin">Запросы</RouterLink>
+  <RouterLink to="/admin/sections" class="wrapperAdmin"
+    >Запросы
+  </RouterLink>
 </template>
 
 <style scoped>
+a {
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .wrapperAdmin {
-  background-image: url('../../icons/textWrapper.svg');
+  background-image: url("../../icons/textWrapper.svg");
   padding: 20px;
   display: flex;
   justify-content: center;

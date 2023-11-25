@@ -27,7 +27,15 @@ export default {
   watch() {
     this.reload();
   },
-  methods() {},
+  methods: {
+    async notifications() {
+      let response = await axios.post(`/notifications`, {
+        nameModel: "ALL",
+      });
+
+      this.s = response.data.s;
+    },
+  },
   mounted() {},
 };
 </script>
@@ -37,12 +45,34 @@ export default {
   <app-slider></app-slider>
   <app-center></app-center>
   <div class="wrapperBottom">
-    <app-admin></app-admin>
+    <app-admin class="appAdmin">
+      <div v-if="s" class="alert">
+        {{ s }}
+      </div>
+    </app-admin>
     <app-phone></app-phone>
   </div>
 </template>
 
 <style>
+
+.appAdmin {
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

@@ -1,18 +1,35 @@
 <script>
-import axios from 'axios';
-import { RouterLink, RouterView } from 'vue-router';
+import axios from "axios";
+import { RouterLink, RouterView } from "vue-router";
 
 export default {
   components: {},
   data() {
     return {
-
-    }
+      hotel: 0,
+      cottage: 0,
+      flat: 0,
+      room: 0,
+      hostel: 0,
+      longterm: 0,
+    };
   },
   methods: {
+    async notifications() {
+      let response = await axios.post(`/notifications`, {
+        nameModel: "habitation",
+      });
 
+      this.hotel = response.data.hotel;
+      this.cottage = response.data.cottage;
+      this.flat = response.data.flat;
+      this.room = response.data.room;
+      this.hostel = response.data.hostel;
+      this.longterm = response.data.longterm;
+    },
   },
   mounted() {
+    this.notifications()
   },
 };
 </script>
@@ -22,6 +39,9 @@ export default {
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=hotels&category=habitation">
         <div class="event">Гостиницы</div>
+        <div v-if="hotel" class="alert">
+          {{ hotel }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
@@ -31,32 +51,64 @@ export default {
           Дома <br />
           Шале
         </div>
+        <div v-if="cottage" class="alert">
+          {{ cottage }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=flat&category=habitation">
         <div class="event">Квартиры</div>
+        <div v-if="flat" class="alert">
+          {{ flat }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=rooms&category=habitation">
         <div class="event">Комнаты</div>
+        <div v-if="room" class="alert">
+          {{ room }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=hostel&category=habitation">
         <div class="event">Хостел</div>
+        <div v-if="hostel" class="alert">
+          {{ hostel }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=longterm&category=habitation">
         <div class="event">На длительный срок</div>
+        <div v-if="longterm" class="alert">
+          {{ longterm }}
+        </div>
       </RouterLink>
     </li>
   </ul>
 </template>
 
 <style scoped>
+a{
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .list-events {
   width: 100%;
   height: 100%;

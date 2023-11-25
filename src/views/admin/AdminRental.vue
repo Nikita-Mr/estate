@@ -1,56 +1,93 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import axios from "axios";
+import { RouterLink, RouterView } from "vue-router";
 
 export default {
-  components: {
-  },
+  components: {},
   data() {
-
+    return {
+      inventory: 0,
+      hookah: 0,
+      transport: 0,
+      other: 0,
+    };
   },
-  methods() {
+  methods: {
+    async notifications() {
+      let response = await axios.post(`/notifications`, {
+        nameModel: "rental",
+      });
 
+      this.inventory = response.data.inventory;
+      this.hookah = response.data.hookah;
+      this.transport = response.data.transport;
+      this.other = response.data.other;
+    },
   },
   mounted() {
-
-  }
-}
+    this.notifications();
+  },
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
-    <RouterLink to="/admin/requests?nameModel=inventory&category=rental">
-      <div class="event">
-        Инвентарь <br>
-        Экипировка
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=inventory&category=rental">
+        <div class="event">
+          Инвентарь <br />
+          Экипировка
+        </div>
+        <div v-if="inventory" class="alert">
+          {{ inventory }}
+        </div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/admin/requests?nameModel=hookah&category=rental">
-      <div class="event">
-        Кальян
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=hookah&category=rental">
+        <div class="event">Кальян</div>
+        <div v-if="hookah" class="alert">
+          {{ hookah }}
+        </div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/admin/requests?nameModel=transport&category=rental">
-      <div class="event">
-        Транспорт
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=transport&category=rental">
+        <div class="event">Транспорт</div>
+        <div v-if="transport" class="alert">
+          {{ transport }}
+        </div>
+      </RouterLink>
     </li>
     <li class="item-event">
-    <RouterLink to="/admin/requests?nameModel=other&category=rental">
-      <div class="event">
-        Другое
-      </div>
-    </RouterLink>
+      <RouterLink to="/admin/requests?nameModel=other&category=rental">
+        <div class="event">Другое</div>
+        <div v-if="other" class="alert">
+          {{ other }}
+        </div>
+      </RouterLink>
     </li>
   </ul>
 </template>
 
 <style scoped>
+a {
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .list-events {
   width: 100%;
   height: 100%;

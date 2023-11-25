@@ -9,6 +9,8 @@ export default {
   data() {
     return {
       notification: false,
+      transfers: 0,
+      services: 0,
       nameModel: 'transfer'
     }
   },
@@ -17,12 +19,12 @@ export default {
       let response = await axios.post(`/notifications`, {
         nameModel: this.nameModel
       })
-      this.nameModel = response.data.nameModel
-      this.notification = response.data.notification
+      this.transfers = response.data.transfers
+      this.services = response.data.services
     }
   },
   mounted() {
-
+    this.request()
   }
 }
 </script>
@@ -34,12 +36,18 @@ export default {
         <div class="event">
           Трансфер
         </div>
+        <div v-if="transfers" class="alert">
+          {{ transfers }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=service">
         <div class="event">
           Такси/Доставка
+        </div>
+        <div v-if="services" class="alert">
+          {{ services }}
         </div>
       </RouterLink>
     </li>
@@ -50,6 +58,7 @@ export default {
 a{
   width: 70%;
   text-decoration: none;
+  position: relative;
 }
 .list-events {
   width: 100%;
@@ -68,6 +77,21 @@ a{
   margin-bottom: 15px;
   background-color: transparent;
   flex-basis: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
   display: flex;
   justify-content: center;
   align-items: center;

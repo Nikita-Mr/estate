@@ -1,40 +1,98 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
+import axios from "axios";
+import { RouterLink, RouterView } from "vue-router";
 
 export default {
   components: {},
-  data() {},
-  methods() {},
-  mounted() {},
+  data() {
+    return {
+      instructorAdults: 0,
+      instructorChildren: 0,
+      winterTours: 0,
+      summerTours: 0,
+    };
+  },
+  methods: {
+    async notifications() {
+      let response = await axios.post(`/notifications`, {
+        nameModel: "instructorTours",
+      });
+
+      this.instructorAdults = response.data.instructorAdults;
+      this.instructorChildren = response.data.instructorChildren;
+      this.winterTours = response.data.winterTours;
+      this.summerTours = response.data.summerTours;
+    },
+  },
+  mounted() {
+    this.notifications()
+  },
 };
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
-      <RouterLink to="/admin/requests?nameModel=instructorAdults&category=instructorTours">
+      <RouterLink
+        to="/admin/requests?nameModel=instructorAdults&category=instructorTours"
+      >
         <div class="event">Инструктор для взрослых</div>
+        <div v-if="instructorAdults" class="alert">
+          {{ instructorAdults }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/admin/requests?nameModel=instructorChildren&category=instructorTours">
+      <RouterLink
+        to="/admin/requests?nameModel=instructorChildren&category=instructorTours"
+      >
         <div class="event">Инструктор для детей</div>
+        <div v-if="instructorChildren" class="alert">
+          {{ instructorChildren }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/admin/requests?nameModel=winterTours&category=instructorTours">
+      <RouterLink
+        to="/admin/requests?nameModel=winterTours&category=instructorTours"
+      >
         <div class="event">Зимние туры</div>
+        <div v-if="winterTours" class="alert">
+          {{ winterTours }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/admin/requests?nameModel=summerTours&category=instructorTours">
+      <RouterLink
+        to="/admin/requests?nameModel=summerTours&category=instructorTours"
+      >
         <div class="event">Летние туры</div>
+        <div v-if="summerTours" class="alert">
+          {{ summerTours }}
+        </div>
       </RouterLink>
     </li>
   </ul>
 </template>
 
 <style scoped>
+a {
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .list-events {
   width: 100%;
   height: 100%;

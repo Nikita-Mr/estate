@@ -1,11 +1,42 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
+import axios from "axios";
+import { RouterLink, RouterView } from "vue-router";
 
 export default {
   components: {},
-  data() { },
-  methods() { },
-  mounted() { },
+  data() {
+    return {
+      bans: 0,
+      massage: 0,
+      restaurants: 0,
+      nightClubs: 0,
+      hoofing: 0,
+      karaoke: 0,
+      ratrak: 0,
+      helicopter: 0,
+      zoos: 0,
+    }
+  },
+  methods: {
+    async notifications() {
+      let response = await axios.post(`/notifications`, {
+        nameModel: "event",
+      });
+
+      this.bans = response.data.bans;
+      this.massage = response.data.massage;
+      this.restaurants = response.data.restaurants;
+      this.nightClubs = response.data.nightClubs;
+      this.hoofing = response.data.hoofing;
+      this.karaoke = response.data.karaoke;
+      this.ratrak = response.data.ratrak;
+      this.helicopter = response.data.helicopter;
+      this.zoos = response.data.zoos;
+    },
+  },
+  mounted() {
+    this.notifications()
+  },
 };
 </script>
 
@@ -18,6 +49,9 @@ export default {
           Сауны <br />
           Бассейны
         </div>
+        <div v-if="bans" class="alert">
+          {{ bans }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
@@ -25,6 +59,9 @@ export default {
         <div class="event">
           Массаж <br />
           СПА
+        </div>
+        <div v-if="massage" class="alert">
+          {{ massage }}
         </div>
       </RouterLink>
     </li>
@@ -34,21 +71,33 @@ export default {
           Рестораны <br />
           Кафе
         </div>
+        <div v-if="restaurants" class="alert">
+          {{ restaurants }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=nightClubs&category=event">
         <div class="event">Ночные клубы</div>
+        <div v-if="nightClubs" class="alert">
+          {{ nightClubs }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=hoofing&category=event">
         <div class="event">Кальянные</div>
+        <div v-if="hoofing" class="alert">
+          {{ hoofing }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/admin/requests?nameModel=karaoke&category=event">
         <div class="event">Караоке</div>
+        <div v-if="karaoke" class="alert">
+          {{ karaoke }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
@@ -56,6 +105,9 @@ export default {
         <div class="event">
           Ратрак <br />
           Снегоход
+        </div>
+        <div v-if="ratrak" class="alert">
+          {{ ratrak }}
         </div>
       </RouterLink>
     </li>
@@ -65,6 +117,9 @@ export default {
           Вертолёт <br />
           Параплан
         </div>
+        <div v-if="helicopter" class="alert">
+          {{ helicopter }}
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
@@ -73,12 +128,32 @@ export default {
           Зоопарки <br />
           Музеи
         </div>
+        <div v-if="zoos" class="alert">
+          {{ zoos }}
+        </div>
       </RouterLink>
     </li>
   </ul>
 </template>
 
 <style scoped>
+a {
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .list-events {
   width: 100%;
   height: 100%;
@@ -124,7 +199,6 @@ export default {
 }
 
 @media (max-width: 995px) {
-
   .list-events {
     padding: 20px 0;
     position: absolute;
@@ -184,6 +258,5 @@ export default {
     overflow: scroll;
     display: grid;
   }
-
 }
 </style>

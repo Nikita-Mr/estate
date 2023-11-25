@@ -95,8 +95,8 @@ export default {
           </div>
         </div>
 
-        <div class="wrapper-for-item" @click="$router.push({ path: `/transfer/card`, query: { id: item.id, view: true } })"
-         v-if="nameModel == 'service'" v-for="item in requests">
+        <div class="wrapper-for-item" @click="$router.push({ path: `/taxi-delivery/card`, query: { id: item.id, view: true } })"
+         v-else-if="nameModel == 'service'" v-for="item in requests">
           <div class="title">{{item.name}}</div>
           <div class="date">{{getDate(item.createdAt)}}</div>
           <div class="buttons">
@@ -105,7 +105,7 @@ export default {
           </div>
         </div>
 
-        <div class="wrapper-for-item" @click="open(item.id)" v-else v-for="item in requests">
+        <div class="wrapper-for-item 3" @click="open(item.id)" v-else v-for="item in requests">
           <div class="title">{{item.title}}</div>
           <div class="date">{{getDate(item.createdAt)}}</div>
           <div class="buttons">
@@ -124,6 +124,23 @@ export default {
 </template>
 
 <style scoped>
+a{
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  color: red;
+  border: 1px solid red;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .success {
   position: absolute;

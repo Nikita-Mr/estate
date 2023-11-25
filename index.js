@@ -32,6 +32,8 @@ const { secret } = require(`./config`);
 const { tryBook, addNumber } = require(`./modules/booking`);
 
 const { initPayment, awaitPayment } = require(`./modules/payments`);
+const { name } = require("dayjs/locale/ru");
+const internal = require("stream");
 
 let app = express();
 let port = process.env.PORT || 3005;
@@ -618,6 +620,7 @@ app.get(`/card`, async function (req, res) {
     }
     if (name == `habitation`) {
       if (view) {
+        console.log(id);
         card = await HotelModel.findOne({ where: { id: id } });
         number = await NumberModel.findAll({ where: { HotelModelId: id } });
       } else {
@@ -887,9 +890,9 @@ app.post(`/create_service`, async function (req, res) {
           return res.send({
             //message: `Создание карты завершено, timeId: ${timeId}`,
             message: timeId,
-            error: 'Запрос успешно добавлен',
+            error: "Запрос успешно добавлен",
             status: "200",
-            success: true
+            success: true,
           });
         });
       } catch (e) {
@@ -907,7 +910,12 @@ app.post(`/create_service`, async function (req, res) {
       });
     }
   } catch (err) {
-    res.send({ message: "Ошибка создания услуги", show: false, err, success: false });
+    res.send({
+      message: "Ошибка создания услуги",
+      show: false,
+      err,
+      success: false,
+    });
   }
 });
 
@@ -1157,8 +1165,10 @@ app.post(`/admin_requests`, async function (req, res) {
   try {
     let { nameModel, category } = req.body;
     let requests = [];
-    if (nameModel == "hotels") {
-      requests = await HotelModel.findAll({ where: { verified: false } });
+    if (category == "habitation") {
+      requests = await HotelModel.findAll({
+        where: { verified: false, subcategory: nameModel },
+      });
     } else if (nameModel == "transfer") {
       requests = await CardTransfer.findAll({ where: { verified: false } });
     } else if (nameModel == "service") {
@@ -1220,5 +1230,326 @@ app.post(`/reject_request`, async function (req, res) {
     });
   } catch (err) {
     res.send({ message: "Ошибка удаления запроса", err, success: false });
+  }
+});
+
+app.post(`/notifications`, async function (req, res) {
+  try {
+    let { nameModel, category } = req.body;
+    if (nameModel == 'ALL') {
+      let transfer = await CardTransfer.findAll({ where: { verified: false } });
+      let service = await CardService.findAll({ where: { verified: false } });
+      let cards = await CardModel.findAll({ where: { verified: false } })
+      let habitation = await HotelModel.findAll({
+        where: {
+          verified: false,
+        },
+      });
+
+      s = transfer.length + service.length + cards.length + habitation.length
+      res.send({s})
+    }
+    if (nameModel == "all") {
+      let transfer = await CardTransfer.findAll({ where: { verified: false } });
+      let service = await CardService.findAll({ where: { verified: false } });
+      if (transfer) {
+        transfer = transfer.length + service.length;
+      }
+
+      let habitation = await HotelModel.findAll({
+        where: {
+          verified: false,
+        },
+      });
+      if (habitation) {
+        habitation = habitation.length;
+      }
+
+      let rental = await CardModel.findAll({
+        where: {
+          category: "rental",
+          verified: false,
+        },
+      });
+      if (rental) {
+        rental = rental.length;
+      }
+
+      let forChildren = await CardModel.findAll({
+        where: {
+          category: "forChildren",
+          verified: false,
+        },
+      });
+      if (forChildren) {
+        forChildren = forChildren.length;
+      }
+
+      let instructorTours = await CardModel.findAll({
+        where: { category: "instructorTours", verified: false },
+      });
+      if (instructorTours) {
+        instructorTours = instructorTours.length;
+      }
+
+      let events = await CardModel.findAll({
+        where: { category: "event", verified: false },
+      });
+      if (events) {
+        events = events.length;
+      }
+
+      res.send({
+        transfer: transfer,
+        habitation: habitation,
+        rental: rental,
+        forChildren: forChildren,
+        instructorTours: instructorTours,
+        events: events,
+      });
+    } else if (nameModel == "habitation") {
+      let hotel = await HotelModel.findAll({
+        where: { verified: false, subcategory: "hotels" },
+      });
+      if (hotel) {
+        hotel = hotel.length;
+      }
+
+      let cottage = await HotelModel.findAll({
+        where: { subcategory: "cottage", verified: false },
+      });
+      if (cottage) {
+        cottage = cottage.length;
+      }
+
+      let flat = await HotelModel.findAll({
+        where: { subcategory: "flat", verified: false },
+      });
+      if (flat) {
+        flat = flat.length;
+      }
+
+      let room = await HotelModel.findAll({
+        where: { subcategory: "rooms", verified: false },
+      });
+      if (room) {
+        room = room.length;
+      }
+
+      let hostel = await HotelModel.findAll({
+        where: { subcategory: "hostel", verified: false },
+      });
+      if (hostel) {
+        hostel = hostel.length;
+      }
+
+      let longterm = await HotelModel.findAll({
+        where: { subcategory: "longterm" },
+      });
+      if (longterm) {
+        longterm = longterm.length;
+      }
+
+      res.send({ hotel, cottage, flat, room, hostel, longterm });
+    } else if (nameModel == "forChildren") {
+      let childrenRooms = await CardModel.findAll({
+        where: { subcategory: "childrenRooms", verified: false },
+      });
+      if (childrenRooms) {
+        childrenRooms = childrenRooms.length;
+      }
+
+      let nanny = await CardModel.findAll({
+        where: { subcategory: "nanny", verified: false },
+      });
+      if (nanny) {
+        nanny = nanny.length;
+      }
+
+      let otherEntertainment = await CardModel.findAll({
+        where: { subcategory: "otherEntertainment", verified: false },
+      });
+      if (otherEntertainment) {
+        otherEntertainment = otherEntertainment.length;
+      }
+
+      let instructor = await CardModel.findAll({
+        where: { subcategory: "instructor", verified: false },
+      });
+      if (instructor) {
+        instructor = instructor.length;
+      }
+
+      res.send({ childrenRooms, nanny, otherEntertainment, instructor });
+    } else if (nameModel == "event") {
+      let bans = await CardModel.findAll({
+        where: { subcategory: "bans", verified: false },
+      });
+      if (bans) {
+        bans = bans.length;
+      }
+
+      let massage = await CardModel.findAll({
+        where: { subcategory: "massage", verified: false },
+      });
+      if (massage) {
+        massage = massage.length;
+      }
+
+      let restaurants = await CardModel.findAll({
+        where: { subcategory: "restaurants", verified: false },
+      });
+      if (restaurants) {
+        restaurants = restaurants.length;
+      }
+
+      let nightClubs = await CardModel.findAll({
+        where: { subcategory: "nightClubs", verified: false },
+      });
+      if (nightClubs) {
+        nightClubs = nightClubs.length;
+      }
+
+      let hoofing = await CardModel.findAll({
+        where: { subcategory: "hoofing", verified: false },
+      });
+      if (hoofing) {
+        hoofing = hoofing.length;
+      }
+
+      let karaoke = await CardModel.findAll({
+        where: { subcategory: "karaoke", verified: false },
+      });
+      if (karaoke) {
+        karaoke = karaoke.length;
+      }
+
+      let ratrak = await CardModel.findAll({
+        where: { subcategory: "ratrak", verified: false },
+      });
+      if (ratrak) {
+        ratrak = ratrak.length;
+      }
+
+      let helicopter = await CardModel.findAll({
+        where: { subcategory: "helicopter", verified: false },
+      });
+      if (helicopter) {
+        helicopter = helicopter.length;
+      }
+
+      let zoos = await CardModel.findAll({
+        where: { subcategory: "zoos", verified: false },
+      });
+      if (zoos) {
+        zoos = zoos.length;
+      }
+
+      res.send({
+        bans,
+        massage,
+        restaurants,
+        nightClubs,
+        hoofing,
+        karaoke,
+        ratrak,
+        helicopter,
+        zoos,
+      });
+    } else if (nameModel == "rental") {
+      let inventory = await CardModel.findAll({
+        where: { subcategory: "inventory", verified: false },
+      });
+      if (inventory) {
+        inventory = inventory.length;
+      }
+
+      let hookah = await CardModel.findAll({
+        where: { subcategory: "hookah", verified: false },
+      });
+      if (hookah) {
+        hookah = hookah.length;
+      }
+
+      let transport = await CardModel.findAll({
+        where: { subcategory: "transport", verified: false },
+      });
+      if (transport) {
+        transport = transport.length;
+      }
+
+      let other = await CardModel.findAll({
+        where: { subcategory: "other", verified: false },
+      });
+      if (other) {
+        other = other.length;
+      }
+
+      res.send({ inventory, hookah, transport, other });
+
+
+    } else if (nameModel == "instructorTours") {
+      let instructorAdults = await CardModel.findAll({
+        where: { subcategory: "instructorAdults", verified: false },
+      });
+      if (instructorAdults) {
+        instructorAdults = instructorAdults.length;
+      }
+
+      let instructorChildren = await CardModel.findAll({
+        where: { subcategory: "instructorChildren", verified: false },
+      });
+      if (instructorChildren) {
+        instructorChildren = instructorChildren.length;
+      }
+
+      let winterTours = await CardModel.findAll({
+        where: { subcategory: "winterTours", verified: false },
+      });
+      if (winterTours) {
+        winterTours = winterTours.length;
+      }
+
+      let summerTours = await CardModel.findAll({
+        where: { subcategory: "summerTours", verified: false },
+      });
+      if (summerTours) {
+        summerTours = summerTours.length;
+      }
+
+      res.send({ instructorAdults, instructorChildren, winterTours, summerTours });
+    } else {
+      let cards;
+      let transfers = await CardTransfer.findAll({
+        where: { verified: false },
+      });
+      if (transfers) {
+        transfers = transfers.length;
+      }
+      let services = await CardService.findAll({ where: { verified: false } });
+      if (services) {
+        services = services.length;
+      }
+      let hotels = await HotelModel.findAll({ where: { verified: false } });
+      if (hotels) {
+        hotels = hotels.length;
+      }
+      if (category && nameModel) {
+        cards = await CardModel.findAll({
+          where: {
+            verified: false,
+            category: category,
+            subcategory: nameModel,
+          },
+        });
+        if (cards) {
+          cards = cards.length;
+        }
+      }
+
+      res.send({ transfers, services, hotels, cards });
+    }
+  } catch (err) {
+    console.log(err);
   }
 });
