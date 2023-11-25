@@ -12,7 +12,7 @@ export default {
 <template>
   <ul class="list-events">
     <li class="item-event">
-      <RouterLink to="/event/items?name=bans">
+      <RouterLink to="/admin/requests?nameModel=bans&category=event">
         <div class="event">
           Бани <br />
           Сауны <br />
@@ -21,7 +21,7 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=massage">
+      <RouterLink to="/admin/requests?nameModel=massage&category=event">
         <div class="event">
           Массаж <br />
           СПА
@@ -29,7 +29,7 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=restaurants">
+      <RouterLink to="/admin/requests?nameModel=restaurants&category=event">
         <div class="event">
           Рестораны <br />
           Кафе
@@ -37,22 +37,22 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=nightClubs">
+      <RouterLink to="/admin/requests?nameModel=nightClubs&category=event">
         <div class="event">Ночные клубы</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=hoofing">
+      <RouterLink to="/admin/requests?nameModel=hoofing&category=event">
         <div class="event">Кальянные</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=karaoke">
+      <RouterLink to="/admin/requests?nameModel=karaoke&category=event">
         <div class="event">Караоке</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=ratrak">
+      <RouterLink to="/admin/requests?nameModel=ratrak&category=event">
         <div class="event">
           Ратрак <br />
           Снегоход
@@ -60,7 +60,7 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=helicopter">
+      <RouterLink to="/admin/requests?nameModel=helicopter&category=event">
         <div class="event">
           Вертолёт <br />
           Параплан
@@ -68,7 +68,7 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=zoos">
+      <RouterLink to="/admin/requests?nameModel=zoos&category=event">
         <div class="event">
           Зоопарки <br />
           Музеи
@@ -80,10 +80,13 @@ export default {
 
 <style scoped>
 .list-events {
-  width: 80%;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   list-style-type: none;
-  overflow-y: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   margin: 0;
   padding: 0;
 }
@@ -179,6 +182,7 @@ export default {
     padding: 20px 0;
     position: absolute;
     overflow: scroll;
+    display: grid;
   }
 
 }

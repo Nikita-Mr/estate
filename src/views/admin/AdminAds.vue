@@ -12,66 +12,28 @@ export default {
 <template>
   <ul class="list-events">
     <li class="item-event">
-      <RouterLink to="/event/items?name=bans">
+      <RouterLink to="/admin/requests?nameModel=found&category=ads">
+        <div class="event">Найдено</div>
+      </RouterLink>
+    </li>
+    <li class="item-event">
+      <RouterLink to="/admin/requests?nameModel=lost&category=ads">
+        <div class="event">Потеряно</div>
+      </RouterLink>
+    </li>
+    <li class="item-event">
+      <RouterLink to="/admin/requests?nameModel=selling&category=ads">
         <div class="event">
-          Бани <br />
-          Сауны <br />
-          Бассейны
+          Продам <br />
+          Сдам в аренду
         </div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/event/items?name=massage">
+      <RouterLink to="/admin/requests?nameModel=willbuy&category=ads">
         <div class="event">
-          Массаж <br />
-          СПА
-        </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/event/items?name=restaurants">
-        <div class="event">
-          Рестораны <br />
-          Кафе
-        </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/event/items?name=nightClubs">
-        <div class="event">Ночные клубы</div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/event/items?name=hoofing">
-        <div class="event">Кальянные</div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/event/items?name=karaoke">
-        <div class="event">Караоке</div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/event/items?name=ratrak">
-        <div class="event">
-          Ратрак <br />
-          Снегоход
-        </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/event/items?name=helicopter">
-        <div class="event">
-          Вертолёт <br />
-          Параплан
-        </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/event/items?name=zoos">
-        <div class="event">
-          Зоопарки <br />
-          Музеи
+          Куплю <br />
+          Возьму в аренду
         </div>
       </RouterLink>
     </li>
@@ -80,18 +42,22 @@ export default {
 
 <style scoped>
 .list-events {
-  width: 80%;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   list-style-type: none;
-  overflow-y: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   margin: 0;
   padding: 0;
 }
 
 .item-event {
-  margin-bottom: 10px;
+  cursor: pointer;
+  margin-bottom: 15px;
   background-color: transparent;
-  flex-basis: 33%;
+  flex-basis: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -99,7 +65,6 @@ export default {
 
 .event {
   text-align: center;
-  cursor: pointer;
   width: 70%;
   display: flex;
   justify-content: center;
@@ -121,16 +86,6 @@ export default {
 }
 
 @media (max-width: 995px) {
-
-  .list-events {
-    padding: 20px 0;
-    position: absolute;
-    overflow: scroll;
-  }
-
-  .event {
-    height: 100px;
-  }
   .item-event {
     line-height: 1;
     font-size: 13px;
@@ -152,7 +107,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100px;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 550;
     padding: 7px 10px;
     color: #d5d5d5;
@@ -167,19 +122,22 @@ export default {
     cursor: pointer;
     margin-bottom: 10px;
     background-color: transparent;
-    flex-basis: 47%;
+    flex-basis: 51%;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 }
 
-@media (max-width: 420px) {
-  .list-events {
-    padding: 20px 0;
-    position: absolute;
-    overflow: scroll;
+@media (max-width: 330px) {
+  .item-event {
+    cursor: pointer;
+    margin-bottom: 10px;
+    background-color: transparent;
+    flex-basis: 51%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-
 }
 </style>

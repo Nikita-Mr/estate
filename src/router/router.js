@@ -33,6 +33,15 @@ import AppMap from '../views/info/AppMap.vue'
 import AppEmergency from '../views/info/AppEmergency.vue'
 import AppSkipass from '../views/info/AppSkipass.vue'
 import AppSkipassCreate from '../views/info/AppSkipassCreate.vue'
+import AdminReq from '../views/admin/AdminReq.vue'
+import AdminSections from '../views/admin/AdminSections.vue'
+import AdminEvents from '../views/admin/AdminEvents.vue'
+import AdminForChildren from '../views/admin/AdminForChildren.vue'
+import AdminHabitation from '../views/admin/AdminHabitation.vue'
+import AdminRental from '../views/admin/AdminRental.vue'
+import AdminTransferTaksi from '../views/admin/AdminTransferTaksi.vue'
+import AdminInstructorTours from '../views/admin/AdminInstructorTours.vue'
+import AdminAds from '../views/admin/AdminAds.vue'
 
 
 const router = createRouter({
@@ -227,6 +236,51 @@ const router = createRouter({
       path: '/skipass/create',
       name: 'skipasscreate',
       component: AppSkipassCreate,
+    },
+    {
+      path: '/admin/requests',
+      name: 'adminreq',
+      component: AdminReq,
+    },
+    {
+      path: '/admin/sections',
+      name: 'adminsections',
+      component: AdminSections,
+    },
+    {
+      path: '/admin/events',
+      name: 'adminevents',
+      component: AdminEvents,
+    },
+    {
+      path: '/admin/for-children',
+      name: 'adminforchildren',
+      component: AdminForChildren,
+    },
+    {
+      path: '/admin/habitation',
+      name: 'adminhabitation',
+      component: AdminHabitation,
+    },
+    {
+      path: '/admin/instructor-tours',
+      name: 'admininstructortours',
+      component: AdminInstructorTours,
+    },
+    {
+      path: '/admin/rental',
+      name: 'adminrental',
+      component: AdminRental,
+    },
+    {
+      path: '/admin/transfer-taksi',
+      name: 'admintransfertaksi',
+      component: AdminTransferTaksi,
+    },
+    {
+      path: '/admin/ads',
+      name: 'adminads',
+      component: AdminAds,
     },
   ]
 })

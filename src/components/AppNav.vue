@@ -70,7 +70,7 @@ export default {
 
 <style>
 a{
-  width: 100%;
+  width: 100% !important;
   display: flex;
   justify-content: center;
   align-items: center;

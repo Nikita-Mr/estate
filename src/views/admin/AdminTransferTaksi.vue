@@ -1,14 +1,25 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
+import axios from 'axios';
 
 export default {
   components: {
+    
   },
   data() {
-
+    return {
+      notification: false,
+      nameModel: 'transfer'
+    }
   },
-  methods() {
-
+  methods: {
+    async request() {
+      let response = await axios.post(`/notifications`, {
+        nameModel: this.nameModel
+      })
+      this.nameModel = response.data.nameModel
+      this.notification = response.data.notification
+    }
   },
   mounted() {
 
@@ -19,56 +30,29 @@ export default {
 <template>
   <ul class="list-events">
     <li class="item-event">
-      <RouterLink to="/">
-      <div class="event">
-        Погода сегодня <br>
-        На 3-7-10 дней <br>
-        На месяц
-      </div>
+      <RouterLink to="/admin/requests?nameModel=transfer">
+        <div class="event">
+          Трансфер
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/lift">
-      <div class="event">
-        График работы подъемников, <br>
-        оперативная информация
-      </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/cameras">
-      <div class="event">
-        ВЕБ-камеры
-      </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/skipass">
-      <div class="event">
-        Стоимость проезда <br> на подъемниках, СКИ-пасы
-      </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/map">
-      <div class="event">
-        Карта курорта
-      </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/emergency">
-      <div class="event">
-        Контакты экстренных служб
-      </div>
+      <RouterLink to="/admin/requests?nameModel=service">
+        <div class="event">
+          Такси/Доставка
+        </div>
       </RouterLink>
     </li>
   </ul>
 </template>
 
 <style scoped>
+a{
+  width: 70%;
+  text-decoration: none;
+}
 .list-events {
-  width: 80%;
+  width: 100%;
   height: 100%;
   list-style-type: none;
   display: flex;
@@ -80,9 +64,10 @@ export default {
 }
 
 .item-event {
-  margin-bottom: 10px;
+  cursor: pointer;
+  margin-bottom: 15px;
   background-color: transparent;
-  flex-basis: 33%;
+  flex-basis: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -90,7 +75,7 @@ export default {
 
 .event {
   text-align: center;
-  width: 70%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -102,6 +87,7 @@ export default {
   border: 1px solid #d5d5d5;
   box-shadow: 0px 0 10px 0 #ffffff71;
   border-radius: 15px;
+
   transition: color 400ms, border 400ms;
 }
 
@@ -147,7 +133,19 @@ export default {
     cursor: pointer;
     margin-bottom: 10px;
     background-color: transparent;
-    flex-basis: 47%;
+    flex-basis: 51%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 330px) {
+  .item-event {
+    cursor: pointer;
+    margin-bottom: 10px;
+    background-color: transparent;
+    flex-basis: 51%;
     display: flex;
     justify-content: center;
     align-items: center;

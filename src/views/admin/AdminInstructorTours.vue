@@ -1,66 +1,34 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
 
 export default {
-  components: {
-  },
-  data() {
-
-  },
-  methods() {
-
-  },
-  mounted() {
-
-  }
-}
+  components: {},
+  data() {},
+  methods() {},
+  mounted() {},
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
-      <RouterLink to="/">
-      <div class="event">
-        Погода сегодня <br>
-        На 3-7-10 дней <br>
-        На месяц
-      </div>
+      <RouterLink to="/admin/requests?nameModel=instructorAdults&category=instructorTours">
+        <div class="event">Инструктор для взрослых</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/lift">
-      <div class="event">
-        График работы подъемников, <br>
-        оперативная информация
-      </div>
+      <RouterLink to="/admin/requests?nameModel=instructorChildren&category=instructorTours">
+        <div class="event">Инструктор для детей</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/cameras">
-      <div class="event">
-        ВЕБ-камеры
-      </div>
+      <RouterLink to="/admin/requests?nameModel=winterTours&category=instructorTours">
+        <div class="event">Зимние туры</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/skipass">
-      <div class="event">
-        Стоимость проезда <br> на подъемниках, СКИ-пасы
-      </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/map">
-      <div class="event">
-        Карта курорта
-      </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/emergency">
-      <div class="event">
-        Контакты экстренных служб
-      </div>
+      <RouterLink to="/admin/requests?nameModel=summerTours&category=instructorTours">
+        <div class="event">Летние туры</div>
       </RouterLink>
     </li>
   </ul>
@@ -68,7 +36,7 @@ export default {
 
 <style scoped>
 .list-events {
-  width: 80%;
+  width: 100%;
   height: 100%;
   list-style-type: none;
   display: flex;
@@ -80,9 +48,10 @@ export default {
 }
 
 .item-event {
-  margin-bottom: 10px;
+  cursor: pointer;
+  margin-bottom: 15px;
   background-color: transparent;
-  flex-basis: 33%;
+  flex-basis: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,7 +78,6 @@ export default {
   border: 1px solid black;
   color: black;
 }
-
 @media (max-width: 995px) {
   .item-event {
     line-height: 1;
@@ -147,7 +115,19 @@ export default {
     cursor: pointer;
     margin-bottom: 10px;
     background-color: transparent;
-    flex-basis: 47%;
+    flex-basis: 51%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 330px) {
+  .item-event {
+    cursor: pointer;
+    margin-bottom: 10px;
+    background-color: transparent;
+    flex-basis: 51%;
     display: flex;
     justify-content: center;
     align-items: center;

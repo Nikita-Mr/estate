@@ -12,12 +12,15 @@ export default {
     i: Number
   },
   components: {},
-  data() {},
+  data() {
+    return {
+    }
+  },
   methods: {
   open(){
     this.$router.push({
-        path: '/card',
-        query: { id: this.id, name: this.$route.path.slice(1, -6) },
+        path: '/taxi-delivery/card',
+        query: { id: this.$route.query.id },
       });
   }
   },

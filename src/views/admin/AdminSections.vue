@@ -1,66 +1,44 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from "vue-router";
 
 export default {
-  components: {
-  },
-  data() {
-
-  },
-  methods() {
-
-  },
-  mounted() {
-
-  }
-}
+  components: {},
+  data() {},
+  methods() {},
+  mounted() {},
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
-      <RouterLink to="/">
-      <div class="event">
-        Погода сегодня <br>
-        На 3-7-10 дней <br>
-        На месяц
-      </div>
+      <RouterLink to="/admin/transfer-taksi">
+        <div class="event">Трансфер/Такси</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/lift">
-      <div class="event">
-        График работы подъемников, <br>
-        оперативная информация
-      </div>
+      <RouterLink to="/admin/habitation">
+        <div class="event">Проживание</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/cameras">
-      <div class="event">
-        ВЕБ-камеры
-      </div>
+      <RouterLink to="/admin/rental">
+        <div class="event">Прокат</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/skipass">
-      <div class="event">
-        Стоимость проезда <br> на подъемниках, СКИ-пасы
-      </div>
+      <RouterLink to="/admin/for-children">
+        <div class="event">Детям</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/map">
-      <div class="event">
-        Карта курорта
-      </div>
+      <RouterLink to="/admin/instructor-tours">
+        <div class="event">Инструктор/Туры</div>
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/emergency">
-      <div class="event">
-        Контакты экстренных служб
-      </div>
+      <RouterLink to="/admin/events">
+        <div class="event">Развлечения</div>
       </RouterLink>
     </li>
   </ul>
@@ -68,7 +46,7 @@ export default {
 
 <style scoped>
 .list-events {
-  width: 80%;
+  width: 100%;
   height: 100%;
   list-style-type: none;
   display: flex;
@@ -80,6 +58,7 @@ export default {
 }
 
 .item-event {
+  cursor: pointer;
   margin-bottom: 10px;
   background-color: transparent;
   flex-basis: 33%;
@@ -110,20 +89,6 @@ export default {
   color: black;
 }
 
-@media (max-width: 995px) {
-  .item-event {
-    line-height: 1;
-    font-size: 13px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    background-color: transparent;
-    flex-basis: 47%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
 @media (max-width: 670px) {
   .event {
     text-align: center;
@@ -132,7 +97,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100px;
-    font-size: 13px;
+    font-size: medium;
     font-weight: 550;
     padding: 7px 10px;
     color: #d5d5d5;

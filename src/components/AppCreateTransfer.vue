@@ -35,6 +35,7 @@ export default {
         car: this.car,
         passenger: this.passenger,
         price: this.price,
+        userToken: document.cookie.replace('token=', '') 
       });
       this.show = response.data.show;
       this.message = response.data.message;

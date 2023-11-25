@@ -19,56 +19,40 @@ export default {
 <template>
   <ul class="list-events">
     <li class="item-event">
-      <RouterLink to="/">
+    <RouterLink to="/admin/requests?nameModel=inventory&category=rental">
       <div class="event">
-        Погода сегодня <br>
-        На 3-7-10 дней <br>
-        На месяц
+        Инвентарь <br>
+        Экипировка
       </div>
-      </RouterLink>
+    </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/lift">
+    <RouterLink to="/admin/requests?nameModel=hookah&category=rental">
       <div class="event">
-        График работы подъемников, <br>
-        оперативная информация
+        Кальян
       </div>
-      </RouterLink>
+    </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/cameras">
+    <RouterLink to="/admin/requests?nameModel=transport&category=rental">
       <div class="event">
-        ВЕБ-камеры
+        Транспорт
       </div>
-      </RouterLink>
+    </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/skipass">
+    <RouterLink to="/admin/requests?nameModel=other&category=rental">
       <div class="event">
-        Стоимость проезда <br> на подъемниках, СКИ-пасы
+        Другое
       </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/map">
-      <div class="event">
-        Карта курорта
-      </div>
-      </RouterLink>
-    </li>
-    <li class="item-event">
-      <RouterLink to="/emergency">
-      <div class="event">
-        Контакты экстренных служб
-      </div>
-      </RouterLink>
+    </RouterLink>
     </li>
   </ul>
 </template>
 
 <style scoped>
 .list-events {
-  width: 80%;
+  width: 100%;
   height: 100%;
   list-style-type: none;
   display: flex;
@@ -80,9 +64,10 @@ export default {
 }
 
 .item-event {
-  margin-bottom: 10px;
+  cursor: pointer;
+  margin-bottom: 15px;
   background-color: transparent;
-  flex-basis: 33%;
+  flex-basis: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -147,7 +132,19 @@ export default {
     cursor: pointer;
     margin-bottom: 10px;
     background-color: transparent;
-    flex-basis: 47%;
+    flex-basis: 51%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 330px) {
+  .item-event {
+    cursor: pointer;
+    margin-bottom: 10px;
+    background-color: transparent;
+    flex-basis: 51%;
     display: flex;
     justify-content: center;
     align-items: center;
