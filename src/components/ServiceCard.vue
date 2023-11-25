@@ -82,26 +82,14 @@ export default defineComponent({
       <div class="wrapper">
         <div class="info">
           <span class="title">{{ INFO.name }}</span>
-          <span class="price">{{ INFO.price }} руб</span>
           <span class="phone mb-2">{{ INFO.phone }}</span>
-          <div class="messengers">
-            <a href="#" target="_blank">
-              <img src="/src/assets/img/viber.png" alt="viber" />
-            </a>
-            <a href="#" target="_blank">
-              <img src="/src/assets/img/whatsapp.png" alt="whatsapp" />
-            </a>
-            <a href="#" target="_blank">
-              <img src="/src/assets/img/telegram.png" alt="telegram" />
-            </a>
-          </div>
         </div>
       </div>
       <div class="body">
         <span class="description">{{ INFO.description }}</span>
       </div>
       <div class="reviews"></div>
-      <div class="button-wrapper">
+      <div class="button-wrapper" v-if="!view">
         <button v-if="!admin">Купить</button>
         <button @click="delete_service" class="delete" v-if="admin">Удалить</button>
       </div>

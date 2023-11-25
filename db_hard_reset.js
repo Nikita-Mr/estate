@@ -12,19 +12,19 @@ const THE_FUCKING_CURE = async () =>
     });
     console.log('tables synchronized.');
 
-    const newCard = await CardModel.create({
-        category: "habitation",
-        subcategory: 'hotel',
-        title: "Test",
-        img: {},
-        p: "Prototip",
-        price: 1000,
-        phone: "+79042065393",
-        address: "ул Пушкина",
-        email: 'zankov.vadik@yandex.ru',
-        nameCard: "simple",
-        verified: false
-    });
+    // const newCard = await CardModel.create({
+    //     category: "habitation",
+    //     subcategory: 'hotel',
+    //     title: "Test",
+    //     img: {},
+    //     p: "Prototip",
+    //     price: 1000,
+    //     phone: "+79042065393",
+    //     address: "ул Пушкина",
+    //     email: 'zankov.vadik@yandex.ru',
+    //     nameCard: "simple",
+    //     verified: false
+    // });
 
     console.log('created card...');
 
@@ -55,37 +55,37 @@ const THE_FUCKING_CURE = async () =>
 
     console.log('created new...');
     
-    const newHotel = await HotelModel.create({
-        category:       'uhuh what',
-        subcategory:    'uhuh what',
-        title:          'uhuh what',
-        img:            { },
-        p:              'uhuh what',
-        phone:          'uhuh what',
-        address:        'uhuh what',
-        email:          'zankov.vadik@yandex.ru',
-        verified:        false
-    }, );
+    // const newHotel = await HotelModel.create({
+    //     category:       'uhuh what',
+    //     subcategory:    'uhuh what',
+    //     title:          'uhuh what',
+    //     img:            { },
+    //     p:              'uhuh what',
+    //     phone:          'uhuh what',
+    //     address:        'uhuh what',
+    //     email:          'zankov.vadik@yandex.ru',
+    //     verified:        false
+    // }, );
     
-    const newNumber = await NumberModel.create({
-        name:           'uhuh what',
-        adults:         0,
-        children:       0,
-        description:    'uhuh what',
-        bookings:       {},
-        value:          10,
-        HotelModelId:   1,
-        price:          1,
-    }, );
+    // const newNumber = await NumberModel.create({
+    //     name:           'uhuh what',
+    //     adults:         0,
+    //     children:       0,
+    //     description:    'uhuh what',
+    //     bookings:       {},
+    //     value:          10,
+    //     HotelModelId:   1,
+    //     price:          1,
+    // }, );
     
-    await newCard.save();
+    // await newCard.save();
     await newUser.save();
     await otherUser.save();
     await newNew.save();
     
     //hotels
-    await newHotel.save();
-    await newNumber.save();
+    // await newHotel.save();
+    // await newNumber.save();
     
     //newHotel.findById(1, { include: ["NumberModel"] }).then()
     //newHotel.findAll({ include: ["NumberModel"] });
