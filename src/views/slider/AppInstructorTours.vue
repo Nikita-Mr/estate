@@ -39,12 +39,12 @@ export default {
   width: 80%;
   height: 100%;
   list-style-type: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin: 0;
-  padding: 0;
 }
 
 .item-event {

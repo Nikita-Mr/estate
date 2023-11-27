@@ -30,6 +30,8 @@ export default {
         if (this.status == '200') {
           this.$refs.form.reset();
           document.cookie = new String();
+          document.cookie = `token=${this.token}; max-age=1123200`;
+
           this.$router.push({ name: 'login' });
         }
       }, 1000);

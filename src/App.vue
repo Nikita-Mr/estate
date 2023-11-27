@@ -6,6 +6,8 @@ import AppCenter from './components/AppCenter.vue';
 import AppPhone from './components/AppPhone.vue';
 import AppAdmin from './views/admin/AppAdmin.vue';
 import axios from 'axios';
+import router from './router/router';
+import { name } from 'dayjs/locale/ru';
 // axios.defaults.headers.common['Authorization'] = document.cookie.replace("token=", ``).split(`;`, 1)
 
 export default {
@@ -18,9 +20,56 @@ export default {
   },
   data() {
     return {
-      reload() {
-        window.location.assign(`http://localhost:5173`);
-        Vue.config.silent = true;
+      name: {
+        '/': 'Главная',
+        '/search': 'Поиск',
+        home: 'Главная',
+        weather: 'Погода',
+        book_a_seat: 'Бронирование места',
+        book_a_transfer: 'Бронирование трансфера',
+        search: 'Поиск',
+        register: 'Регистрация',
+        login: 'Вход',
+        info: 'Информация',
+        'transfer-taksi': 'Трансфер такси',
+        habitation: 'Проживание',
+        habitationItems: 'Карточки проживания',
+        rental: 'Прокат',
+        rentalItems: 'Карточки проката',
+        event: 'Развлечения',
+        eventItems: 'Карточки развлечения',
+        forChildren: 'Для детей',
+        forChildrenItems: 'Карточки для детей',
+        'instructor-tours': 'Инструктор/Туры',
+        instructorToursItems: 'Карточки инструктор/туры',
+        news: 'Новости',
+        ads: 'Объявления',
+        adsItems: 'Карточки объявления',
+        transfer: 'Трансфер',
+        'taxi-delivery': 'Такси-доставка',
+        serviceCardOpen: 'Карточки такси-доставки',
+        card: 'Карточка',
+        createCard: 'Создание карточки',
+        createNews: 'Создание новостей',
+        createTransfer: 'Создание трансферов',
+        createService: 'Создание услуг',
+        transfercard: 'Карточка трансфера',
+        lift: 'Подъемники',
+        appcreatelift: 'Создание Подъемников',
+        appcameras: 'Камеры',
+        appmap: 'Карта',
+        appemergency: 'Экстренные службы',
+        skipass: 'СКИ-пасы',
+        skipasscreate: 'Создание СКИ-пасов',
+        adminreq: 'ADMIN Запросы',
+        adminsections: 'ADMIN панель',
+        adminevents: 'ADMIN развлечения',
+        adminforchildren: 'ADMIN для детей',
+        adminhabitation: 'ADMIN проживание',
+        admininstructortours: 'ADMIN инструкторы/туры',
+        adminrental: 'ADMIN прокаты',
+        admintransfertaksi: 'ADMIN трансфер такси',
+        adminads: 'ADMIN объявления',
       },
     };
   },
@@ -28,12 +77,20 @@ export default {
     this.reload();
   },
   methods: {
+    reload() {
+      window.location.assign(`http://localhost:5173`);
+      Vue.config.silent = true;
+    },
     async notifications() {
       let response = await axios.post(`/notifications`, {
         nameModel: 'ALL',
       });
 
       this.s = response.data.s;
+    },
+    namepage(el) {
+      console.log(this.name[el]);
+      return this.name[el];
     },
   },
   mounted() {},
@@ -43,6 +100,9 @@ export default {
 <template>
   <app-nav></app-nav>
   <app-slider></app-slider>
+  <div class="site-page">
+    <span>{{ namepage($route.name) }}</span>
+  </div>
   <app-center></app-center>
   <div class="wrapperBottom">
     <app-admin> </app-admin>
@@ -51,6 +111,11 @@ export default {
 </template>
 
 <style>
+.site-page {
+  color: var(--mainColor);
+  font-size: clamp(18px, 5vw, 30px);
+  margin: 20px 0 0 20px;
+}
 .appAdmin {
   position: relative;
 }

@@ -91,7 +91,10 @@ export default {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  overflow-y: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .item-event {
@@ -152,6 +155,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .list-events{
+    display: block;
+    overflow-y: scroll;
   }
 }
 </style>

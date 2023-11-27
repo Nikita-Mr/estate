@@ -19,6 +19,15 @@ import { RouterLink, RouterView } from 'vue-router';
     display: none;
   }
 }
+@media (max-width: 420px) {
+  .list-events {
+    padding: 20px 0 !important;
+    position: absolute !important;
+    overflow-y: scroll !important;
+    display: block !important;
+    height: 400px !important;
+  }
+}
 .webBack {
   background: transparent;
   border: none;
@@ -149,10 +158,10 @@ a {
     height: 75px !important;
   }
 
-  .list-events {
+  /* .list-events {
     flex-direction: column;
     overflow: scroll;
-  }
+  } */
 
   .item-event {
     width: 100%;

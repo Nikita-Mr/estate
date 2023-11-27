@@ -3,9 +3,9 @@ import { RouterLink, RouterView } from 'vue-router';
 
 export default {
   components: {},
-  data() { },
-  methods() { },
-  mounted() { },
+  data() {},
+  methods() {},
+  mounted() {},
 };
 </script>
 
@@ -81,11 +81,14 @@ export default {
 <style scoped>
 .list-events {
   width: 80%;
-  height: 400px;
+  height: 100%;
   list-style-type: none;
-  overflow-y: scroll;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .item-event {
@@ -121,7 +124,6 @@ export default {
 }
 
 @media (max-width: 995px) {
-
   .list-events {
     padding: 20px 0;
     position: absolute;
@@ -178,8 +180,9 @@ export default {
   .list-events {
     padding: 20px 0;
     position: absolute;
-    overflow: scroll;
+    overflow-y: scroll;
+    display: block;
+    height: 400px;
   }
-
 }
 </style>

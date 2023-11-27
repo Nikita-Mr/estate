@@ -1,6 +1,8 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router';
 import axios from 'axios';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 
 export default {
   data() {
@@ -11,24 +13,32 @@ export default {
       icon: ``,
       find: ``,
       list: [],
-      weatherDays: [],
+      weatherDay: [],
+      hour: [],
+      index: 0,
     };
   },
   methods: {
     async loadWeather() {
       await axios
         .get(
-          `https://api.openweathermap.org/data/2.5/forecast?q=${
+          `http://api.weatherapi.com/v1/forecast.json?lang=ru&key=7b48837a60794ba2a7c193829232511&days=10&aqi=no&alerts=no&q=${
             !this.find ? 'Шерегеш' : this.find
-          }&lang=ru&units=metric&appid=309ce2e3109b0cdf1a61910a9719cee0`
+          }`
         )
         .then((res) => {
-          this.list = res.data.list.slice(0, 11);
-          /* this.weather = res.data.main.temp; this.alerts = res.data.weather[0].description; this.icon = res.data.weather[0].icon;*/ console.log(
-            res.data.list.slice(0, 10)
-
-          );
+          this.list = res.data.forecast.forecastday;
+          /* this.weather = res.data.main.temp; this.alerts = res.data.weather[0].description; this.icon = res.data.weather[0].icon;*/
+          console.log(this.list);
+          console.log(res.data);
+          this.weatherDays = res.data;
         });
+    },
+    getDate(data) {
+      let date = new Date(data);
+      let day = dayjs(date);
+      dayjs.locale('ru');
+      return day.format(`dd, D MMM`);
     },
     days(day) {
       // if (day < 1) {
@@ -40,19 +50,29 @@ export default {
     },
     weatherdays(e) {
       if (e == 1) {
-        this.weatherDays = this.list.slice(0, 1);
+        this.weatherDay = this.list.slice(0, 1);
       }
       if (e == 3) {
-        this.weatherDays = this.list.slice(1, 4);
+        this.weatherDay = this.list.slice(0, 3);
       }
       if (e == 7) {
-        this.weatherDays = this.list.slice(4, 11);
+        this.weatherDay = this.list.slice(0, 7);
+      }
+      if (e == 10) {
+        this.weatherDay = this.list.slice(0, 9);
+      }
+    },
+    hours(weatI) {
+      this.hour = [];
+      for (let i = 0; i < this.weatherDay[weatI].hour.length; i += 3) {
+        // console.log(this.weatherDay[weatI].hour[i])
+        this.hour.push(this.weatherDay[weatI].hour[i]);
       }
     },
   },
   mounted() {
     this.loadWeather();
-    this.weatherdays(1)
+    this.weatherdays(1);
   },
 };
 </script>
@@ -73,23 +93,44 @@ export default {
       <button class="nav" @click="weatherdays(1)">Сегодня</button>
       <button class="nav" @click="weatherdays(3)">3-дня</button>
       <button class="nav" @click="weatherdays(7)">7-дней</button>
+      <button class="nav" @click="weatherdays(10)">10-дней</button>
     </div>
     <div class="wrapper">
-      <div class="card" v-for="(item, i) in weatherDays">
+      <!-- <div class="card" v-if="weatherDay < 0">
         <div class="icon">
-          <img
-            :src="
-              `https://openweathermap.org/img/wn/` +
-              item.weather[0].icon +
-              `@2x.png`
-            "
-            alt=""
-          />
+          <img :src="weatherDay.day.condition.icon" alt="" />
         </div>
         <div class="card-title">
-          <span class="weather">{{ item.main.temp }}°C</span>
-          <span class="title">{{ alerts }}</span>
-          <span class="days">{{ days(i) }}</span>
+          <span class="weather">{{ weatherDay.day.mintemp_c }}°C</span>
+          <span class="title">{{ weatherDay.day.condition.text }}</span>
+          <span class="days">{{ getDate(weatherDay.date) }}</span>
+        </div>
+      </div> -->
+      <div class="card" @click="hours(i), index = i" v-for="(item, i) in weatherDay">
+        <div class="icon">
+          <img :src="item.day.condition.icon" alt="" />
+        </div>
+        <div class="card-title">
+          <span class="weather">{{ item.day.mintemp_c }}°C</span>
+          <span class="title">{{ item.day.condition.text }}</span>
+          <span class="days">{{ getDate(item.date) }}</span>
+        </div>
+      </div>
+      
+      <div class="hour">
+        <hr>
+        <!-- <h2>{{ getDate(weatherDay[index].date) }}</h2> -->
+        <div class="wrapper_hour">
+          <div class="card" v-for="(item, i) in hour">
+            <div class="icon">
+              <img :src="item.condition.icon" alt="" />
+            </div>
+            <div class="card-title">
+              <span class="weather">{{ item.temp_c }}°C</span>
+              <span class="title">{{ item.condition.text }}</span>
+              <span class="days">{{ item.time.slice(11) }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -97,6 +138,21 @@ export default {
 </template>
 
 <style scoped>
+.wrapper_hour {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+.hour h2{
+  text-align: center;
+  color: #d5d5d5;
+}
+.hour .card{
+  width: 150px;
+  font-size: 12px;
+}
 .wrapp {
   display: flex;
   justify-content: center;
@@ -126,10 +182,13 @@ export default {
 }
 .wrapper {
   display: flex;
-  gap: 50px;
+  align-items: start;
   overflow-x: scroll;
-  padding: 10px 10px;
+  padding: 15px 10px;
   height: 300px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 22px;
 }
 .wrapper-input {
   width: 100%;
@@ -161,15 +220,17 @@ export default {
   height: 100%;
 }
 .card {
-  min-width: 300px;
-  height: 100%;
+  max-width: 200px;
+  width: 100%;
+  height: 30%;
   background-color: transparent;
   border: none;
   color: #d5d5d5;
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin: auto;
+  justify-content: space-between;
+  flex-direction: row;
+  cursor: pointer;
 }
 .city {
   font-size: 40px;
@@ -182,14 +243,14 @@ export default {
   text-align: center;
 }
 .icon img {
-  width: 150px;
-  height: 150px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 100%;
   box-shadow: 0px 0 10px 0 #fff;
   background-color: #ffffff80;
 }
 .weather {
-  font-size: 30px;
+  font-size: 18px;
 }
 </style>

@@ -67,6 +67,7 @@ CardTransfer.init(
         price:                  { type: DataTypes.INTEGER, allowNull: false, },
         boardedPlaces:          { type: DataTypes.INTEGER, allowNull: true,  },
         verified:               { type: DataTypes.BOOLEAN, allowNull: false, },
+        taxordel:               { type: DataTypes.BOOLEAN, allowNull: false, },
     }, 
     { sequelize, modelName: 'CardTransfer', }
 );

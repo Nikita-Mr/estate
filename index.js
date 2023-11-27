@@ -63,7 +63,7 @@ app.use(fileUpload());
 app.use(express.urlencoded({ extended: true }));
 
 let generateAccessToken = (id, role) => {
-  jwt.sign({ id, role }, secret, { expiresIn: '336h' });
+  return jwt.sign({ id, role }, secret, { expiresIn: '336h' });
 };
 
 let verifyc = function (roles) {
@@ -582,7 +582,7 @@ app.post(`/login`, async function (req, res) {
     if (!validPassword) {
       return res.json({ message: 'Введен неверный пароль', status: 400 });
     }
-    let token = generateAccessToken(user._id, [user.role]);
+    let token = generateAccessToken(user.id, [user.role]);
     return res.json({ token, message: 'Вошел', status: 200 });
   } catch (err) {
     res.json({ message: 'Login error' });
@@ -835,6 +835,7 @@ app.post(`/create_transfer`, async function (req, res) {
       typeCar,
       passenger,
       price,
+      taxordel
     } = req.body;
     let transfer = await CardTransfer.create({
       name: name,
@@ -849,6 +850,7 @@ app.post(`/create_transfer`, async function (req, res) {
       passenger: passenger,
       price: price,
       verified: false,
+      taxordel: taxordel
     });
     await transfer.save();
     return res.send({
@@ -1558,3 +1560,4 @@ app.post(`/notifications`, async function (req, res) {
     console.log(err);
   }
 });
+

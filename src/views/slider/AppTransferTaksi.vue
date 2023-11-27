@@ -1,43 +1,30 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
 export default {
-  components: {
-    
-  },
-  data() {
-
-  },
-  methods() {
-
-  },
-  mounted() {
-
-  }
-}
+  components: {},
+  data() {},
+  methods() {},
+  mounted() {},
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
       <RouterLink to="/transfer">
-        <div class="event">
-          Трансфер
-        </div>
+        <div class="event">Трансфер</div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/taxi-delivery">
-        <div class="event">
-          Такси/Доставка
-        </div>
+        <div class="event">Такси/Доставка</div>
       </RouterLink>
     </li>
   </ul>
 </template>
 
 <style scoped>
-
-a{
+a {
   width: 70%;
   text-decoration: none;
 }
@@ -45,14 +32,13 @@ a{
   width: 80%;
   height: 100%;
   list-style-type: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin: 0;
-  padding: 0;
 }
-
 .item-event {
   cursor: pointer;
   margin-bottom: 15px;

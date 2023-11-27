@@ -18,6 +18,7 @@ export default {
       passenger: '',
       price: '',
       status: ``,
+      taxordel: ``
     };
   },
   methods: {
@@ -35,6 +36,7 @@ export default {
         car: this.car,
         passenger: this.passenger,
         price: this.price,
+        taxordel: this.taxordel,
         userToken: document.cookie.replace('token=', '') 
       });
       this.show = response.data.show;
@@ -180,6 +182,21 @@ export default {
               required
               id=""
             />
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="title">Такси/Доставка:</div>
+          <div class="wrapper-for-input">
+            <select
+              v-model="taxordel"
+              name="typeCar"
+              class="form-select form-input typeCar"
+              required
+              aria-label="Default select example"
+            >
+              <option value="taxi">Такси</option>
+              <option value="delivery">Доставка</option>
+            </select>
           </div>
         </div>
         <div class="input-group">
