@@ -1239,7 +1239,7 @@ app.post(`/reject_request`, async function (req, res) {
 app.post(`/notifications`, async function (req, res) {
   try {
     let { nameModel, category } = req.body;
-    if (nameModel == 'ALL') {
+    if (nameModel == 'reqAll') {
       let transfer = await CardTransfer.findAll({ where: { verified: false } });
       let service = await CardService.findAll({ where: { verified: false } });
       let cards = await CardModel.findAll({ where: { verified: false } });
@@ -1249,7 +1249,7 @@ app.post(`/notifications`, async function (req, res) {
         },
       });
 
-      s = transfer.length + service.length + cards.length + habitation.length;
+      let s = transfer.length + service.length + cards.length + habitation.length;
       console.log(transfer, service, cards, habitation);
       res.send({ s });
     }

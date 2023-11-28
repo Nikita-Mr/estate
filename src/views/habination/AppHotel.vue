@@ -26,7 +26,7 @@ export default {
           },
           params: {category: this.$route.path.slice(1, -6) , name: this.$route.query.name },
         });
-        this.INFO = hotel.data.cards;
+        this.INFO = hotel.data.cards.reverse();
         this.admin = hotel.data.admin;
         this.expired = hotel.data.expired;
         if (this.expired) {
@@ -40,7 +40,7 @@ export default {
             Authorization: document.cookie.replace('token=', ``),
           },
         });
-        this.INFO = events.data.cards;
+        this.INFO = events.data.cards.reverse();
         this.admin = events.data.admin;
         this.expired = events.data.expired;
       }
@@ -51,7 +51,7 @@ export default {
             Authorization: document.cookie.replace('token=', ``),
           },
         });
-        this.INFO = rental.data.cards;
+        this.INFO = rental.data.cards.reverse();
         this.admin = rental.data.admin;
         this.expired = rental.data.expired;
       }
@@ -62,7 +62,7 @@ export default {
             Authorization: document.cookie.replace('token=', ``),
           },
         });
-        this.INFO = forChildren.data.cards;
+        this.INFO = forChildren.data.cards.reverse();
         this.admin = forChildren.data.admin;
         this.expired = forChildren.data.expired;
       }
@@ -73,7 +73,7 @@ export default {
             Authorization: document.cookie.replace('token=', ``),
           },
         });
-        this.INFO = InstructorTours.data.cards;
+        this.INFO = InstructorTours.data.cards.reverse();
         this.admin = InstructorTours.data.admin;
         this.expired = InstructorTours.data.expired;
       }
@@ -84,7 +84,7 @@ export default {
             Authorization: document.cookie.replace('token=', ``),
           },
         });
-        this.INFO = ads.data.cards;
+        this.INFO = ads.data.cards.reverse();
         this.admin = ads.data.admin;
         this.expired = ads.data.expired;
       }

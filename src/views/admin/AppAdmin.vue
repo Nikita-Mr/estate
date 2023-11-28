@@ -12,7 +12,7 @@ export default {
   methods: {
     async notifications() {
       let response = await axios.post(`/notifications`, {
-        nameModel: "ALL",
+        nameModel: "reqAll",
       });
 
       this.s = response.data.s;

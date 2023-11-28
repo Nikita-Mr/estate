@@ -40,13 +40,63 @@ export default defineComponent({
       success: '',
       email: '',
       view: false,
+      adress: ``,
+      point: ``,
+      switch: 1
     };
   },
   mounted() {
     this.loadCard();
     this.loadNumber();
+    this.renderMap();
   },
   methods: {
+    async renderMap() {
+      let response = await axios.get(`https://geocode-maps.yandex.ru/1.x/`, {
+        params: {
+          apikey: '62143967-f105-468b-b0e5-f820e63f8c40',
+          geocode: `Шерегеш+${this.adress}`,
+          format: 'json',
+        },
+      });
+      let address = `Шерегеш ${this.adress}`;
+
+      ymaps.ready(() => {
+        let myMap; // объявим переменную для карты
+        function init() {
+          ymaps
+            .geocode(address, {
+              results: 1, // количество результатов, которые вы хотите получить
+            })
+            .then((res) => {
+              const firstGeoObject = res.geoObjects.get(0);
+              const coordinates = firstGeoObject.geometry.getCoordinates();
+              console.log('Координаты:', coordinates);
+
+              myMap = new ymaps.Map('customMap', {
+                center: coordinates, // устанавливаем центр карты
+                zoom: 15, // масштаб карты
+                behaviors: ['default', 'scrollZoom'], // включаем скроллинг колесом
+                controls: [], // убираем все элементы управления
+              });
+
+              const myPlacemark = new ymaps.Placemark(
+                coordinates,
+                {},
+                {
+                  preset: 'islands#blueDotIcon', // выбираем иконку для точки
+                }
+              );
+
+              myMap.geoObjects.add(myPlacemark); // добавляем точку на карту
+            });
+          // функция инициализации карты
+        }
+        // console.log(coord);
+
+        init(); // инициализируем карту
+      });
+    },
     async loadCard() {
       this.view = this.$route.query.view;
       if (this.view == 'true') {
@@ -65,6 +115,10 @@ export default defineComponent({
         },
       });
       this.INFO = response.data.card;
+      this.adress = response.data.card.address
+        .replace(` `, `+`)
+        .replace(`, `, `+`)
+        .replace(` `, `+`);
       this.admin = response.data.admin;
     },
     getDate(data) {
@@ -240,7 +294,13 @@ export default defineComponent({
         </div>
       </div>
       <div class="right">
+        <div class="wrapper-button">
+          <button @click="this.switch=1">Номера</button>
+          <button @click="this.switch=2">Карта</button>
+        </div>
         <div class="wrapper" v-if="!view">
+          <div id="customMap" class="map" :class="{none:this.switch == 1}"></div>
+
           <form
             v-if="admin && $route.query.name == `habitation`"
             @submit.prevent="createNumber"
@@ -267,7 +327,7 @@ export default defineComponent({
             <span v-if="buttonTarg == 1">Созданно</span>
           </form>
           <app-card
-            v-if="!admin"
+            v-if="!admin && this.switch == 1"
             v-for="(item, index) in NUMBER"
             @variable="handleVariable"
             :i="index"
@@ -296,6 +356,21 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+.none{
+  display: none;
+}
+.wrapper-button{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.map {
+  width: 90%;
+  height: 500px;
+  border: 1px solid #fff;
+  box-shadow: 0px 0 10px 0 #ffffff71;
+}
 .info {
   overflow-y: scroll !important;
   height: 165px;
@@ -311,8 +386,8 @@ export default defineComponent({
 }
 .wrapper .card {
   width: 100%;
-  min-height: 270px;
-  max-height: 290px;
+  height: 100%;
+  min-height: 300px;
 }
 
 .left {
