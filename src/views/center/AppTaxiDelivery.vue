@@ -10,6 +10,7 @@ export default {
   data() {
     return {
       INFO: [],
+      admin: false
     };
   },
   methods: {
@@ -21,6 +22,7 @@ export default {
         },
       });
       this.INFO = service.data.services;
+      this.admin = service.data.admin;
     },
   },
   mounted() {
@@ -47,7 +49,7 @@ export default {
       </div>
     </div>
     <div class="create-service">
-      <RouterLink to="/create-service">Опубликовать услугу</RouterLink>
+      <RouterLink v-if="admin" to="/create-service">Опубликовать услугу</RouterLink>
     </div>
   </div>
 

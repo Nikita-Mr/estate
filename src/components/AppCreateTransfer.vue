@@ -18,7 +18,8 @@ export default {
       passenger: '',
       price: '',
       status: ``,
-      taxordel: ``
+      taxordel: ``,
+      point: ``
     };
   },
   methods: {
@@ -37,7 +38,8 @@ export default {
         passenger: this.passenger,
         price: this.price,
         taxordel: this.taxordel,
-        userToken: document.cookie.replace('token=', '') 
+        userToken: document.cookie.replace('token=', ''), 
+        point: this.point
       });
       this.show = response.data.show;
       this.message = response.data.message;
@@ -87,11 +89,25 @@ export default {
             />
           </div>
         </div>
+
         <div class="input-group">
           <div class="title">Куда:</div>
           <div class="wrapper-for-input">
             <input
               v-model="cityto"
+              type="text"
+              name="cityto"
+              class="form-input cityto"
+              required
+              id=""
+            />
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="title">Место сбора:</div>
+          <div class="wrapper-for-input">
+            <input
+              v-model="point"
               type="text"
               name="cityto"
               class="form-input cityto"
@@ -212,6 +228,7 @@ export default {
             />
           </div>
         </div>
+       
         <div class="input-group">
           <div class="title">Цена:</div>
           <div class="wrapper-for-input">

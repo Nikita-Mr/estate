@@ -71,6 +71,7 @@ export default {
         admintransfertaksi: 'ADMIN трансфер такси',
         adminads: 'ADMIN объявления',
       },
+      admin: false,
     };
   },
   watch() {
@@ -82,18 +83,22 @@ export default {
       Vue.config.silent = true;
     },
     async notifications() {
-      let response = await axios.post(`/notifications`, {
-        nameModel: 'ALL',
+      let response = await axios.get(`/check`, {
+        headers: {
+          Authorization: document.cookie.replace('token=', ``),
+        },
       });
 
-      this.s = response.data.s;
+      this.admin = response.data.admin;
     },
     namepage(el) {
       console.log(this.name[el]);
       return this.name[el];
     },
   },
-  mounted() {},
+  mounted() {
+    this.notifications();
+  },
 };
 </script>
 
@@ -105,7 +110,7 @@ export default {
   </div>
   <app-center></app-center>
   <div class="wrapperBottom">
-    <app-admin> </app-admin>
+    <app-admin v-if="admin"> </app-admin>
     <app-phone></app-phone>
   </div>
 </template>

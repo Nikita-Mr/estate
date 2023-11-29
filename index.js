@@ -835,7 +835,8 @@ app.post(`/create_transfer`, async function (req, res) {
       typeCar,
       passenger,
       price,
-      taxordel
+      taxordel,
+      point
     } = req.body;
     let transfer = await CardTransfer.create({
       name: name,
@@ -850,7 +851,8 @@ app.post(`/create_transfer`, async function (req, res) {
       passenger: passenger,
       price: price,
       verified: false,
-      taxordel: taxordel
+      taxordel: taxordel,
+      point: point
     });
     await transfer.save();
     return res.send({
@@ -923,8 +925,21 @@ app.post(`/create_service`, async function (req, res) {
 });
 
 app.get(`/services`, async function (req, res) {
+  let admin = false;
+  let token = req.headers.authorization;
+  console.log(token);
+  let { role: userRoles } = jwt.verify(token, secret);
+  console.log(userRoles);
+
+  if (token) {
+    userRoles.forEach((role) => {
+      if (role == 'ADMIN') {
+        admin = true;
+      }
+    });
+  }
   let services = await CardService.findAll();
-  res.send({ services });
+  res.send({ services, admin });
 });
 
 app.post(`/service-card`, async function (req, res) {
@@ -1235,6 +1250,22 @@ app.post(`/reject_request`, async function (req, res) {
     res.send({ message: 'Ошибка удаления запроса', err, success: false });
   }
 });
+app.get(`/check`, async function (req, res) {
+  let admin = false;
+  let token = req.headers.authorization;
+  console.log(token);
+  let { role: userRoles } = jwt.verify(token, secret);
+  console.log(userRoles);
+  
+  if (token) {
+    userRoles.forEach((role) => {
+      if (role == 'ADMIN') {
+        admin = true;
+      }
+    });
+  }
+  return res.send({admin})
+});
 
 app.post(`/notifications`, async function (req, res) {
   try {
@@ -1249,7 +1280,8 @@ app.post(`/notifications`, async function (req, res) {
         },
       });
 
-      let s = transfer.length + service.length + cards.length + habitation.length;
+      let s =
+        transfer.length + service.length + cards.length + habitation.length;
       console.log(transfer, service, cards, habitation);
       res.send({ s });
     }
@@ -1560,4 +1592,3 @@ app.post(`/notifications`, async function (req, res) {
     console.log(err);
   }
 });
-
