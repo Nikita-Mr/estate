@@ -82,7 +82,8 @@ export default defineComponent({
     async payment() {
       let response = await axios.post(`/payment`, {
         name: this.INFO.name,
-        price: this.INFO.price
+        price: this.INFO.price,
+        id: this.INFO.id
       })
       this.paymentRef = response.data.paymentRef
       this.success = response.data.success

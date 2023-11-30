@@ -45,7 +45,6 @@ const THE_FUCKING_CURE = async () =>
         password: 'password',
         role: "ADMIN"
     }, );
-
     console.log('created user...');
 
     const newNew = await NewsModel.create({

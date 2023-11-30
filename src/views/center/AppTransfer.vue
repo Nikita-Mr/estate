@@ -101,7 +101,7 @@ export default {
     </div>
 
     <div class="transfers"></div>
-    <div v-if="admin" class="create-transfer">
+    <div class="create-transfer">
       <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
     </div>
   </div>
@@ -208,7 +208,7 @@ input::placeholder {
 }
 
 .create-transfer a {
-  width: fit-content;
+  width: fit-content !important;
   padding: 5px 10px;
   border-radius: 10px;
   background: transparent;

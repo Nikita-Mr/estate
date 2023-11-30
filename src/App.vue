@@ -97,7 +97,7 @@ export default {
     },
   },
   mounted() {
-    this.notifications();
+    // this.notifications();
   },
 };
 </script>
@@ -110,7 +110,7 @@ export default {
   </div>
   <app-center></app-center>
   <div class="wrapperBottom">
-    <app-admin v-if="admin"> </app-admin>
+    <app-admin > </app-admin>
     <app-phone></app-phone>
   </div>
 </template>
@@ -120,6 +120,7 @@ export default {
   color: var(--mainColor);
   font-size: clamp(18px, 5vw, 30px);
   margin: 20px 0 0 20px;
+  
 }
 .appAdmin {
   position: relative;
