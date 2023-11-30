@@ -208,8 +208,9 @@ span:not(.sub, .cars span) {
   gap: 5px;
 }
 .circlesvg {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
+  padding: 3px;
   display: flex;
   justify-content: center;
   align-items: center;
