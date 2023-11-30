@@ -166,13 +166,13 @@ app.get(`/transfer`, async function (req, res) {
   try {
     let token = req.headers.authorization;
     let { id, book } = req.query;
-    let { role: userRoles } = jwt.verify(token, secret);
-    let admin;
-    if (token) {
-      userRoles.forEach((role) => {
-        if (role == 'ADMIN') admin = true;
-      });
-    }
+    // let { role: userRoles } = jwt.verify(token, secret);
+    let admin = true;
+    // if (token) {
+    //   userRoles.forEach((role) => {
+    //     if (role == 'ADMIN') admin = true;
+    //   });
+    // }
     if (book && id) {
       let transfer = await CardTransfer.findOne({ where: { id: id } });
       if (transfer.boardedPlaces >= transfer.passenger) {
@@ -1137,9 +1137,16 @@ app.post(`/delete_skipass`, async function (req, res) {
 
 app.post(`/payment`, async function (req, res) {
   try {
-    let { price, name } = req.body;
+    let { price, name, id } = req.body;
+    let transfer = await CardTransfer.findOne({ where: { id: id } })
     let { paymentRef, payment } = await initPayment(price, name);
-    awaitPayment(payment);
+    awaitPayment(payment).then(async (result) => {
+      if (result) {
+        transfer.passenger -= 1
+        await transfer.save()
+      }
+    })
+
     res.send({ paymentRef, success: true });
   } catch (err) {
     console.log(err);
