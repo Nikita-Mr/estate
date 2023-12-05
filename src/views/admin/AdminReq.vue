@@ -1,7 +1,7 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router';
 import axios from 'axios';
-import * as dayjs from 'dayjs';
+import  dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 
 export default {
