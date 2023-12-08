@@ -119,8 +119,11 @@ export default {
 .site-page {
   color: var(--mainColor);
   font-size: clamp(18px, 5vw, 30px);
-  margin: 20px 0 0 20px;
+  margin: 0 0 0 20px;
   
+}
+.wrapper-main{
+  height: 75vh !important;
 }
 .appAdmin {
   position: relative;
