@@ -117,6 +117,11 @@ let ADMINVERIFY = function (roles) {
 
 app.use('/assets', express.static('dist/assets'));
 
+// фикс вылета на перезагрузке
+app.route('/*')
+    .get(function(req, res) {
+          res.sendFile(path.join(__dirname + '/dist/index.html'));
+});
 app.get('/', async function (req, res) {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
