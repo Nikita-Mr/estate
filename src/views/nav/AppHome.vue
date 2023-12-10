@@ -5,10 +5,12 @@ export default {
   components: {
   },
   data() {
+    return {
+      id: ''
+    }
 
   },
-  methods() {
-
+  methods: {
   },
   mounted() {
 

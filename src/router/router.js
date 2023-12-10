@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AppCenter from '../components/AppCenter.vue'
+import AppNav from '../components/AppNav.vue'
 import AppWeather from '../views/nav/AppWeather.vue'
 import AppBookASeak from '../views/nav/AppBookASeak.vue'
 import AppBookATransfer from '../views/nav/AppBookATransfer.vue'
@@ -42,6 +43,7 @@ import AdminRental from '../views/admin/AdminRental.vue'
 import AdminTransferTaksi from '../views/admin/AdminTransferTaksi.vue'
 import AdminInstructorTours from '../views/admin/AdminInstructorTours.vue'
 import AdminAds from '../views/admin/AdminAds.vue'
+import AppProfile from '../components/AppProfile.vue'
 
 
 const router = createRouter({
@@ -51,6 +53,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: AppHome,
+    },
+    {
+      path: '/nav',
+      name: 'nav',
+      component: AppNav,
     },
     {
       path: '/weather',
@@ -281,6 +288,11 @@ const router = createRouter({
       path: '/admin/ads',
       name: 'adminads',
       component: AdminAds,
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: AppProfile,
     },
   ]
 })

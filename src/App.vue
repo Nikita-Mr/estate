@@ -4,7 +4,7 @@ import AppNav from './components/AppNav.vue';
 import AppSlider from './components/AppSlider.vue';
 import AppCenter from './components/AppCenter.vue';
 import AppPhone from './components/AppPhone.vue';
-import AppAdmin from './views/admin/AppAdmin.vue';
+import AppAdmin from './components/AppAdmin.vue';
 import axios from 'axios';
 import router from './router/router';
 import { name } from 'dayjs/locale/ru';
@@ -152,16 +152,17 @@ input:-webkit-autofill:active {
 .wrapperBottom {
   position: absolute;
   width: 400px;
-  bottom: 20px;
-  right: 0;
+  bottom: 1%;
+  right: 2%;
   display: flex;
   justify-content: end;
   align-items: center;
-  gap: 10px;
+  gap: 50px;
 }
 @media (max-width: 400px) {
   .wrapperBottom {
-    width: 100%;
+    width: 90%;
+    right: 4%;
   }
 }
 

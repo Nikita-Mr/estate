@@ -29,6 +29,7 @@ const {
 } = require('./modules/models');
 const { secret } = require(`./config`);
 
+
 const { tryBook, addNumber } = require(`./modules/booking`);
 
 const { initPayment, awaitPayment } = require(`./modules/payments`);
@@ -583,7 +584,7 @@ app.post(`/login`, async function (req, res) {
       return res.json({ message: 'Введен неверный пароль', status: 400 });
     }
     let token = generateAccessToken(user.id, [user.role]);
-    return res.json({ token, message: 'Вошел', status: 200 });
+    return res.json({ token, message: 'Вошел', status: 200, id: user.id });
   } catch (err) {
     res.json({ message: 'Login error' });
   }
@@ -1289,7 +1290,6 @@ app.post(`/notifications`, async function (req, res) {
 
       let s =
         transfer.length + service.length + cards.length + habitation.length;
-      console.log(transfer, service, cards, habitation);
       res.send({ s });
     }
     if (nameModel == 'all') {
@@ -1596,6 +1596,18 @@ app.post(`/notifications`, async function (req, res) {
       res.send({ transfers, services, hotels, cards });
     }
   } catch (err) {
-    console.log(err);
   }
 });
+
+app.post(`/profile`, async function(req, res) {
+  try {
+    let { id } = req.body
+    let user
+    if (id) {
+      user = await UserModel.findOne({ where: { id } })
+    }
+    res.send({ user })
+  } catch(err) {
+    console.log(err)
+  }
+})
