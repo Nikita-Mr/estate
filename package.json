@@ -41,6 +41,7 @@
     "vue-tinymce": "^1.0.5",
     "vue-yandex-maps": "^0.11.17",
     "vue3-carousel": "^0.3.1",
+    "webpack": "4.44",
     "yookassa": "^0.1.1"
   },
   "devDependencies": {

@@ -2,7 +2,6 @@
 import { RouterLink, RouterView } from "vue-router";
 import AppCard from "/src/components/AppCard.vue";
 import axios from "axios";
-import e from "express";
 
 export default {
   components: {
