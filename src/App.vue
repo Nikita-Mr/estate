@@ -8,7 +8,6 @@ import AppAdmin from './components/AppAdmin.vue';
 import axios from 'axios';
 import router from './router/router';
 import { name } from 'dayjs/locale/ru';
-// axios.defaults.headers.common['Authorization'] = document.cookie.replace("token=", ``).split(`;`, 1)
 
 export default {
   components: {
@@ -71,6 +70,7 @@ export default {
         admintransfertaksi: 'ADMIN трансфер такси',
         adminads: 'ADMIN объявления',
       },
+      id: '',
       admin: false,
     };
   },
@@ -83,10 +83,9 @@ export default {
       Vue.config.silent = true;
     },
     async notifications() {
-      let response = await axios.get(`/check`, {
-        headers: {
-          Authorization: document.cookie.replace('token=', ``),
-        },
+      this.id = this.getCookieValue('id')
+      let response = await axios.post(`/check_admin`, {
+        id: this.id
       });
 
       this.admin = response.data.admin;
@@ -95,9 +94,21 @@ export default {
       console.log(this.name[el]);
       return this.name[el];
     },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
+    },
   },
   mounted() {
-    // this.notifications();
+    this.notifications();
   },
 };
 </script>
@@ -110,7 +121,7 @@ export default {
   </div>
   <app-center></app-center>
   <div class="wrapperBottom">
-    <app-admin > </app-admin>
+    <app-admin v-if="admin" > </app-admin>
     <app-phone></app-phone>
   </div>
 </template>

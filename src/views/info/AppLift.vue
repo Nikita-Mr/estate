@@ -8,16 +8,13 @@ export default {
     return {
       LIFTS: ``,
       admin: false,
+      id: ''
     };
   },
   methods: {
     async loadLift() {
       await axios
-        .post(`/lifts`, {
-          headers: {
-            Authorization: document.cookie.replace("token=", ``),
-          },
-        })
+        .post(`/lifts`)
         .then((e) => {
           this.LIFTS = e.data.lifts;
         });
@@ -31,13 +28,23 @@ export default {
     },
 
     async check_admin() {
-      let response = await axios.get(`/check_admin`, {
-        headers: {
-          Authorization: document.cookie.replace("token=", ``),
-        },
+      this.id = this.getCookieValue('id')
+      let response = await axios.post(`/check_admin`, {
+        id: this.id
       });
-      console.log(response)
       this.admin = response.data.admin;
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
     },
   },
   mounted() {
@@ -81,6 +88,7 @@ export default {
         </div>
       </div>
     </div>
+    <div v-if="LIFTS.length == 0 || !LIFTS" class="empty"><img src="../../assets/img/empty.png" alt=""><span>Пусто...</span></div>
   </div>
 </template>
 
@@ -93,6 +101,19 @@ export default {
   position: sticky;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1.7rem;
+  color: #fff;
+  height: 60vh;
+}
+
+.empty img {
+  height: 70px;
 }
 
 .divDelete {

@@ -29,20 +29,36 @@ export default defineComponent({
     };
   },
   mounted() {
+    this.check_admin()
     this.loadCard();
   },
   methods: {
+    async check_admin() {
+			let response = await axios.post(`/check_admin`, {
+        id: this.getCookieValue('id')
+      });
+			this.admin = response.data.admin
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
+    },
+
     async loadCard() {
       this.view = this.$route.query.view
-      let response = await axios.get(`/transfer`, {
-        params: { id: this.$route.query.id },
-        headers: {
-          Authorization: document.cookie.replace(`token=`, ``),
-        },
+      let response = await axios.post(`/transfer`, {
+        id: this.$route.query.id
       });
       this.INFO = response.data.transfer;
       this.passenger2 = this.INFO.passenger / 2
-      this.admin = response.data.admin;
     },
     async deleteCard() {
       await axios
@@ -69,11 +85,8 @@ export default defineComponent({
       return day.format(`dd, D MMM`);
     },
     async book() {
-      let response = await axios.get(`/transfer`, {
-        params: { id: this.INFO.id, book: true },
-        headers: {
-          Authorization: document.cookie.replace(`token=`, ``),
-        },
+      let response = await axios.post(`/transfer`, {
+        id: this.INFO.id, book: true
       });
       this.message = response.data.message;
       this.loadCard();

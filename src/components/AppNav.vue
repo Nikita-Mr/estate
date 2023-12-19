@@ -171,11 +171,11 @@ a:hover {
   align-items: center;
 }
 
-@media (max-width: 350px) {
+@media (max-width: 450px) {
   .navbar {
     align-items: center;
     padding-bottom: 20px;
-    gap: 20px;
+    gap: 25px;
   }
 
   .list-item {
@@ -195,6 +195,24 @@ a:hover {
       transform: translateY(40px);
       opacity: 1;
     }
+  }
+}
+
+@media (max-width: 350px) {
+  .car {
+    height: 45px;
+  }
+
+  .bed {
+    height: 35px;
+  }
+
+  .icon {
+    height: 35px;
+  }
+
+  .logo {
+    height: 40px;
   }
 }
 

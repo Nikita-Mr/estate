@@ -157,14 +157,9 @@ export default defineComponent({
       let id = this.$route.query.id;
       let name = this.$route.query.name;
       if (id && name) {
-        let response = await axios.get(`/card`, {
-          params: {
-            id: id,
-            name: name,
-          },
-          headers: {
-            Authorization: document.cookie.replace("token=", ``),
-          },
+        let response = await axios.post(`/card`, {
+          id: id,
+          name: name,
         });
         this.edit = this.$route.query.edit;
         this.INFO = response.data.card;
@@ -269,7 +264,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
 .success {
   position: absolute;
   bottom: -100px;

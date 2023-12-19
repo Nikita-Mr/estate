@@ -14,14 +14,25 @@ export default {
   methods: {
     async loadNews() {
       await axios
-        .get(`/news`, {
-          headers: {
-            "Authorization": document.cookie.replace('token=', ``),
-          },
+        .post(`/news`, {
+          id: this.getCookieValue('id')
         })
         .then((e) => {
           this.NEWS = e.data.news;
+          this.admin = e.data.admin
         });
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
     },
 
     async deleteNews(id) {
@@ -29,15 +40,6 @@ export default {
         id: id
       })
       this.loadNews()
-    },
-
-    async check_admin() {
-			let response = await axios.get(`/check_admin`, {
-        headers: {
-          Authorization: document.cookie.replace("token=", ``),
-        },
-      });
-			this.admin = response.data.admin
     },
   },
   mounted() {

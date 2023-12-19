@@ -1,11 +1,11 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
-import axios from 'axios';
-import { defineComponent } from 'vue';
-import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
+import { RouterLink, RouterView } from "vue-router";
+import axios from "axios";
+import { defineComponent } from "vue";
+import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
 
-import 'vue3-carousel/dist/carousel.css';
-import { param } from 'express-validator';
+import "vue3-carousel/dist/carousel.css";
+import { param } from "express-validator";
 
 export default defineComponent({
   components: {
@@ -17,10 +17,11 @@ export default defineComponent({
   data() {
     return {
       files: ``,
-      img: '',
+      img: "",
       title: ``,
       adress: ``,
-      email: '',
+      email: "",
+      chatID: "",
       phone: ``,
       price: null,
       description: ``,
@@ -42,16 +43,17 @@ export default defineComponent({
       let formData = new FormData();
       for (var i = 0; i < this.files.length; i++) {
         let file = this.files[i];
-        formData.append('files', file);
+        formData.append("files", file);
       }
       await axios
-        .post('/create-card', {
+        .post("/create-card", {
           title: this.title,
           price: this.price,
           p: this.description,
           phone: this.phone,
           adress: this.adress,
           email: this.email,
+          chatID: this.chatID,
           subcategory: this.$route.query.name,
           category: this.$route.query.category,
         })
@@ -61,30 +63,31 @@ export default defineComponent({
           let routeAppend = new String();
 
           console.log(`response info is: ${e.data.message}`);
-          if (!isNaN(e.data.message)) routeAppend = `?id=${e.data.message}&category=${this.$route.query.category}`;
+          if (!isNaN(e.data.message))
+            routeAppend = `?id=${e.data.message}&category=${this.$route.query.category}`;
 
-          let uploadRoute = `/upload${routeAppend}`
+          let uploadRoute = `/upload${routeAppend}`;
 
           console.log(`card creation response ${e.data.message}`);
           console.log(`upload route is ${uploadRoute}`);
-        
+
           axios
             .post(uploadRoute, formData, {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": "multipart/form-data",
               },
             })
-            .then(r => {
+            .then((r) => {
               console.log(`got code 200 on upload: ${e.data.text}`);
             })
-            .catch(r => {
+            .catch((r) => {
               console.log(`got code 400 on upload: ${e.data.text}`);
             });
           this.error = e.data.message;
           this.status = e.data.status;
         });
-      if (this.status == '200') {
-        this.$router.go(-1)
+      if (this.status == "200") {
+        this.$router.go(-1);
       }
     },
     url(file) {
@@ -111,7 +114,7 @@ export default defineComponent({
       let formData = new FormData();
       for (var i = 0; i < this.files.length; i++) {
         let file = this.files[i];
-        formData.append('files', file);
+        formData.append("files", file);
       }
       await axios
         .post(`/create-card`, {
@@ -125,31 +128,31 @@ export default defineComponent({
           adress: this.adress,
           email: this.email,
           edit: true,
-          login: true
+          login: true,
         })
         .then((e) => {
           if (formData) {
             axios
-              .post('/upload', formData, {
+              .post("/upload", formData, {
                 params: {
                   id: this.$route.query.id,
                   category: this.$route.query.name,
                 },
                 headers: {
-                  'Content-Type': 'multipart/form-data',
+                  "Content-Type": "multipart/form-data",
                 },
               })
               .then(function () {
-                console.log('SUCCESS!!');
+                console.log("SUCCESS!!");
               })
               .catch(function () {
-                console.log('FAILURE!!');
+                console.log("FAILURE!!");
               });
             this.error = e.data.message;
             this.status = e.data.status;
           }
 
-          if (e.data.status == '200') {
+          if (e.data.status == "200") {
             this.$router.go(-1);
           }
         });
@@ -158,14 +161,9 @@ export default defineComponent({
       let id = this.$route.query.id;
       let name = this.$route.query.name;
       if (id && name) {
-        let response = await axios.get(`/card`, {
-          params: {
-            id: id,
-            name: name,
-          },
-          headers: {
-            Authorization: document.cookie.replace('token=', ``),
-          },
+        let response = await axios.post(`/card`, {
+          id: id,
+          name: name,
         });
         this.edit = this.$route.query.edit;
         this.INFO = response.data.card;
@@ -175,7 +173,8 @@ export default defineComponent({
         this.phone = this.INFO.phone;
         this.adress = this.INFO.address;
         this.description = this.INFO.p;
-        this.email = this.INFO.email
+        this.email = this.INFO.email;
+        this.chatID = this.INFO.chatID;
       }
     },
   },
@@ -197,8 +196,7 @@ export default defineComponent({
           v-on:change="handleFilesUpload"
         />
         <label v-if="files == `` && img == ``" for="file">
-          <div class="line"></div>
-          <div class="line"></div>
+          <div class="line"><img src="../assets/img/img_add.png" alt="" /></div>
         </label>
 
         <Carousel v-if="files != ``" :autoplay="4000" :wrap-around="true">
@@ -240,13 +238,31 @@ export default defineComponent({
       <div class="info">
         <input v-model="title" type="text" placeholder="Название" />
 
-        <input v-model="price" type="number" v-if="$route.query.name != 'hotels'" placeholder="Цена" />
+        <input
+          v-model="price"
+          type="number"
+          v-if="$route.query.name != 'hotels'"
+          placeholder="Цена"
+        />
 
         <input v-model="adress" type="text" placeholder="Адрес" />
 
         <input v-model="phone" type="tel" placeholder="Номер телефона" />
 
         <input v-model="email" type="email" placeholder="Почтовый адрес" />
+
+        <input v-model="chatID" type="text" placeholder="чат ID" />
+
+        <div class="telegramBot">
+          <a href="https://t.me/SNEGINFO_BOT" target="_blank">
+            <img class="teleg" src="../assets/img/telegram.png" alt="" />
+            <span class="text"
+              >Чтобы получать уведомления по вашему объекту, перейдите в
+              телеграмм, нажав на иконку, и напишите "/start", затем введите чат
+              ID</span
+            >
+          </a>
+        </div>
       </div>
       <div class="body">
         <textarea
@@ -257,33 +273,64 @@ export default defineComponent({
         ></textarea>
       </div>
       <div class="button-wrapper">
-        <button v-if="!edit" @click="submitFiles">Создать</button>  
+        <button v-if="!edit" @click="submitFiles">Создать</button>
         <button v-if="edit" @click="editCard">Сохранить</button>
       </div>
-      <div :class="{success: status == 200, error: status != 200}">{{ error }}</div>
+      <div :class="{ success: status == 200, error: status != 200 }">
+        {{ error }}
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.error{
+.error {
   position: absolute;
   bottom: -100px;
   color: crimson;
 }
-.success{
+.success {
   position: absolute;
   bottom: -100px;
-  color: #62A87C;
-  
+  color: #62a87c;
+}
+
+.telegramBot {
+  padding: 7px;
+}
+
+.telegramBot a {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row;
+
+  transition: all 400ms;
+}
+
+.telegramBot img:hover {
+  transform: scale(1.07);
+}
+
+.text {
+  font-size: 0.9rem !important;
+}
+
+.teleg {
+  height: 40px !important;
+  width: 40px;
+
+  transition: all 400ms;
 }
 
 .button-wrapper button {
   padding: 5px 15px;
   background-color: transparent;
-  border: 1px solid #62A87C;
+  border: 1px solid #62a87c;
   border-radius: 10px;
-  color: #62A87C;
+  color: #62a87c;
   font-weight: 600;
   transition: scale 500ms;
 }
@@ -346,10 +393,18 @@ input::placeholder {
 textarea::placeholder {
   color: #fff;
 }
+
+input {
+  color: #fff;
+}
+
 textarea {
   height: 100%;
   background: transparent;
   border: 1px solid var(--mainColor);
+  padding: 5px;
+  border-radius: 10px;
+  color: #fff;
 }
 .info {
   gap: 10px;
@@ -398,15 +453,12 @@ label {
   cursor: pointer;
   border: 1px solid var(--mainColor);
   border-radius: 10px;
+  max-height: 200px !important;
 }
-.line {
-  position: absolute;
-  transform: rotate(0deg) !important;
-  width: 20% !important;
-}
-.line:last-child {
-  transform: rotate(90deg) !important;
-  display: block;
+
+.line img {
+  width: 50px !important;
+  height: 50px !important;
 }
 
 .carousel {

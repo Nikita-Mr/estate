@@ -9,10 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "-": "^0.0.1",
     "@tinymce/tinymce-vue": "^4.0.7",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "D": "^1.0.0",
     "dayjs": "^1.11.10",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
@@ -23,14 +25,17 @@
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.6.1",
     "node-cmd": "^5.0.0",
+    "node-telegram-bot-api": "^0.64.0",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
     "npm-git-install": "^0.3.0",
     "pg": "^8.11.3",
+    "process": "^0.11.10",
     "sequelize": "^6.33.0",
     "sequelize-cli": "^6.6.1",
     "sqlite3": "^5.1.6",
     "tinymce": "^6.7.0",
+    "util": "^0.12.5",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2",
     "vue-tinymce": "^1.0.5",
@@ -39,6 +44,8 @@
     "yookassa": "^0.1.1"
   },
   "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@vitejs/plugin-vue": "^4.2.3",
     "vite": "^4.3.9"
   }
