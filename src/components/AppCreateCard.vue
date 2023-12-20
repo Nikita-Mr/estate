@@ -258,7 +258,7 @@ export default defineComponent({
             <img class="teleg" src="../assets/img/telegram.png" alt="" />
             <span class="text"
               >Чтобы получать уведомления по вашему объекту, перейдите в
-              телеграмм, нажав на иконку, и напишите "/start", затем введите чат
+              телеграмм, нажав на иконку, и напишите "/start", получите чат
               ID</span
             >
           </a>

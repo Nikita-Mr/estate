@@ -74,9 +74,9 @@ export default {
       }
       if (this.$route.path == `/ads/items`) {
         let ads = await axios.post(`/ads`, {
-          id: this.getCookieValue('id'),
+          id: this.getCookieValue("id"),
           category: this.$route.path.slice(1, -6),
-          name: this.$route.query.name
+          name: this.$route.query.name,
         });
         this.INFO = ads.data.cards.reverse();
         this.admin = ads.data.admin;
@@ -112,20 +112,6 @@ export default {
 <template>
   <div class="hotel-wrapper">
     <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
-      <div v-if="admin" class="cols create-card">
-        <RouterLink
-          :to="
-            `/create-card?name=` +
-            $route.query.name +
-            `&category=${category($route.name)}`
-          "
-        >
-          <div class="cross">
-            <div class="line"></div>
-            <div class="line"></div>
-          </div>
-        </RouterLink>
-      </div>
       <div v-for="(cardInfo, index) in INFO" class="cols">
         <AppCard
           :i="index"
@@ -136,12 +122,51 @@ export default {
           :id="cardInfo.id"
         />
       </div>
+      <div v-if="admin" class="cols create-card">
+        <RouterLink
+          :to="
+            `/create-card?name=` +
+            $route.query.name +
+            `&category=${category($route.name)}`
+          "
+          class="publish"
+        >
+          <!-- <div class="cross">
+            <div class="line"></div>
+            <div class="line"></div>
+          </div> -->
+          Опубликовать объект
+        </RouterLink>
+      </div>
     </div>
-    <div v-if="INFO.length == 0 || !INFO" class="empty"><img src="../../assets/img/empty.png" alt=""><span>Пусто...</span></div>
+    <div v-if="INFO.length == 0 || !INFO" class="empty">
+      <img src="../../assets/img/empty.png" alt="" /><span>Пусто...</span>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.create-card {
+  position: absolute;
+  bottom: 2%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.publish {
+  border: 1px solid #fff;
+  border-radius: 10px;
+  width: auto !important;
+  padding: 5px 10px;
+
+  transition: all 400ms;
+}
+
+.publish:hover {
+  transform: scale(1.06);
+}
+
 .empty {
   display: flex;
   justify-content: center;

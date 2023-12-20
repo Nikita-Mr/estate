@@ -83,7 +83,7 @@ export default {
     </div>
     <div v-if="Transfer.length == 0 || !Transfer" class="empty">
       <img src="../../assets/img/search.png" alt="" /><span
-        >Введите параметры поиска</span
+        >Пусто</span
       >
     </div>
     <div class="transfer-card-wrapper">
@@ -147,6 +147,7 @@ export default {
 .transfer-card-wrapper {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 .transfers {
   width: 100%;

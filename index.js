@@ -168,7 +168,7 @@ app.post(`/filter`, async function (req, res) {
     res.send({ message: "В этот промежуток поездок нет" });
     return;
   }
-  res.send({ Array, admin });
+  res.send({ Array });
 });
 
 app.post(`/transfer`, async function (req, res) {
@@ -871,6 +871,21 @@ app.post(`/create_transfer`, async function (req, res) {
     res.send({ message: "Ошибка создания трансфера", show: false, err });
   }
 });
+
+app.post(`/delete_transfer`, async function(req, res) {
+  try {
+    let { id } = req.body
+    if (id) {
+      let transfer = await CardTransfer.findOne({ where: { id } })
+      await transfer.destroy()
+      res.send({ status: 200, success: true })
+    } else {
+      res.send({ success: 400, message: 'Ошибка удаления трансфера' })
+    }
+  } catch(err) {
+    console.log(err)
+  }
+})
 
 app.post(`/create_service`, async function (req, res) {
   try {

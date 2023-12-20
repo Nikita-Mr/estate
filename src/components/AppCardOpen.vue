@@ -46,6 +46,7 @@ export default defineComponent({
     };
   },
   mounted() {
+    this.check_admin()
     this.loadCard();
     this.loadNumber();
     this.renderMap();
@@ -114,7 +115,6 @@ export default defineComponent({
         .replace(` `, `+`)
         .replace(`, `, `+`)
         .replace(` `, `+`);
-      this.admin = response.data.admin;
     },
     getDate(data) {
       let date = new Date(data);
@@ -173,6 +173,7 @@ export default defineComponent({
           todate: this.todate
         })
       }
+      
     },
     async createNumber() {
       let response = await axios.post(`/create-number`, {
@@ -207,6 +208,25 @@ export default defineComponent({
       this.target = variable.target;
       this.numberid = variable.numberid;
       console.log(variable);
+    },
+
+    async check_admin() {
+			let response = await axios.post(`/check_admin`, {
+        id: this.getCookieValue('id')
+      });
+			this.admin = response.data.admin
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
     },
   },
 });

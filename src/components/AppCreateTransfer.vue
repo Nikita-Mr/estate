@@ -327,6 +327,7 @@ form {
   background-color: transparent;
   border: 1px solid #d5d5d5;
   box-shadow: 0px 0 10px 0 #ffffff71;
+  color: #fff;
 
   transition: color 300ms;
 }

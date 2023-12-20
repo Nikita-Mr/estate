@@ -62,13 +62,15 @@ export default defineComponent({
     },
     async deleteCard() {
       await axios
-        .post('/deleteCard', {
+        .post('/delete_transfer', {
           id: this.INFO.id,
           name: this.$route.query.name,
         })
         .then((e) => {
           if (e.data.status == '200') {
-            this.$router.go(-1);
+            setTimeout(() => {
+              this.$router.go(-1);
+            }, 1000)
           }
         });
     },
@@ -202,11 +204,8 @@ export default defineComponent({
       <div class="button-wrapper" v-if="!view">
         <span v-if="message" class="text-center mt-3">{{ message }}</span>
         <button v-if="!admin" @click="book">Забронировать</button>
-        <button @click="target = 1" class="btn btn-outline-danger" v-if="admin">
+        <button @click="deleteCard" class="btn btn-outline-danger" v-if="admin">
           Удалить
-        </button>
-        <button @click="edit" class="btn btn-outline-light" v-if="admin">
-          Редактировать
         </button>
         <button @click="payment" class="btn btn-outline-success">
           Оплатить
