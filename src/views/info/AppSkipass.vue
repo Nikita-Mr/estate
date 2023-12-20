@@ -8,23 +8,19 @@ export default {
     return {
       skipass: ``,
       admin: false,
+      id: ''
     };
   },
   methods: {
     async loadInfo() {
-      let response = await axios.post(`/skipass`, {
-        headers: {
-          Authorization: document.cookie.replace("token=", ``),
-        },
-      });
+      let response = await axios.post(`/skipass`);
       this.skipass = response.data.skipass
     },
 
     async check_admin() {
-			let response = await axios.get(`/check_admin`, {
-        headers: {
-          Authorization: document.cookie.replace("token=", ``),
-        },
+      this.id = this.getCookieValue('id')
+			let response = await axios.post(`/check_admin`, {
+        id: this.id
       });
 			this.admin = response.data.admin
     },
@@ -34,6 +30,18 @@ export default {
         id: id,
       });
       this.loadInfo();
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
     },
   },
   mounted() {
@@ -78,6 +86,7 @@ export default {
           </div>
         </div>
       </div>
+      <div v-if="skipass.length == 0 || !skipass" class="empty"><img src="../../assets/img/empty.png" alt=""><span>Пусто...</span></div>
     </div>
   </div>
 </template>
@@ -91,6 +100,19 @@ export default {
   position: sticky;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1.7rem;
+  color: #fff;
+  height: 60vh;
+}
+
+.empty img {
+  height: 70px;
 }
 
 .divDelete {

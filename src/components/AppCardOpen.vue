@@ -1,13 +1,13 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
-import axios from 'axios';
-import { defineComponent } from 'vue';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ru';
-import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
-import AppCard from '/src/components/AppCard.vue';
+import { RouterLink, RouterView } from "vue-router";
+import axios from "axios";
+import { defineComponent } from "vue";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
+import AppCard from "/src/components/AppCard.vue";
 
-import 'vue3-carousel/dist/carousel.css';
+import "vue3-carousel/dist/carousel.css";
 
 export default defineComponent({
   components: {
@@ -21,11 +21,11 @@ export default defineComponent({
     return {
       INFO: {},
       NUMBER: {},
-      user: '',
+      user: "",
       price: ``,
       admin: ``,
       target: 0,
-      phone: '',
+      phone: "",
       fromdate: Date,
       todate: Date,
       adults: ``,
@@ -37,15 +37,16 @@ export default defineComponent({
       status: ``,
       numberid: ``,
       buttonTarg: 0,
-      success: '',
-      email: '',
+      success: "",
+      email: "",
       view: false,
       adress: ``,
       point: ``,
-      switch: 1
+      switch: 1,
     };
   },
   mounted() {
+    this.check_admin()
     this.loadCard();
     this.loadNumber();
     this.renderMap();
@@ -54,9 +55,9 @@ export default defineComponent({
     async renderMap() {
       let response = await axios.get(`https://geocode-maps.yandex.ru/1.x/`, {
         params: {
-          apikey: '62143967-f105-468b-b0e5-f820e63f8c40',
+          apikey: "62143967-f105-468b-b0e5-f820e63f8c40",
           geocode: `Шерегеш+${this.adress}`,
-          format: 'json',
+          format: "json",
         },
       });
       let address = `Шерегеш ${this.adress}`;
@@ -71,12 +72,12 @@ export default defineComponent({
             .then((res) => {
               const firstGeoObject = res.geoObjects.get(0);
               const coordinates = firstGeoObject.geometry.getCoordinates();
-              console.log('Координаты:', coordinates);
+              console.log("Координаты:", coordinates);
 
-              myMap = new ymaps.Map('customMap', {
+              myMap = new ymaps.Map("customMap", {
                 center: coordinates, // устанавливаем центр карты
                 zoom: 15, // масштаб карты
-                behaviors: ['default', 'scrollZoom'], // включаем скроллинг колесом
+                behaviors: ["default", "scrollZoom"], // включаем скроллинг колесом
                 controls: [], // убираем все элементы управления
               });
 
@@ -84,7 +85,7 @@ export default defineComponent({
                 coordinates,
                 {},
                 {
-                  preset: 'islands#blueDotIcon', // выбираем иконку для точки
+                  preset: "islands#blueDotIcon", // выбираем иконку для точки
                 }
               );
 
@@ -99,49 +100,43 @@ export default defineComponent({
     },
     async loadCard() {
       this.view = this.$route.query.view;
-      if (this.view == 'true') {
+      if (this.view == "true") {
         this.view = true;
       } else {
         this.view = false;
       }
-      let response = await axios.get(`/card`, {
-        params: {
-          id: this.$route.query.id,
-          name: this.$route.query.name,
-          view: this.view,
-        },
-        headers: {
-          Authorization: document.cookie.replace(`token=`, ``),
-        },
+      let response = await axios.post(`/card`, {
+        id: this.$route.query.id,
+        name: this.$route.query.name,
+        view: this.view,
       });
       this.INFO = response.data.card;
       this.adress = response.data.card.address
         .replace(` `, `+`)
         .replace(`, `, `+`)
         .replace(` `, `+`);
-      this.admin = response.data.admin;
     },
     getDate(data) {
       let date = new Date(data);
       let day = dayjs(date);
-      dayjs.locale('ru');
+      dayjs.locale("ru");
       return day.format(`dd, D MMM`);
     },
     async deleteCard() {
       await axios
-        .post('/deleteCard', {
+        .post("/deleteCard", {
           id: this.INFO.id,
           name: this.$route.query.name,
         })
         .then((e) => {
-          if (e.data.status == '200') {
+          if (e.data.status == "200") {
             this.$router.go(-1);
           }
         });
     },
     async edit() {
       this.$router.push({
-        path: '/create-card',
+        path: "/create-card",
         query: { id: this.INFO.id, name: this.$route.query.name, edit: true },
       });
     },
@@ -171,7 +166,14 @@ export default defineComponent({
           fromdate: this.fromdate,
           todate: this.todate,
         });
+        await axios.post(`/send_tg`, {
+          chatID: this.INFO.chatID,
+          phone: this.phone,
+          fromdate: this.fromdate,
+          todate: this.todate
+        })
       }
+      
     },
     async createNumber() {
       let response = await axios.post(`/create-number`, {
@@ -206,6 +208,25 @@ export default defineComponent({
       this.target = variable.target;
       this.numberid = variable.numberid;
       console.log(variable);
+    },
+
+    async check_admin() {
+			let response = await axios.post(`/check_admin`, {
+        id: this.getCookieValue('id')
+      });
+			this.admin = response.data.admin
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
     },
   },
 });
@@ -294,12 +315,16 @@ export default defineComponent({
         </div>
       </div>
       <div class="right">
-        <div class="wrapper-button">
-          <button @click="this.switch=1">Номера</button>
-          <button @click="this.switch=2">Карта</button>
+        <div class="wrapper-button" v-if="!view">
+          <button @click="this.switch = 1">Номера</button>
+          <button @click="this.switch = 2">Карта</button>
         </div>
         <div class="wrapper" v-if="!view">
-          <div id="customMap" class="map" :class="{none:this.switch == 1}"></div>
+          <div
+            id="customMap"
+            class="map"
+            :class="{ none: this.switch == 1 }"
+          ></div>
 
           <form
             v-if="admin && $route.query.name == `habitation`"
@@ -356,11 +381,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
-.none{
+.none {
   display: none;
 }
-.wrapper-button{
+.wrapper-button {
   display: flex;
   align-items: center;
   gap: 10px;

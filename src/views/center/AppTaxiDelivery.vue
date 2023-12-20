@@ -10,19 +10,29 @@ export default {
   data() {
     return {
       INFO: [],
-      admin: false
+      admin: false,
+      id: ''
     };
   },
   methods: {
     async ServiceLoad() {
-      let service = await axios.get(`/services`, {
-        // не работает error
-        headers: {
-          Authorization: document.cookie.replace('token=', ``),
-        },
+      let response = await axios.post(`/services`, {
+        id: this.getCookieValue('id')
       });
-      this.INFO = service.data.services;
-      this.admin = service.data.admin;
+      this.INFO = response.data.services;
+      this.admin = response.data.admin;
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
     },
   },
   mounted() {
@@ -47,6 +57,7 @@ export default {
           />
         </div>
       </div>
+      <div v-if="INFO.length == 0 || !INFO" class="empty"><img src="../../assets/img/empty.png" alt=""><span>Пусто...</span></div>
     </div>
     <div class="create-service">
       <RouterLink v-if="admin" to="/create-service">Опубликовать услугу</RouterLink>
@@ -58,6 +69,19 @@ export default {
 <style scoped>
 .wrapper-for-content {
   width: 100%;
+}
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1.7rem;
+  color: #fff;
+  height: 60vh;
+}
+
+.empty img {
+  height: 70px;
 }
 .create-service {
   position: absolute;

@@ -45,6 +45,7 @@ CardModel.init(
         phone:                  { type: DataTypes.STRING,  allowNull: false, },
         address:                { type: DataTypes.STRING,  allowNull: false, },
         email:                  { type: DataTypes.STRING,  allowNull: false, },
+        chatID:                 { type: DataTypes.STRING,  allowNull: false, },
         nameCard:               { type: DataTypes.STRING,  allowNull: false, },
         verified:               { type: DataTypes.BOOLEAN, allowNull: false, },
     }, 
@@ -100,6 +101,7 @@ HotelModel.init(
         address:        { type: DataTypes.STRING,  allowNull: false, },
         price:          { type: DataTypes.INTEGER, allowNull: true,  },
         email:          { type: DataTypes.STRING,  allowNull: false, },
+        chatID:         { type: DataTypes.STRING,  allowNull: false, },
         verified:       { type: DataTypes.BOOLEAN, allowNull: false, },
     }, 
     { sequelize, modelName: 'HotelModel', }

@@ -10,6 +10,8 @@ export default {
       token: ``,
       error: ``,
       status: Number,
+      id: '',
+      idc: ''
     };
   },
   methods: {
@@ -21,14 +23,17 @@ export default {
       this.error = error.data.message;
       this.status = error.data.status;
       this.token = error.data.token;
+      this.id = error.data.id
       if (this.token) {
-        document.cookie = new String();
+        document.cookie = `token=${this.token}; max-age=0`;
+        document.cookie = `id=${this.id}; max-age=0`;
         document.cookie = `token=${this.token}; max-age=1123200`;
+        document.cookie = `id=${this.id}; max-age=1123200`;
       }
       setTimeout(() => {
         if (this.status == 200) {
           this.$refs.form.reset();
-          this.$router.push({ name: 'home' });
+          location.reload()
         }
       }, 1000);
       setTimeout(() => {
@@ -38,12 +43,27 @@ export default {
         }
       }, 3000);
     },
-    exit(){
-      console.log(document.cookie)
-    }
+    start(){
+      this.idc = this.getCookieValue('id')
+      if (this.idc) {
+        this.$router.push({ name: 'home' })
+      }
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
+    },
   },
   mounted() {
-    this.exit()
+    this.start()
   },
 };
 </script>

@@ -1,14 +1,31 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView } from "vue-router";
 
 export default {
   data() {
     return {
       active: 0,
-      token: document.cookie 
+      token: document.cookie,
+      id: "",
     };
   },
   methods: {
+    request() {
+      this.id = this.getCookieValue("id");
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
+    },
+
     click() {
       this.active == 1 ? (this.active = 0) : (this.active = 1);
     },
@@ -18,220 +35,185 @@ export default {
       }
     },
   },
-  watch:{
-    token(newtoken, old){
-      if (newtoken.includes('token=')) {
-        this.token = newtoken
+  watch: {
+    token(newtoken, old) {
+      if (newtoken.includes("token=")) {
+        this.token = newtoken;
       }
-    }
-  }
+    },
+  },
+
+  mounted() {
+    this.request();
+  },
 };
 </script>
 
 <template>
   <div class="wrapper-for-nav">
-    <button class="webBack" id="webBack" @click="$router.go(-1)">
-      <img src="/src/assets/img/arrow-down-sign-to-navigate.png" alt="" />
-    </button>
-    <button @click="click" class="burger" :class="{ cross: active == 1 }">
-      <div class="line"></div>
-      <div class="line"></div>
-      <div class="line"></div>
-    </button>
-    <nav>
-      <ul class="list-nav" :class="{ active: this.active == 1 }">
-        <RouterLink to="/" @click="active = 0">
-          <li class="list-item-nav"><img src="../assets/img/logo.png" /></li
-        ></RouterLink>
-        <RouterLink to="/weather" @click="active = 0">
-          <li class="list-item-nav">Погода</li></RouterLink
-        >
-        <RouterLink to="/habitation" @click="active = 0">
-          <li class="list-item-nav">Забронировать место</li></RouterLink
-        >
-        <RouterLink to="/transfer" @click="active = 0">
-          <li class="list-item-nav">Забронировать трансфер</li></RouterLink
-        >
-        <RouterLink to="/search" @click="active = 0">
-          <li class="list-item-nav">Поиск</li></RouterLink
-        >
-        <RouterLink to="/register" @click="active = 0">
-          <li v-if="!token" class="list-item-nav">
-            Регистрация/Вход
-          </li>
-          <li v-if="token" class="profile">
-            <ion-icon name="person-outline"></ion-icon>
-          </li>
+    <div class="navbar">
+      <li class="list-item">
+        <router-link to="/">
+          <img class="logo" src="../assets/img/logo.png" alt="" />
+          <span class="list-item-name">Главная</span>
+        </router-link>
+      </li>
+      <li class="list-item">
+        <router-link to="/transfer">
+          <img class="car" src="../assets/img/bus.png" alt="" />
+          <span class="list-item-name">Забронировать трансфер</span>
+        </router-link>
+      </li>
+      <li class="list-item">
+        <router-link to="/habitation">
+          <img class="bed" src="../assets/img/bed.png" alt="" />
+          <span class="list-item-name">Забронировать место</span>
+        </router-link>
+      </li>
+      <li @custom-event="request" class="list-item" v-if="!id">
+        <RouterLink to="/register">
+          <img class="icon" src="../assets/img/register.png" alt="" />
+          <span class="list-item-name">Регистрация</span>
         </RouterLink>
-      </ul>
-    </nav>
+      </li>
+      <li @custom-event="request" class="list-item" v-if="id">
+        <RouterLink to="/profile">
+          <img class="icon" src="../assets/img/profile.png" alt="" />
+          <span class="list-item-name">Профиль</span>
+        </RouterLink>
+      </li>
+    </div>
   </div>
 </template>
 
 <style>
-a{
-  width: 100% !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 5px;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap");
+
+:root {
+  --highlight: #fff;
 }
-@media (max-width: 1180px) {
-  #webBack {
-    display: block !important;
-  }
+
+* {
+  box-sizing: border-box;
 }
-.profile{
-  width: 60px;
+
+.logo {
   height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url('../assets/img/elipse.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: 100%;
 }
-ion-icon{
-  height: 50px;
-  width: 30px;
-}
-#webBack {
-  display: none;
-}
-.bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-image: url('../assets/img/bg.jpg');
-  width: 100%;
-  height: 100vh;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  filter: brightness(60%);
-}
-nav {
-  z-index: 10;
-}
-.burger {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 5.2px;
-  width: 40px;
+
+.icon {
   height: 40px;
-  background-color: transparent;
-  display: none;
-  border: none;
 }
-.line {
-  width: 100%;
-  height: 2px;
-  background-color: #fff;
+
+.bed {
+  height: 50px;
+}
+
+.car {
+  height: 60px;
+  padding-bottom: 10px;
 }
 
 .wrapper-for-nav {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 10px;
 }
-.list-nav {
+
+.navbar {
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 50px;
+  width: 100%;
+  max-width: 500px;
+  gap: 70px;
+}
+
+.list-item {
   list-style-type: none;
-}
-.list-nav a {
-  color: black;
-  text-decoration: none;
-}
-
-.list-item-nav {
-  background-image: url('../icons/textWrapper.svg');
-  padding: 20px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  text-align: center;
-  width: 175px;
-  height: 70px;
-  text-transform: uppercase;
-  font-weight: 500;
-  letter-spacing: 0.7px;
-  font-size: 15px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.list-nav a:focus .list-item-nav {
-  filter: brightness(80%);
-}
-.list-item-nav img {
-  width: 70px;
-  height: 70px;
-}
-
-.active {
-  flex-direction: column;
-  display: flex !important;
-  position: absolute;
-  top: calc(50% - 260px);
-  right: 10px;
-  z-index: 1;
-}
-
-.cross {
-  gap: 0;
+  justify-content: center;
   position: relative;
-}
-.cross .line:last-child {
-  display: none;
-}
-.cross .line:nth-child(1) {
-  transform: rotate(45deg);
-  position: absolute;
-  width: 80%;
-}
-
-.cross .line:nth-child(2) {
-  transform: rotate(-45deg);
-  position: absolute;
-  width: 80%;
-}
-
-.list-item-nav:hover {
-  filter: brightness(80%);
-  transition: filter 200ms;
+  color: #555;
+  transform: translateY(0);
+  transition: transform 0.5s ease, opacity 0.2s ease;
   cursor: pointer;
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
+.list-item-name {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  position: absolute;
+  transform: translate(0, 50px);
+  transition: transform 0.5s ease, opacity 0.2s ease;
+  opacity: 0;
 }
 
-@media (max-width: 1310px) {
-  .list-nav {
-    gap: 10px;
+.list-item:hover {
+  color: var(--highlight);
+  transform: translateY(-6px);
+  .list-item-name {
+    transform: translateY(35px);
+    opacity: 1;
   }
 }
-@media (max-width: 1180px) {
-  .burger {
-    display: flex;
-    align-self: start;
+
+a,
+a:hover {
+  color: var(--highlight);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 450px) {
+  .navbar {
+    align-items: center;
+    padding-bottom: 20px;
+    gap: 25px;
   }
-  .list-nav {
-    display: none;
+
+  .list-item {
+    flex-basis: auto;
   }
-  .wrapper-for-nav {
-    justify-content: end;
-    gap: 10px;
+
+  .list-item:hover {
+    .list-item-name {
+      transform: translateY(25px);
+    }
+  }
+
+  .list-item:hover {
+    color: var(--highlight);
+    transform: translateY(-6px);
+    .list-item-name {
+      transform: translateY(40px);
+      opacity: 1;
+    }
   }
 }
+
+@media (max-width: 350px) {
+  .car {
+    height: 45px;
+  }
+
+  .bed {
+    height: 35px;
+  }
+
+  .icon {
+    height: 35px;
+  }
+
+  .logo {
+    height: 40px;
+  }
+}
+
 </style>
