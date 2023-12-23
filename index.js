@@ -14,7 +14,7 @@ const mkdirp = require("mkdirp");
 const nodemailer = require("nodemailer");
 
 const TelegramApi = require("node-telegram-bot-api");
-const tokenBot = "6512089922:AAGrZ9UzuZc26s67yQIwZkrb_cj8uaj7spw";
+const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
 
 let bot = new TelegramApi(tokenBot, { polling: true });
 
@@ -1002,10 +1002,13 @@ app.post(`/create-number`, async function (req, res) {
     res.send({ error: err, status: `400` });
   }
 });
-app.get(`/number`, async function (req, res) {
+app.post(`/number`, async function (req, res) {
   try {
-    let { id } = req.query;
-    let number = await NumberModel.findAll({ where: { HotelModelId: id } });
+    let { id } = req.body;
+    let number = []
+    if (id) {
+      number = await NumberModel.findAll({ where: { HotelModelId: id } });
+    }
     return res.send({ number });
   } catch (err) {
     return res.send({ error: err });
@@ -1194,7 +1197,7 @@ app.post(`/send_mail`, async function (req, res) {
 app.post(`/send_tg`, async function(req, res) {
   try {
     let { phone, chatID, fromdate, todate } = req.body
-    bot.sendMessage(chatID, `Прошло бронирование на сайте http://sneg-info.ru по вашему объявлению. Номер клиента: ${phone}. С ${fromdate} по ${todate}`)
+    bot.sendMessage(chatID, `Прошло бронирование на сайте http://sneg-info.ru по вашему объявлению. Номер клиента: ${phone}. С "${fromdate}" по "${todate}"`)
     res.send({ status: 200, success: true })
   } catch(err) {
     console.log(err)
@@ -1253,7 +1256,8 @@ app.post(`/reject_request`, async function (req, res) {
   try {
     let { id, nameModel } = req.body;
     let card;
-    if (nameModel == "hotel") {
+    console.log(id, nameModel)
+    if (nameModel == "hotels") {
       card = await HotelModel.findOne({ where: { id: id } });
     } else if (nameModel == "transfer") {
       card = await CardTransfer.findOne({ where: { id: id } });

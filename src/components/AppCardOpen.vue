@@ -46,7 +46,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.check_admin()
+    this.check_admin();
     this.loadCard();
     this.loadNumber();
     this.renderMap();
@@ -166,14 +166,14 @@ export default defineComponent({
           fromdate: this.fromdate,
           todate: this.todate,
         });
+        console.log(this.INFO.chatID);
         await axios.post(`/send_tg`, {
           chatID: this.INFO.chatID,
           phone: this.phone,
           fromdate: this.fromdate,
-          todate: this.todate
-        })
+          todate: this.todate,
+        });
       }
-      
     },
     async createNumber() {
       let response = await axios.post(`/create-number`, {
@@ -199,11 +199,12 @@ export default defineComponent({
       }
     },
     async loadNumber() {
-      let response = await axios.get(`/number`, {
-        params: { id: this.$route.query.id },
+      let response = await axios.post(`/number`, {
+        id: this.$route.query.id,
       });
       this.NUMBER = response.data.number;
     },
+
     handleVariable(variable) {
       this.target = variable.target;
       this.numberid = variable.numberid;
@@ -211,10 +212,10 @@ export default defineComponent({
     },
 
     async check_admin() {
-			let response = await axios.post(`/check_admin`, {
-        id: this.getCookieValue('id')
+      let response = await axios.post(`/check_admin`, {
+        id: this.getCookieValue("id"),
       });
-			this.admin = response.data.admin
+      this.admin = response.data.admin;
     },
 
     getCookieValue(name) {
@@ -270,8 +271,15 @@ export default defineComponent({
             />
             <span v-if="status == 200">{{ message }}</span>
             <div class="center">
-              <button @click="target = 1" v-if="!admin">Забронировать</button>
-              <button type="button" @click="target = 0" v-if="!admin">
+              <button class="btn btn-light" @click="target = 1" v-if="!admin">
+                Забронировать
+              </button>
+              <button
+                class="btn btn-light"
+                type="button"
+                @click="target = 0"
+                v-if="!admin"
+              >
                 Отмена
               </button>
             </div>
@@ -302,22 +310,16 @@ export default defineComponent({
           <span class="phone">{{ INFO.phone }}</span>
           <span class="description">{{ INFO.p }}</span>
           <div class="messengers">
-            <a href="#" target="_blank">
-              <img src="/src/assets/img/viber.png" alt="viber" />
-            </a>
-            <a href="#" target="_blank">
-              <img src="/src/assets/img/whatsapp.png" alt="whatsapp" />
-            </a>
-            <a href="#" target="_blank">
+            <a :href="'https://t.me/' + INFO.phone" target="_blank">
               <img src="/src/assets/img/telegram.png" alt="telegram" />
             </a>
           </div>
         </div>
       </div>
       <div class="right">
-        <div class="wrapper-button" v-if="!view">
-          <button @click="this.switch = 1">Номера</button>
-          <button @click="this.switch = 2">Карта</button>
+        <div class="wrapper-button" v-if="!view || !admin">
+          <button class="btn btn-light" @click="this.switch = 1">Номера</button>
+          <button class="btn btn-light" @click="this.switch = 2">Карта</button>
         </div>
         <div class="wrapper" v-if="!view">
           <div
@@ -373,8 +375,7 @@ export default defineComponent({
       <div class="reviews"></div>
       <div class="button-wrapper" v-if="!view">
         <!-- <button @click="target = 1" v-if="!admin">Забронировать</button> -->
-        <button @click="target = 1" class="delete" v-if="admin">Удалить</button>
-        <button @click="edit" class="edit" v-if="admin">Редактировать</button>
+        <button @click="target = 1" class="btn btn-danger" v-if="admin">Удалить</button>
       </div>
     </div>
   </div>
@@ -559,6 +560,9 @@ form {
   border: none;
   position: relative;
   width: 100%;
+  max-height: 60vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .carousel__slide {
@@ -597,14 +601,9 @@ img {
 button {
   display: block;
   margin: 0 auto;
-  border: none;
   width: 50%;
   padding: 5px 0;
   box-shadow: 0 0 10px 0 #00000037;
-}
-
-button:active {
-  box-shadow: none;
 }
 
 .messengers {
@@ -628,5 +627,17 @@ button:active {
 
 .adress {
   font-size: 1rem !important;
+}
+
+@media (max-width: 660px) {
+
+  .left,
+  .right {
+    width: 100%;
+  }
+
+  .card-wrapper {
+    width: 100%;
+  }
 }
 </style>

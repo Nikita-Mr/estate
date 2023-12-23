@@ -111,6 +111,22 @@ export default {
 
 <template>
   <div class="hotel-wrapper">
+    <div v-if="admin" class="cols create-card">
+      <RouterLink
+        :to="
+          `/create-card?name=` +
+          $route.query.name +
+          `&category=${category($route.name)}`
+        "
+        class="publish"
+      >
+        <!-- <div class="cross">
+          <div class="line"></div>
+          <div class="line"></div>
+        </div> -->
+        Опубликовать объект
+      </RouterLink>
+    </div>
     <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
       <div v-for="(cardInfo, index) in INFO" class="cols">
         <AppCard
@@ -122,22 +138,6 @@ export default {
           :id="cardInfo.id"
         />
       </div>
-      <div v-if="admin" class="cols create-card">
-        <RouterLink
-          :to="
-            `/create-card?name=` +
-            $route.query.name +
-            `&category=${category($route.name)}`
-          "
-          class="publish"
-        >
-          <!-- <div class="cross">
-            <div class="line"></div>
-            <div class="line"></div>
-          </div> -->
-          Опубликовать объект
-        </RouterLink>
-      </div>
     </div>
     <div v-if="INFO.length == 0 || !INFO" class="empty">
       <img src="../../assets/img/empty.png" alt="" /><span>Пусто...</span>
@@ -147,8 +147,6 @@ export default {
 
 <style scoped>
 .create-card {
-  position: absolute;
-  bottom: 2%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -219,7 +217,6 @@ export default {
   justify-content: center;
   gap: 15px;
   flex-wrap: wrap;
-  height: 500px;
   overflow-y: scroll;
 }
 .hotel-wrapper::-webkit-scrollbar {
