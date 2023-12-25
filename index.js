@@ -1006,6 +1006,7 @@ app.get(`/number`, async function (req, res) {
   try {
     let { id } = req.query;
     let number = await NumberModel.findAll({ where: { HotelModelId: id } });
+    console.log(number)
     return res.send({ number });
   } catch (err) {
     return res.send({ error: err });
