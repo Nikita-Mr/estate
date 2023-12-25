@@ -84,7 +84,6 @@ export default {
 
 <template>
     <div class="wrapper">
-
         <div class="wrapper-for-item" @click="$router.push({ path: `/transfer/card`, query: { id: item.id, view: true } })"
          v-if="nameModel == 'transfer'" v-for="item in requests">
           <div class="title">{{item.name}}</div>
@@ -160,8 +159,7 @@ a{
 }
 .wrapper {
   width: 90%;
-  min-height: 590px;
-  height: 590px;
+  height: 70vh;
   flex-basis: 100%;
   overflow-y: scroll;
 }
@@ -203,6 +201,13 @@ a{
   justify-content: center;
   align-items: center;
   gap: 10px;
+}
+
+@media (max-width: 420px) {
+  .btn {
+    padding: 3px;
+    font-size: small;
+  }
 }
 
 </style>

@@ -134,4 +134,10 @@ export default {
     align-items: center;
   }
 }
+
+@media (max-height: 780px) {
+  .list-events {
+    height: 70vh !important;
+  }
+}
 </style>

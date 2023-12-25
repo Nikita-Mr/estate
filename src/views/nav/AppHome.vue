@@ -163,4 +163,11 @@ export default {
     overflow-y: scroll;
   }
 }
+
+
+@media (max-height: 780px) {
+  .list-events {
+    height: 55vh !important;
+  }
+}
 </style>

@@ -229,6 +229,11 @@ export default defineComponent({
       }
       return res;
     },
+
+    go_up() {
+      this.target = 1;
+      this.$refs.modal.scrollTop = 0;
+    },
   },
 });
 </script>
@@ -236,7 +241,7 @@ export default defineComponent({
 <template>
   <div class="card-wrapper">
     <div class="card">
-      <div class="modalDelete" :class="{ 'd-none': target == 0 }">
+      <div class="modalDelete" ref="modal" :class="{ 'd-none': target == 0 }">
         <div v-if="admin" class="button-wrapper">
           <button @click="deleteCard" class="delete" v-if="admin">
             Удалить
@@ -271,7 +276,7 @@ export default defineComponent({
             />
             <span v-if="status == 200">{{ message }}</span>
             <div class="center">
-              <button class="btn btn-light" @click="target = 1" v-if="!admin">
+              <button class="btn btn-light" @click="go_up" v-if="!admin">
                 Забронировать
               </button>
               <button
@@ -375,7 +380,9 @@ export default defineComponent({
       <div class="reviews"></div>
       <div class="button-wrapper" v-if="!view">
         <!-- <button @click="target = 1" v-if="!admin">Забронировать</button> -->
-        <button @click="target = 1" class="btn btn-danger" v-if="admin">Удалить</button>
+        <button @click="target = 1" class="btn btn-danger" v-if="admin">
+          Удалить
+        </button>
       </div>
     </div>
   </div>
@@ -630,7 +637,6 @@ button {
 }
 
 @media (max-width: 660px) {
-
   .left,
   .right {
     width: 100%;

@@ -111,7 +111,7 @@ export default {
 
 <template>
   <div class="hotel-wrapper">
-    <div v-if="admin" class="cols create-card">
+    <div class="cols create-card">
       <RouterLink
         :to="
           `/create-card?name=` +

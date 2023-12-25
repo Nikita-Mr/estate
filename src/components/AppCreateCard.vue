@@ -258,7 +258,7 @@ export default defineComponent({
             <img class="teleg" src="../assets/img/telegram.png" alt="" />
             <span class="text"
               >Чтобы получать уведомления по вашему объекту, перейдите в
-              телеграмм, нажав на иконку, и напишите "/start", получите чат
+              телеграм, нажав на иконку и напишите "/start", получите чат
               ID</span
             >
           </a>
@@ -550,5 +550,14 @@ button {
 
 button:active {
   box-shadow: none;
+}
+
+@media (max-height: 780px) {
+  .card-wrapper {
+    width: 100%;
+    height: 70vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
 }
 </style>

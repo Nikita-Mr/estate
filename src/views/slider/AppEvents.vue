@@ -185,4 +185,10 @@ export default {
     height: 400px;
   }
 }
+
+@media (max-height: 780px) {
+  .list-events {
+    height: 70vh !important;
+  }
+}
 </style>

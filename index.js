@@ -14,17 +14,17 @@ const mkdirp = require("mkdirp");
 const nodemailer = require("nodemailer");
 
 const TelegramApi = require("node-telegram-bot-api");
-const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
+// const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
 
-let bot = new TelegramApi(tokenBot, { polling: true });
+// let bot = new TelegramApi(tokenBot, { polling: true });
 
-bot.on(`message`, (msg) => {
-  let text = msg.text;
-  let chatID = msg.chat.id;
-  if (text == "/start") {
-    bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
-  }
-});
+// bot.on(`message`, (msg) => {
+//   let text = msg.text;
+//   let chatID = msg.chat.id;
+//   if (text == "/start") {
+//     bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
+//   }
+// });
 
 // модули самого бэкенда
 const {
@@ -1231,7 +1231,8 @@ app.post(`/accept_request`, async function (req, res) {
   try {
     let { id, nameModel } = req.body;
     let card;
-    if (nameModel == "hotels") {
+    console.log(id, nameModel)
+    if (nameModel == "hotels" || nameModel == 'cottage') {
       card = await HotelModel.findOne({ where: { id: id } });
     } else if (nameModel == "transfer") {
       card = await CardTransfer.findOne({ where: { id: id } });
@@ -1240,6 +1241,7 @@ app.post(`/accept_request`, async function (req, res) {
     } else {
       card = await CardModel.findOne({ where: { id: id } });
     }
+    console.log(card)
     card.verified = true;
     await card.save();
     res.send({
@@ -1248,6 +1250,7 @@ app.post(`/accept_request`, async function (req, res) {
       success: true,
     });
   } catch (err) {
+    console.log(err)
     res.send({ message: "Ошибка создания запроса", err, success: false });
   }
 });

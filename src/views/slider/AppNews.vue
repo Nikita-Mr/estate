@@ -127,8 +127,7 @@ a:hover {
 .wrapperNews {
   margin-top: 10px;
   width: 100%;
-  max-height: 600px;
-  min-height: 600px;
+  height: 70vh;
   overflow-y: scroll;
 }
 
@@ -182,5 +181,11 @@ a:hover {
     font-size: small;
   }
 
+}
+
+@media (max-height: 780px) {
+  .wrapperNews {
+    min-height: 100%;
+  }
 }
 </style>

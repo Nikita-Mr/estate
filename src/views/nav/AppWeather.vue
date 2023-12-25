@@ -253,4 +253,5 @@ export default {
 .weather {
   font-size: 18px;
 }
+
 </style>
