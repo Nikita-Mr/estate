@@ -74,7 +74,7 @@ export default {
                 Мест для взрослых: {{ adults }}
               </p>
               <p class="card-text">{{ p }}</p>
-              <button @click="sendVariable" v-if="children">Забронировать</button>
+              <button class="btn btn-light" @click="sendVariable" v-if="children">Забронировать</button>
             </div>
           </div>
         </div>
@@ -110,9 +110,11 @@ h5 {
 .card {
   color: var(--mainColor);
   background-color: transparent;
-  border: 1px solid var(--mainColor);
   cursor: pointer;
   min-height: 290px;
+  box-shadow: 0 0 10px 0 black;
+
+  transition: all 400ms;
 }
 .card:hover {
   box-shadow: 0 0 10px 0 var(--mainColor);

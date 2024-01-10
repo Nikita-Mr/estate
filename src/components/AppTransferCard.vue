@@ -51,7 +51,7 @@ export default {
               <span class="sub">{{ getDate(dateto) }}</span>
             </div>
           </div>
-          <div class="line"></div>
+          <!-- <div class="line"></div> -->
           <div class="city">
             <div class="first">
               <span>{{ cityfrom }}</span>
@@ -243,5 +243,11 @@ span:not(.sub, .cars span) {
 }
 .red {
   background: #ee2e31;
+}
+
+@media (max-width: 480px) {
+  .cardTransfer {
+    padding: 5px;
+  }
 }
 </style>

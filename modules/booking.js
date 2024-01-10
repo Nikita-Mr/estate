@@ -15,9 +15,40 @@ const { sequelize, HotelModel, NumberModel } = require('./models');
 let bookingDebug = true;
 
 // добавление номеров
-const addNumber = async (hotel, name, adults, children, description, value, price) => {
-  if (bookingDebug)
-    console.log(hotel);
+const addNumber = async (
+  hotel,
+  name,
+  adults,
+  children,
+  description,
+  value,
+  price,
+  floor,
+  lease_term,
+  total_area,
+  sleeping_rooms,
+  sleeping_places,
+  children_bed,
+  double_places,
+  single_spaces,
+  additional_sleeping_places,
+  bathrooms,
+  bathrooms_showers,
+  drying_for_inventory,
+  wifi,
+  warm_floor,
+  dishwasher,
+  parking_cars,
+  mall,
+  kazan,
+  bath_territory,
+  pool,
+  transfer_city,
+  transfer_mountain,
+  live_whith_animals,
+  additionally
+) => {
+  if (bookingDebug) console.log(hotel);
   //   let newNumber = await NumberModel.create({
   //     name: name,
   //     adults: adults,
@@ -28,15 +59,67 @@ const addNumber = async (hotel, name, adults, children, description, value, pric
   //     bookings: {},
   //   });
   //   await newNumber.save();
+  console.log([
+    {
+      price: price,
+      name: name,
+      bookings: {},
+      HotelModelId: hotel, //ошибка тутутуутуутутуутуутуутутуутутуутутутууттуутутутууттт долбаебикс смотри сюда
+      floor,
+      lease_term,
+      total_area,
+      sleeping_rooms,
+      sleeping_places,
+      children_bed,
+      double_places,
+      single_spaces,
+      additional_sleeping_places,
+      bathrooms,
+      bathrooms_showers,
+      drying_for_inventory,
+      wifi,
+      warm_floor,
+      dishwasher,
+      parking_cars,
+      mall,
+      kazan,
+      bath_territory,
+      pool,
+      transfer_city,
+      transfer_mountain,
+      live_whith_animals,
+      additionally,
+    },
+  ]);
   const newNumber = await NumberModel.create({
     price: price,
     name: name,
-    adults: adults,
-    children: children,
-    description: description,
     bookings: {},
-    value: value,
-    HotelModelId: hotel,//ошибка тутутуутуутутуутуутуутутуутутуутутутууттуутутутууттт долбаебикс смотри сюда
+    HotelModelId: hotel, //ошибка тутутуутуутутуутуутуутутуутутуутутутууттуутутутууттт долбаебикс смотри сюда
+    floor,
+    lease_term,
+    total_area,
+    sleeping_rooms,
+    sleeping_places,
+    children_bed,
+    double_places,
+    single_spaces,
+    additional_sleeping_places,
+    bathrooms,
+    bathrooms_showers,
+    drying_for_inventory,
+    wifi,
+    warm_floor,
+    dishwasher,
+    parking_cars,
+    mall,
+    kazan,
+    bath_territory,
+    pool,
+    transfer_city,
+    transfer_mountain,
+    live_whith_animals,
+    additionally,
   });
   await newNumber.save();
 
@@ -106,7 +189,8 @@ const tryBook = async (number, checkin, checkout, phone) => {
   if (bookingDebug) console.log('done, number bookings: ', number.bookings);
 
   await number.save();
-  if (bookingDebug) console.log('number saved'); return {status: 200, message: "Вы забронировались", success: true};
+  if (bookingDebug) console.log('number saved');
+  return { status: 200, message: 'Вы забронировались', success: true };
   return true;
 };
 

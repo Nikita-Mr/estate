@@ -14,11 +14,6 @@ import { RouterLink, RouterView } from 'vue-router';
 </template>
 
 <style>
-@media (max-width: 1180px) {
-  .webBack {
-    display: none;
-  }
-}
 @media (max-width: 420px) {
   .list-events {
     padding: 20px 0 !important;
@@ -138,10 +133,11 @@ a {
   /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); */
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  padding: 10px;
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 ::-webkit-scrollbar {
@@ -178,6 +174,30 @@ a {
 @media (max-width: 450px) {
   .main {
     width: 80%;
+  }
+}
+
+@media (max-height: 780px) {
+  .container {
+    min-height: 70vh;
+    max-height: 500px;
+    width: 85%;
+  }
+
+  .webBack {
+    left: -5%;
+  }
+}
+
+@media (max-height: 710px) {
+  .container {
+    min-height: 55vh;
+  }
+}
+
+@media (max-width: 380px) {
+  .container {
+    padding: 5px;
   }
 }
 </style>

@@ -261,4 +261,21 @@ a {
 .line-2 {
   height: 50px;
 }
+
+
+@media (max-height: 780px) {
+  .navbar {
+    gap: 30px;
+  }
+}
+
+@media (max-height: 820px) {
+  .wrapper-for-slider {
+    backdrop-filter: blur(10px);
+    padding: 12px 21px;
+    border-radius: 15px;
+    border: 1px solid #fff;
+    top: calc(50% - 350px);
+  }
+}
 </style>

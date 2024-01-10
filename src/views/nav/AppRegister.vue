@@ -9,7 +9,7 @@ export default {
       username: '',
       surname: '',
       email: '',
-      number: '',
+      number: '+7',
       password: '',
       error: '',
       status: 0,

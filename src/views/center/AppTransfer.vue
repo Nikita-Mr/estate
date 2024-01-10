@@ -36,10 +36,10 @@ export default {
     },
 
     async check_admin() {
-			let response = await axios.post(`/check_admin`, {
-        id: this.getCookieValue('id')
+      let response = await axios.post(`/check_admin`, {
+        id: this.getCookieValue("id"),
       });
-			this.admin = response.data.admin
+      this.admin = response.data.admin;
     },
 
     async transferLoad() {
@@ -59,7 +59,7 @@ export default {
     },
   },
   mounted() {
-    this.check_admin()
+    this.check_admin();
     this.transferLoad();
   },
 };
@@ -82,9 +82,7 @@ export default {
       </div>
     </div>
     <div v-if="Transfer.length == 0 || !Transfer" class="empty">
-      <img src="../../assets/img/search.png" alt="" /><span
-        >Пусто</span
-      >
+      <img src="../../assets/img/search.png" alt="" /><span>Пусто</span>
     </div>
     <div class="transfer-card-wrapper">
       <div class="cards" v-if="Transfer">
@@ -217,6 +215,7 @@ input::placeholder {
 
 .wrapper {
   width: 100%;
+  height: 70vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -234,7 +233,7 @@ input::placeholder {
 
 .create-transfer {
   position: absolute;
-  bottom: 2%;
+  bottom: 2% !important;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -271,6 +270,59 @@ input::placeholder {
   .input-group button {
     width: 100%;
     border-radius: 0;
+  }
+
+  .cards {
+    width: 93%;
+  }
+}
+
+@media (max-height: 780px) {
+  .wrapper {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 80%;
+    padding-top: 150px;
+  }
+
+  .title {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  form input {
+    padding: 2px;
+  }
+
+  .btn {
+    padding: 2px;
+  }
+
+  .empty {
+    font-size: 1.5rem;
+  }
+
+  .empty img {
+    height: 50px;
+  }
+
+  .cards {
+    padding: 2px;
+  }
+
+}
+
+@media (max-height: 710px) {
+  .wrapper {
+    height: 60vh;
+  }
+}
+
+@media (max-height: 680px) {
+  .wrapper {
+    padding-top: 165px !important;
+    width: 100%;
   }
 }
 </style>

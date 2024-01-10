@@ -1,13 +1,14 @@
 <script>
-import { RouterLink, RouterView } from "vue-router";
-import axios from "axios";
-import { defineComponent } from "vue";
-import dayjs from "dayjs";
-import "dayjs/locale/ru";
-import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
-import AppCard from "/src/components/AppCard.vue";
+import { RouterLink, RouterView } from 'vue-router';
+import axios from 'axios';
+import { defineComponent } from 'vue';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
+import AppCard from '/src/components/AppCard.vue';
+import * as XLSX from 'xlsx/xlsx.mjs';
 
-import "vue3-carousel/dist/carousel.css";
+import 'vue3-carousel/dist/carousel.css';
 
 export default defineComponent({
   components: {
@@ -21,32 +22,59 @@ export default defineComponent({
     return {
       INFO: {},
       NUMBER: {},
-      user: "",
+      user: '',
       price: ``,
       admin: ``,
       target: 0,
-      phone: "",
+      phone: '',
       fromdate: Date,
       todate: Date,
-      adults: ``,
-      children: ``,
       name: ``,
-      description: ``,
-      value: ``,
       message: ``,
       status: ``,
       numberid: ``,
       buttonTarg: 0,
-      success: "",
-      email: "",
+      success: '',
+      email: '',
       view: false,
       adress: ``,
       point: ``,
       switch: 1,
+      workbook: '',
+      createn: 0,
+      brony: 0,
+      namebrony: [
+        'название',
+        'цена',
+        'Этажей',
+        'Минимальный срок аренды, суток',
+        'общая площадь, кв м',
+        'спальных комнат',
+        'спальных мест основных',
+        'Детская кровать',
+        'двуспальные места',
+        'односпальные места',
+        'дополнительные спальные места',
+        'санузлов',
+        'ванных/душевых',
+        'сушилка для инвентаря',
+        'Wi-Fi',
+        'Тёплый пол',
+        'посудомойка',
+        'парковка, машин',
+        'мангал',
+        'казан',
+        'баня на территори',
+        'Бассейн Летом/зимой',
+        'Трансфер с городов',
+        'Трансфер на гору',
+        'Можно проживать с животными',
+        'дополнительно',
+      ],
     };
   },
   mounted() {
-    this.check_admin()
+    this.check_admin();
     this.loadCard();
     this.loadNumber();
     this.renderMap();
@@ -55,9 +83,9 @@ export default defineComponent({
     async renderMap() {
       let response = await axios.get(`https://geocode-maps.yandex.ru/1.x/`, {
         params: {
-          apikey: "62143967-f105-468b-b0e5-f820e63f8c40",
+          apikey: '62143967-f105-468b-b0e5-f820e63f8c40',
           geocode: `Шерегеш+${this.adress}`,
-          format: "json",
+          format: 'json',
         },
       });
       let address = `Шерегеш ${this.adress}`;
@@ -72,12 +100,12 @@ export default defineComponent({
             .then((res) => {
               const firstGeoObject = res.geoObjects.get(0);
               const coordinates = firstGeoObject.geometry.getCoordinates();
-              console.log("Координаты:", coordinates);
+              console.log('Координаты:', coordinates);
 
-              myMap = new ymaps.Map("customMap", {
+              myMap = new ymaps.Map('customMap', {
                 center: coordinates, // устанавливаем центр карты
                 zoom: 15, // масштаб карты
-                behaviors: ["default", "scrollZoom"], // включаем скроллинг колесом
+                behaviors: ['default', 'scrollZoom'], // включаем скроллинг колесом
                 controls: [], // убираем все элементы управления
               });
 
@@ -85,7 +113,7 @@ export default defineComponent({
                 coordinates,
                 {},
                 {
-                  preset: "islands#blueDotIcon", // выбираем иконку для точки
+                  preset: 'islands#blueDotIcon', // выбираем иконку для точки
                 }
               );
 
@@ -100,7 +128,7 @@ export default defineComponent({
     },
     async loadCard() {
       this.view = this.$route.query.view;
-      if (this.view == "true") {
+      if (this.view == 'true') {
         this.view = true;
       } else {
         this.view = false;
@@ -119,24 +147,24 @@ export default defineComponent({
     getDate(data) {
       let date = new Date(data);
       let day = dayjs(date);
-      dayjs.locale("ru");
+      dayjs.locale('ru');
       return day.format(`dd, D MMM`);
     },
     async deleteCard() {
       await axios
-        .post("/deleteCard", {
+        .post('/deleteCard', {
           id: this.INFO.id,
           name: this.$route.query.name,
         })
         .then((e) => {
-          if (e.data.status == "200") {
+          if (e.data.status == '200') {
             this.$router.go(-1);
           }
         });
     },
     async edit() {
       this.$router.push({
-        path: "/create-card",
+        path: '/create-card',
         query: { id: this.INFO.id, name: this.$route.query.name, edit: true },
       });
     },
@@ -166,16 +194,16 @@ export default defineComponent({
           fromdate: this.fromdate,
           todate: this.todate,
         });
+        console.log(this.INFO.chatID);
         await axios.post(`/send_tg`, {
           chatID: this.INFO.chatID,
           phone: this.phone,
           fromdate: this.fromdate,
-          todate: this.todate
-        })
+          todate: this.todate,
+        });
       }
-      
     },
-    async createNumber() {
+    async createNumber(i) {
       let response = await axios.post(`/create-number`, {
         name: this.name,
         adults: this.adults,
@@ -184,6 +212,31 @@ export default defineComponent({
         hotel: this.$route.query.id,
         value: this.value,
         price: this.price,
+        floor: this.workbook[i]['Этажей'],
+        lease_term: this.workbook[i]['Минимальный срок аренды, суток'],
+        total_area: this.workbook[i]['общая площадь, кв м'],
+        sleeping_rooms: this.workbook[i]['спальных комнат'],
+        sleeping_places: this.workbook[i]['спальных мест основных'],
+        children_bed: this.workbook[i]['Детская кровать'],
+        double_places: this.workbook[i]['двуспальные места'],
+        single_spaces: this.workbook[i]['односпальные места'],
+        additional_sleeping_places:
+          this.workbook[i]['дополнительные спальные места'],
+        bathrooms: this.workbook[i]['санузлов'],
+        bathrooms_showers: this.workbook[i]['ванных/душевых'],
+        drying_for_inventory: this.workbook[i]['сушилка для инвентаря'],
+        wifi: this.workbook[i]['Wi-Fi'],
+        warm_floor: this.workbook[i]['Тёплый пол'],
+        dishwasher: this.workbook[i]['посудомойка'],
+        parking_cars: this.workbook[i]['парковка, машин'],
+        mall: this.workbook[i]['мангал'],
+        kazan: this.workbook[i]['казан'],
+        bath_territory: this.workbook[i]['баня на территории'],
+        pool: this.workbook[i]['Бассейн Летом/зимой'],
+        transfer_city: this.workbook[i]['Трансфер с городов'],
+        transfer_mountain: this.workbook[i]['Трансфер на гору'],
+        live_whith_animals: this.workbook[i]['Можно проживать с животными'],
+        additionally: this.workbook[i]['дополнительно'],
       });
       if (response.data.status == 200) {
         this.name = ``;
@@ -199,11 +252,12 @@ export default defineComponent({
       }
     },
     async loadNumber() {
-      let response = await axios.get(`/number`, {
-        params: { id: this.$route.query.id },
+      let response = await axios.post(`/number`, {
+        id: this.$route.query.id,
       });
       this.NUMBER = response.data.number;
     },
+
     handleVariable(variable) {
       this.target = variable.target;
       this.numberid = variable.numberid;
@@ -211,22 +265,83 @@ export default defineComponent({
     },
 
     async check_admin() {
-			let response = await axios.post(`/check_admin`, {
-        id: this.getCookieValue('id')
+      let response = await axios.post(`/check_admin`, {
+        id: this.getCookieValue('id'),
       });
-			this.admin = response.data.admin
+      this.admin = response.data.admin;
     },
 
     getCookieValue(name) {
-      const cookies = document.cookie.split("; ");
+      const cookies = document.cookie.split('; ');
       let res;
       for (let i = 0; i < cookies.length; i++) {
         let cookie = cookies[i];
         if (cookie.slice(0, 2) == name) {
-          res = cookie.replace(name + "=", "");
+          res = cookie.replace(name + '=', '');
         }
       }
       return res;
+    },
+
+    go_up() {
+      this.target = 1;
+      this.$refs.modal.scrollTop = 0;
+    },
+    async handleDropAsync(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var f = e.target.files[0];
+      /* f is a File */
+      let route = this.$route.query.id;
+
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var data = e.target.result;
+        /* reader.readAsArrayBuffer(file) -> data will be an ArrayBuffer */
+        var workbook = XLSX.read(data);
+        console.log(workbook);
+        const firstSheetName = workbook.SheetNames[0];
+
+        // Получение данных первого листа в формате JSON
+        const worksheet = workbook.Sheets[firstSheetName];
+        this.workbook = XLSX.utils.sheet_to_json(worksheet);
+        console.log(this.workbook);
+        // Вывод данных построчно
+        this.workbook.forEach(async (row, i) => {
+          await axios.post(`/create-number`, {
+            name: this.workbook[i]['название'],
+            hotel: route,
+            price: this.workbook[i]['цена'],
+            floor: this.workbook[i]['Этажей'],
+            lease_term: this.workbook[i]['Минимальный срок аренды, суток'],
+            total_area: this.workbook[i]['общая площадь, кв м'],
+            sleeping_rooms: this.workbook[i]['спальных комнат'],
+            sleeping_places: this.workbook[i]['спальных мест основных'],
+            children_bed: this.workbook[i]['Детская кровать'],
+            double_places: this.workbook[i]['двуспальные места'],
+            single_spaces: this.workbook[i]['односпальные места'],
+            additional_sleeping_places:
+              this.workbook[i]['дополнительные спальные места'],
+            bathrooms: this.workbook[i]['санузлов'],
+            bathrooms_showers: this.workbook[i]['ванных/душевых'],
+            drying_for_inventory: this.workbook[i]['сушилка для инвентаря'],
+            wifi: this.workbook[i]['Wi-Fi'],
+            warm_floor: this.workbook[i]['Тёплый пол'],
+            dishwasher: this.workbook[i]['посудомойка'],
+            parking_cars: this.workbook[i]['парковка, машин'],
+            mall: this.workbook[i]['мангал'],
+            kazan: this.workbook[i]['казан'],
+            bath_territory: this.workbook[i]['баня на территории'],
+            pool: this.workbook[i]['Бассейн Летом/зимой'],
+            transfer_city: this.workbook[i]['Трансфер с городов'],
+            transfer_mountain: this.workbook[i]['Трансфер на гору'],
+            live_whith_animals: this.workbook[i]['Можно проживать с животными'],
+            additionally: this.workbook[i]['дополнительно'],
+          });
+        });
+      };
+      reader.readAsArrayBuffer(f);
+      this.loadNumber()
     },
   },
 });
@@ -235,14 +350,14 @@ export default defineComponent({
 <template>
   <div class="card-wrapper">
     <div class="card">
-      <div class="modalDelete" :class="{ 'd-none': target == 0 }">
+      <div class="modalDelete" ref="modal" :class="{ 'd-none': target == 0 }">
         <div v-if="admin" class="button-wrapper">
           <button @click="deleteCard" class="delete" v-if="admin">
             Удалить
           </button>
           <button @click="target = 0" v-if="admin">Отмена</button>
         </div>
-        <div v-if="!admin" class="input-wrapper">
+        <div v-if="!admin && brony == 1" class="input-wrapper">
           <form @submit.prevent="trybook">
             <input
               v-model="phone"
@@ -270,12 +385,40 @@ export default defineComponent({
             />
             <span v-if="status == 200">{{ message }}</span>
             <div class="center">
-              <button @click="target = 1" v-if="!admin">Забронировать</button>
-              <button type="button" @click="target = 0" v-if="!admin">
+              <button class="btn btn-light" @click="go_up" v-if="!admin">
+                Забронировать
+              </button>
+              <button
+                class="btn btn-light"
+                type="button"
+                @click="target = 0"
+                v-if="!admin"
+              >
                 Отмена
               </button>
             </div>
           </form>
+        </div>
+        <div class="infobrony" v-if="brony == 0">
+          <div class="group" v-for="(item, index, i) in NUMBER[0]">
+            <span> {{ namebrony[i] }}: </span>
+            <span>
+              {{ item }}
+            </span>
+          </div>
+          <div class="center">
+            <button class="btn btn-light" @click="brony = 1" v-if="!admin">
+              Забронировать
+            </button>
+            <button
+              class="btn btn-light"
+              type="button"
+              @click="target = 0"
+              v-if="!admin"
+            >
+              Отмена
+            </button>
+          </div>
         </div>
       </div>
       <div class="left">
@@ -302,22 +445,16 @@ export default defineComponent({
           <span class="phone">{{ INFO.phone }}</span>
           <span class="description">{{ INFO.p }}</span>
           <div class="messengers">
-            <a href="#" target="_blank">
-              <img src="/src/assets/img/viber.png" alt="viber" />
-            </a>
-            <a href="#" target="_blank">
-              <img src="/src/assets/img/whatsapp.png" alt="whatsapp" />
-            </a>
-            <a href="#" target="_blank">
+            <a :href="'https://t.me/' + INFO.phone" target="_blank">
               <img src="/src/assets/img/telegram.png" alt="telegram" />
             </a>
           </div>
         </div>
       </div>
       <div class="right">
-        <div class="wrapper-button" v-if="!view">
-          <button @click="this.switch = 1">Номера</button>
-          <button @click="this.switch = 2">Карта</button>
+        <div class="wrapper-button" v-if="!view || !admin">
+          <button class="btn btn-light" @click="this.switch = 1">Номера</button>
+          <button class="btn btn-light" @click="this.switch = 2">Карта</button>
         </div>
         <div class="wrapper" v-if="!view">
           <div
@@ -325,34 +462,59 @@ export default defineComponent({
             class="map"
             :class="{ none: this.switch == 1 }"
           ></div>
-
-          <form
-            v-if="admin && $route.query.name == `habitation`"
-            @submit.prevent="createNumber"
+          <button class="publish" @click="createn = 1">
+            Опубликовать номер
+          </button>
+          <input
+            type="file"
+            ref="files"
+            id="file"
+            v-on:change="handleDropAsync"
+          />
+          <label class="publish excel" for="file">
+            Опубликовать номера в формате Excel
+          </label>
+          <div
+            class="modalDelete"
+            ref="modal"
+            :class="{ 'd-none': createn == 0 }"
           >
-            <input type="text" v-model="name" placeholder="Название номера" />
-            <input type="number" v-model="price" placeholder="Цена" />
-            <input
-              type="number"
-              v-model="adults"
-              placeholder="Кол-во взрослых"
-            />
-            <input
-              type="number"
-              v-model="children"
-              placeholder="Кол-во детей"
-            />
-            <input type="text" v-model="description" placeholder="Описание" />
-            <input
-              type="number"
-              v-model="value"
-              placeholder="Кол-во номеров в гостинице"
-            />
-            <button v-if="buttonTarg == 0">Создать</button>
-            <span v-if="buttonTarg == 1">Созданно</span>
-          </form>
+            <form
+              v-if="admin && $route.query.name == `habitation`"
+              @submit.prevent="createNumber"
+            >
+              <input type="text" v-model="name" placeholder="Название номера" />
+              <input type="number" v-model="price" placeholder="Цена" />
+              <input
+                type="number"
+                v-model="adults"
+                placeholder="Кол-во взрослых"
+              />
+              <input
+                type="number"
+                v-model="children"
+                placeholder="Кол-во детей"
+              />
+              <input type="text" v-model="description" placeholder="Описание" />
+              <input
+                type="number"
+                v-model="value"
+                placeholder="Кол-во номеров в гостинице"
+              />
+              <button v-if="buttonTarg == 0">Создать</button>
+              <span v-if="buttonTarg == 1">Созданно</span>
+              <button class="btn btn-light" type="button" @click="createn = 0">
+                Отмена
+              </button>
+            </form>
+          </div>
+
           <app-card
-            v-if="!admin && this.switch == 1"
+            @click="
+              this.target = 1;
+              brony = 0;
+            "
+            v-if="this.switch == 1"
             v-for="(item, index) in NUMBER"
             @variable="handleVariable"
             :i="index"
@@ -373,14 +535,51 @@ export default defineComponent({
       <div class="reviews"></div>
       <div class="button-wrapper" v-if="!view">
         <!-- <button @click="target = 1" v-if="!admin">Забронировать</button> -->
-        <button @click="target = 1" class="delete" v-if="admin">Удалить</button>
-        <button @click="edit" class="edit" v-if="admin">Редактировать</button>
+        <button @click="target = 1" class="btn btn-danger" v-if="admin">
+          Удалить
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.infobrony .center{
+  display: flex;
+  gap: 30px;
+  padding: 15px;
+}
+.group {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.infobrony {
+  width: 100%;
+}
+span {
+  padding: 10px;
+  text-transform: capitalize;
+}
+input[type='file'] {
+  display: none !important;
+}
+.publish {
+  border: 1px solid #fff;
+  border-radius: 10px;
+  width: auto !important;
+  padding: 5px 10px;
+  background: #fff;
+  transition: all 400ms;
+}
+
+.publish:hover {
+  transform: scale(1.06);
+}
+.excel {
+  color: #000;
+  cursor: pointer;
+}
 .none {
   display: none;
 }
@@ -388,6 +587,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: 10px;
+  z-index: 100;
 }
 .map {
   width: 90%;
@@ -470,7 +670,7 @@ form {
   left: 0;
   height: 100%;
   border-radius: 10px;
-  display: flex;
+  overflow: scroll;
   backdrop-filter: blur(10px);
   align-items: center;
 }
@@ -519,7 +719,7 @@ form {
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 10px;
+  gap: 30px;
   width: 100%;
   overflow-y: scroll;
   height: 400px;
@@ -559,6 +759,9 @@ form {
   border: none;
   position: relative;
   width: 100%;
+  max-height: 60vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .carousel__slide {
@@ -597,14 +800,9 @@ img {
 button {
   display: block;
   margin: 0 auto;
-  border: none;
   width: 50%;
   padding: 5px 0;
   box-shadow: 0 0 10px 0 #00000037;
-}
-
-button:active {
-  box-shadow: none;
 }
 
 .messengers {
@@ -628,5 +826,16 @@ button:active {
 
 .adress {
   font-size: 1rem !important;
+}
+
+@media (max-width: 660px) {
+  .left,
+  .right {
+    width: 100%;
+  }
+
+  .card-wrapper {
+    width: 100%;
+  }
 }
 </style>

@@ -115,12 +115,12 @@ export default {
   border: 1px solid #d5d5d5;
   box-shadow: 0px 0 10px 0 #ffffff71;
   border-radius: 15px;
-  transition: color 400ms, border 400ms;
+  transition: all 400ms;
 }
 
 .event:hover {
   border: 1px solid black;
-  color: black;
+  box-shadow: 0px 0 10px 0 black;
 }
 
 @media (max-width: 995px) {
@@ -183,6 +183,12 @@ export default {
     overflow-y: scroll;
     display: block;
     height: 400px;
+  }
+}
+
+@media (max-height: 780px) {
+  .list-events {
+    height: 70vh !important;
   }
 }
 </style>

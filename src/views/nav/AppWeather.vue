@@ -22,7 +22,7 @@ export default {
     async loadWeather() {
       await axios
         .get(
-          `http://api.weatherapi.com/v1/forecast.json?lang=ru&key=7b48837a60794ba2a7c193829232511&days=10&aqi=no&alerts=no&q=${
+          `http://api.weatherapi.com/v1/forecast.json?lang=ru&key=309ce2e3109b0cdf1a61910a9719cee0&cnt=5&aqi=no&alerts=no&q=${
             !this.find ? 'Шерегеш' : this.find
           }`
         )
@@ -94,6 +94,7 @@ export default {
       <button class="nav" @click="weatherdays(3)">3-дня</button>
       <button class="nav" @click="weatherdays(7)">7-дней</button>
       <button class="nav" @click="weatherdays(10)">10-дней</button>
+      <button class="nav" @click="weatherdays(30)">Месяц</button>
     </div>
     <div class="wrapper">
       <!-- <div class="card" v-if="weatherDay < 0">
@@ -253,4 +254,5 @@ export default {
 .weather {
   font-size: 18px;
 }
+
 </style>

@@ -1,30 +1,30 @@
 // библиотеки
 const express = require(`express`);
-const session = require("express-session");
-const fileUpload = require("express-fileupload");
+const session = require('express-session');
+const fileUpload = require('express-fileupload');
 
-const multer = require("multer");
-const cors = require("cors");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const multer = require('multer');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const path = require("path");
-const fs = require("fs");
-const mkdirp = require("mkdirp");
-const nodemailer = require("nodemailer");
+const path = require('path');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
+const nodemailer = require('nodemailer');
 
-const TelegramApi = require("node-telegram-bot-api");
-const tokenBot = "6512089922:AAGrZ9UzuZc26s67yQIwZkrb_cj8uaj7spw";
+const TelegramApi = require('node-telegram-bot-api');
+// const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
 
-let bot = new TelegramApi(tokenBot, { polling: true });
+// let bot = new TelegramApi(tokenBot, { polling: true });
 
-bot.on(`message`, (msg) => {
-  let text = msg.text;
-  let chatID = msg.chat.id;
-  if (text == "/start") {
-    bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
-  }
-});
+// bot.on(`message`, (msg) => {
+//   let text = msg.text;
+//   let chatID = msg.chat.id;
+//   if (text == "/start") {
+//     bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
+//   }
+// });
 
 // модули самого бэкенда
 const {
@@ -39,14 +39,14 @@ const {
   LiftModel,
   SkipassModel,
   RequestsModel,
-} = require("./modules/models");
+} = require('./modules/models');
 const { secret } = require(`./config`);
 
 const { tryBook, addNumber } = require(`./modules/booking`);
 
 const { initPayment, awaitPayment } = require(`./modules/payments`);
-const { name } = require("dayjs/locale/ru");
-const internal = require("stream");
+const { name } = require('dayjs/locale/ru');
+const internal = require('stream');
 
 let app = express();
 let port = process.env.PORT || 3005;
@@ -59,11 +59,11 @@ app.use(cors());
 
 // Подключаем middleware для сессий
 app.use(
-  session({ secret: "secret-key", resave: false, saveUninitialized: true })
+  session({ secret: 'secret-key', resave: false, saveUninitialized: true })
 );
 app.use((_req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', '*');
   next();
 });
 
@@ -76,35 +76,35 @@ app.use(fileUpload());
 app.use(express.urlencoded({ extended: true }));
 
 let generateAccessToken = (id, role) => {
-  return jwt.sign({ id, role }, secret, { expiresIn: "336h" });
+  return jwt.sign({ id, role }, secret, { expiresIn: '336h' });
 };
 
 let verifyc = function (roles) {
   return function (req, res, next) {
-    if (req.method === "OPTIONS") next();
+    if (req.method === 'OPTIONS') next();
 
     try {
       let token = req.headers.authorization;
       // if(token){
       //   return res.json({message: token})
       // }
-      if (!token) return res.json({ message: "Пользователь не авторизован" });
+      if (!token) return res.json({ message: 'Пользователь не авторизован' });
 
       let { role: userRoles } = jwt.verify(token, secret);
       let hasRole = false;
       userRoles.forEach((role) => {
         if (roles.includes(role)) hasRole = true;
       });
-      if (!hasRole) return res.json({ message: "У вас нет доступа" });
+      if (!hasRole) return res.json({ message: 'У вас нет доступа' });
       next();
     } catch (err) {
-      return res.json({ message: "Пользователь не авторизован" });
+      return res.json({ message: 'Пользователь не авторизован' });
     }
   };
 };
 let ADMINVERIFY = function (roles) {
   return function (req, res, next) {
-    if (req.method === "OPTIONS") {
+    if (req.method === 'OPTIONS') {
       next();
     }
     try {
@@ -113,33 +113,33 @@ let ADMINVERIFY = function (roles) {
       //   return res.json({message: token})
       // }
       if (!token) {
-        return res.json({ message: "Пользователь не авторизован" });
+        return res.json({ message: 'Пользователь не авторизован' });
       }
       let { role: userRoles } = jwt.verify(token, secret);
       userRoles.forEach((role) => {
-        if (role == "ADMIN") {
+        if (role == 'ADMIN') {
           return res.json({ admin: true });
         }
       });
       next();
     } catch (err) {
-      return res.json({ message: "Пользователь не авторизован" });
+      return res.json({ message: 'Пользователь не авторизован' });
     }
   };
 };
 
-app.use("/assets", express.static("dist/assets"));
+app.use('/assets', express.static('dist/assets'));
 
 // фикс вылета на перезагрузке
-app.route("/*").get(function (req, res) {
-  res.sendFile(path.join(__dirname + "/dist/index.html"));
+app.route('/*').get(function (req, res) {
+  res.sendFile(path.join(__dirname + '/dist/index.html'));
 });
-app.get("/", async function (req, res) {
-  res.sendFile(path.join(__dirname, "dist/index.html"));
+app.get('/', async function (req, res) {
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 //app.use(fallback(path.join(__dirname, 'dist/index.html')))
 
-app.get("/newsDebug", async function (req, res) {
+app.get('/newsDebug', async function (req, res) {
   console.log(UserModel);
   let news = await UserModel.findAll();
 
@@ -165,7 +165,7 @@ app.post(`/filter`, async function (req, res) {
   });
 
   if (!filter) {
-    res.send({ message: "В этот промежуток поездок нет" });
+    res.send({ message: 'В этот промежуток поездок нет' });
     return;
   }
   res.send({ Array });
@@ -178,7 +178,7 @@ app.post(`/transfer`, async function (req, res) {
     if (book && id) {
       let transfer = await CardTransfer.findOne({ where: { id: id } });
       if (transfer.boardedPlaces >= transfer.passenger) {
-        return res.send({ message: "Мест нет" });
+        return res.send({ message: 'Мест нет' });
       }
       transfer.boardedPlaces += 1;
       await transfer.save();
@@ -204,7 +204,7 @@ app.post(`/news`, async function (req, res) {
   let user;
   if (id) {
     user = await UserModel.findOne({ id: id });
-    if (user.role == "ADMIN") {
+    if (user.role == 'ADMIN') {
       admin = true;
     } else {
       admin = false;
@@ -233,7 +233,7 @@ app.get(`/habitation`, async function (req, res) {
 
       if (token) {
         userRoles.forEach((role) => {
-          if (role == "ADMIN") {
+          if (role == 'ADMIN') {
             admin = true;
           }
         });
@@ -242,9 +242,9 @@ app.get(`/habitation`, async function (req, res) {
 
     res.send({ expired: false, cards, admin });
   } catch (e) {
-    console.log("я тут");
+    console.log('я тут');
     console.log(e);
-    res.send({ expired: "1" });
+    res.send({ expired: '1' });
   }
 });
 
@@ -256,7 +256,7 @@ app.post(`/habitation`, async function (req, res) {
     let user;
     if (id) {
       user = await UserModel.findOne({ where: { id } });
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         admin = true;
       }
     }
@@ -269,7 +269,7 @@ app.post(`/habitation`, async function (req, res) {
     res.send({ expired: false, cards, admin });
   } catch (e) {
     console.log(e);
-    res.send({ expired: "1" });
+    res.send({ expired: '1' });
   }
 });
 
@@ -286,8 +286,8 @@ app.post(`/upload`, async function (req, res) {
   }
   */
   if (!req.files) {
-    console.log("no files sent!");
-    return res.send({ message: "Файл не найден" });
+    console.log('no files sent!');
+    return res.send({ message: 'Файл не найден' });
   }
   if (req.file) {
     let file = req.file;
@@ -299,21 +299,21 @@ app.post(`/upload`, async function (req, res) {
 
     let mediaPath = path.join(__dirname, `dist/assets/img/user/`);
     let imgPath = path.join(mediaPath, filename);
-    console.log("image path is: ", imgPath);
+    console.log('image path is: ', imgPath);
 
     await mkdirp(imgPath);
-    fs.open(imgPath, "w", function (err) {
+    fs.open(imgPath, 'w', function (err) {
       if (err) throw err;
-      console.log("Saved!");
+      console.log('Saved!');
     });
 
     file.mv(imgPath, function (err) {
       if (err) {
         console.log(err);
-        return res.send({ message: "Error occured" });
+        return res.send({ message: 'Error occured' });
       }
     });
-    if (model == "taxi") {
+    if (model == 'taxi') {
       let service = await CardService.findOne({ where: { id: timeId } });
       service.img = file.name;
       //console.log(card);
@@ -341,58 +341,58 @@ app.post(`/upload`, async function (req, res) {
     let date = new Date();
     let time = date.getTime();
     let filename = `img_${time}.jpg`;
-    console.log("FILENAME IS: ", filename);
+    console.log('FILENAME IS: ', filename);
     imgName.push(filename);
 
     let mediaPath = path.join(__dirname, `dist/assets/img/user/`);
     let imgPath = path.join(mediaPath, filename);
-    console.log("image path is: ", imgPath);
+    console.log('image path is: ', imgPath);
 
-    fs.open(imgPath, "w", async function (err) {
+    fs.open(imgPath, 'w', async function (err) {
       if (err) {
         await mkdirp(mediaPath);
-        fs.open(imgPath, "w", function (err) {
+        fs.open(imgPath, 'w', function (err) {
           if (err) throw err;
         });
       }
-      console.log("Saved!");
+      console.log('Saved!');
     });
 
     files[i].mv(imgPath, function (err) {
       if (err) {
-        console.log("ERROR OCCURED WHEN SAVING FILE:", err);
-        return res.send({ message: "Error occured" });
+        console.log('ERROR OCCURED WHEN SAVING FILE:', err);
+        return res.send({ message: 'Error occured' });
       }
     });
   }
-  if (model == "taxi") {
+  if (model == 'taxi') {
     let card = await CardService.findOne({ where: { id: id } });
     card.img = imgName;
     await card.save();
-    return res.send({ message: "Успешно", status: "200" });
+    return res.send({ message: 'Успешно', status: '200' });
   } else {
     if (category == `habitation`) {
       let card = await HotelModel.findOne({ where: { id: id } });
       card.img = imgName;
       await card.save();
-      return res.send({ message: "Успешно", status: "200" });
+      return res.send({ message: 'Успешно', status: '200' });
     } else if (category != `habitation`) {
       let card = await CardModel.findOne({ where: { id: id } });
       card.img = imgName;
       await card.save();
-      return res.send({ message: "Успешно", status: "200" });
+      return res.send({ message: 'Успешно', status: '200' });
     }
     if (category != `habitation`) {
       let card = await CardModel.findOne({ where: { id: id } });
       card.img = imgName;
       await card.save();
-      return res.send({ message: "Успешно", status: "200" });
+      return res.send({ message: 'Успешно', status: '200' });
     }
     let card = await HotelModel.findOne({ where: { id: id } });
     card.img = imgName;
     console.log(card);
     await card.save();
-    return res.send({ message: "Изображение загружено", status: "200" });
+    return res.send({ message: 'Изображение загружено', status: '200' });
   }
 });
 
@@ -411,9 +411,33 @@ app.post(`/create-card`, async function (req, res) {
       chatID,
       img,
       category,
+      floor,
+      lease_term,
+      total_area,
+      sleeping_rooms,
+      sleeping_places,
+      children_bed,
+      double_places,
+      single_spaces,
+      additional_sleeping_places,
+      bathrooms,
+      bathrooms_showers,
+      drying_for_inventory,
+      wifi,
+      warm_floor,
+      dishwasher,
+      parking_cars,
+      mall,
+      kazan,
+      bath_territory,
+      pool,
+      transfer_city,
+      transfer_mountain,
+      live_whith_animals,
+      additionally,
     } = req.body;
     //console.log(req.body)
-    console.log("request received...");
+    console.log('request received...');
     if (category == `habitation`) {
       if (edit) {
         let card = await HotelModel.findOne({ where: { id: id } });
@@ -426,12 +450,36 @@ app.post(`/create-card`, async function (req, res) {
         card.email = email;
         card.chatID = chatID;
         card.verified = false;
-        await card.save();
+        card.floor = floor,
+        card.lease_term = lease_term,
+        card.total_area = total_area,
+        card.sleeping_rooms = sleeping_rooms,
+        card.sleeping_places = sleeping_places,
+        card.children_bed = children_bed,
+        card.double_places = double_places,
+        card.single_spaces = single_spaces,
+        card.additional_sleeping_places = additional_sleeping_places,
+        card.bathrooms = bathrooms,
+        card.bathrooms_showers = bathrooms_showers,
+        card.drying_for_inventory = drying_for_inventory,
+        card.wifi = wifi,
+        card.warm_floor = warm_floor,
+        card.dishwasher = dishwasher,
+        card.parking_cars = parking_cars,
+        card.mall = mall,
+        card.kazan = kazan,
+        card.bath_territory = bath_territory,
+        card.pool = pool,
+        card.transfer_city = transfer_city,
+        card.transfer_mountain = transfer_mountain,
+        card.live_whith_animals = live_whith_animals,
+        card.additionally = additionally,
+          await card.save();
         console.log(card);
-        return res.json({ status: "200" });
+        return res.json({ status: '200' });
       }
       try {
-        console.log("building card...");
+        console.log('building card...');
         let card = await HotelModel.build({
           img: {},
           category: category,
@@ -443,42 +491,42 @@ app.post(`/create-card`, async function (req, res) {
           address: adress,
           email: email,
           chatID: chatID,
-          nameCard: "no",
+          nameCard: 'no',
           verified: false,
         });
-        console.log("saving card...");
+        console.log('saving card...');
         try {
           card.save().then((e) => {
             try {
-              console.log("binding id...");
+              console.log('binding id...');
               timeId = card.id;
             } catch (e) {
               console.log(`Ошибка создания timeId: ${e} `);
               return res.send({
                 message: `Ошибка создания timeId: ${e} `,
-                status: "400",
+                status: '400',
               });
             }
 
-            console.log("done.");
+            console.log('done.');
             return res.send({
               //message: `Создание карты завершено, timeId: ${timeId}`,
               message: timeId,
-              status: "200",
+              status: '200',
             });
           });
         } catch (e) {
           console.log(`сохранение не работает: ${e} `);
           return res.send({
             message: `сохранение не работает: ${e} `,
-            status: "400",
+            status: '400',
           });
         }
       } catch (e) {
         console.log(`Ошибка создания карточки: ${e} `);
         return res.send({
           message: `Ошибка создания карточки: ${e} `,
-          status: "400",
+          status: '400',
         });
       }
     } else {
@@ -494,10 +542,10 @@ app.post(`/create-card`, async function (req, res) {
         card.verified = false;
         await card.save();
         console.log(card);
-        return res.json({ status: "200" });
+        return res.json({ status: '200' });
       }
       try {
-        console.log("building card...");
+        console.log('building card...');
         let card = await CardModel.build({
           img: {},
           category: category,
@@ -508,52 +556,52 @@ app.post(`/create-card`, async function (req, res) {
           phone: phone,
           address: adress,
           email: email,
-          nameCard: "no",
+          nameCard: 'no',
           verified: false,
         });
-        console.log("saving card...");
+        console.log('saving card...');
         try {
           card.save().then((e) => {
             try {
-              console.log("binding id...");
+              console.log('binding id...');
               timeId = card.id;
             } catch (e) {
               console.log(`Ошибка создания timeId: ${e} `);
               return res.send({
                 message: `Ошибка создания timeId: ${e} `,
-                status: "400",
+                status: '400',
               });
             }
 
-            console.log("done.");
+            console.log('done.');
             return res.send({
               //message: `Создание карты завершено, timeId: ${timeId}`,
               message: timeId,
-              status: "200",
+              status: '200',
             });
           });
         } catch (e) {
           console.log(`сохранение не работает: ${e} `);
           return res.send({
             message: `сохранение не работает: ${e} `,
-            status: "400",
+            status: '400',
           });
         }
       } catch (e) {
         console.log(`Ошибка создания карточки: ${e} `);
         return res.send({
           message: `Ошибка создания карточки: ${e} `,
-          status: "400",
+          status: '400',
         });
       }
     }
   } catch (e) {
     console.log(`Ошибка: ${e}`);
-    return res.send({ message: `Ошибка: ${e}`, status: "400" });
+    return res.send({ message: `Ошибка: ${e}`, status: '400' });
   }
 });
 
-app.get(`/getUsers`, verifyc(["ADMIN"]), async function (req, res) {
+app.get(`/getUsers`, verifyc(['ADMIN']), async function (req, res) {
   try {
     let users = await User.find({});
     res.json({ users });
@@ -570,14 +618,14 @@ app.post(`/registration`, async function (req, res) {
 
     if (candidatePhone) {
       return res.json({
-        message: "Пользователь с таким номером телефона уже существует",
-        status: "400",
+        message: 'Пользователь с таким номером телефона уже существует',
+        status: '400',
       });
     }
     if (candidateEmail) {
       return res.json({
-        message: "Пользователь с такой почтой уже существует",
-        status: "400",
+        message: 'Пользователь с такой почтой уже существует',
+        status: '400',
       });
     }
     let hashPassword = bcrypt.hashSync(password, 7);
@@ -587,16 +635,16 @@ app.post(`/registration`, async function (req, res) {
       email,
       phone: number,
       password: hashPassword,
-      role: "USER",
+      role: 'USER',
     });
     console.log(newUser);
     await newUser.save();
     return res.json({
-      message: "Пользователь успешно зарегистрирован",
-      status: "200",
+      message: 'Пользователь успешно зарегистрирован',
+      status: '200',
     });
   } catch (err) {
-    res.json({ message: "Registration error", err });
+    res.json({ message: 'Registration error', err });
   }
 });
 app.post(`/login`, async function (req, res) {
@@ -614,12 +662,12 @@ app.post(`/login`, async function (req, res) {
     // let validPassword = bcrypt.compareSync(password, user.password);
     validPassword = true;
     if (!validPassword) {
-      return res.json({ message: "Введен неверный пароль", status: 400 });
+      return res.json({ message: 'Введен неверный пароль', status: 400 });
     }
     let token = generateAccessToken(user.id, [user.role]);
-    return res.json({ token, message: "Вошел", status: 200, id: user.id });
+    return res.json({ token, message: 'Вошел', status: 200, id: user.id });
   } catch (err) {
-    res.json({ message: "Login error" });
+    res.json({ message: 'Login error' });
   }
 });
 app.post(`/deleteCard`, async function (req, res) {
@@ -632,9 +680,9 @@ app.post(`/deleteCard`, async function (req, res) {
       card = await CardModel.findOne({ where: { id: id } });
     }
     await card.destroy();
-    res.send({ status: "200" });
+    res.send({ status: '200' });
   } catch (e) {
-    res.send({ message: "Ошибка" });
+    res.send({ message: 'Ошибка' });
   }
 });
 
@@ -668,7 +716,7 @@ app.post(`/instructor-tours`, async function (req, res) {
     let user;
     if (id) {
       user = await UserModel.findOne({ where: { id } });
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         admin = true;
       } else {
         admin = false;
@@ -695,7 +743,7 @@ app.post(`/forChildren`, async function (req, res) {
     let user;
     if (id) {
       user = await UserModel.findOne({ where: { id } });
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         admin = true;
       } else {
         admin = false;
@@ -721,7 +769,7 @@ app.post(`/rental`, async function (req, res) {
     let user;
     if (id) {
       user = await UserModel.findOne({ where: { id } });
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         admin = true;
       } else {
         admin = false;
@@ -748,7 +796,7 @@ app.post(`/event`, async function (req, res) {
     let user;
     if (id) {
       user = await UserModel.findOne({ where: { id } });
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         admin = true;
       } else {
         admin = false;
@@ -773,7 +821,7 @@ app.post(`/ads`, async function (req, res) {
     let user;
     if (id) {
       user = await UserModel.findOne({ where: { id } });
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         admin = true;
       } else {
         admin = false;
@@ -791,9 +839,9 @@ app.post(`/ads`, async function (req, res) {
 });
 
 app.get(`/create_roles`, async function (req, res) {
-  let user = new Role({ value: "USER" });
+  let user = new Role({ value: 'USER' });
   await user.save();
-  let admin = new Role({ value: "ADMIN" });
+  let admin = new Role({ value: 'ADMIN' });
   await admin.save();
   res.redirect(`back`);
 });
@@ -807,12 +855,12 @@ app.post(`/create_news`, async function (req, res) {
     });
     await news.save();
     return res.send({
-      message: "Новость успешно создана",
+      message: 'Новость успешно создана',
       success: true,
       status: 200,
     });
   } catch (err) {
-    res.send({ message: "Ошибка создания новости", success: false, err });
+    res.send({ message: 'Ошибка создания новости', success: false, err });
   }
 });
 
@@ -822,9 +870,9 @@ app.post(`/delete_news`, async function (req, res) {
     let newsDelete = await NewsModel.findOne({ where: { id: id } });
     console.log(newsDelete, id);
     await newsDelete.destroy();
-    res.json({ message: "Удаление прошло успешно", status: 200 });
+    res.json({ message: 'Удаление прошло успешно', status: 200 });
   } catch (err) {
-    res.json({ message: "Ошибка удаления новости", err });
+    res.json({ message: 'Ошибка удаления новости', err });
   }
 });
 
@@ -863,35 +911,35 @@ app.post(`/create_transfer`, async function (req, res) {
     });
     await transfer.save();
     return res.send({
-      message: "Трансфер успешно создан",
+      message: 'Трансфер успешно создан',
       show: true,
-      status: "200",
+      status: '200',
     });
   } catch (err) {
-    res.send({ message: "Ошибка создания трансфера", show: false, err });
+    res.send({ message: 'Ошибка создания трансфера', show: false, err });
   }
 });
 
-app.post(`/delete_transfer`, async function(req, res) {
+app.post(`/delete_transfer`, async function (req, res) {
   try {
-    let { id } = req.body
+    let { id } = req.body;
     if (id) {
-      let transfer = await CardTransfer.findOne({ where: { id } })
-      await transfer.destroy()
-      res.send({ status: 200, success: true })
+      let transfer = await CardTransfer.findOne({ where: { id } });
+      await transfer.destroy();
+      res.send({ status: 200, success: true });
     } else {
-      res.send({ success: 400, message: 'Ошибка удаления трансфера' })
+      res.send({ success: 400, message: 'Ошибка удаления трансфера' });
     }
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
 app.post(`/create_service`, async function (req, res) {
   try {
     let { name, phone, description } = req.body;
     try {
-      console.log("building card...");
+      console.log('building card...');
       let card = await CardService.build({
         img: {},
         name: name,
@@ -899,26 +947,26 @@ app.post(`/create_service`, async function (req, res) {
         description: description,
         verified: false,
       });
-      console.log("saving card...");
+      console.log('saving card...');
       try {
         card.save().then((e) => {
           try {
-            console.log("binding id...");
+            console.log('binding id...');
             timeId = card.id;
           } catch (e) {
             console.log(`Ошибка создания timeId: ${e} `);
             return res.send({
               message: `Ошибка создания timeId: ${e} `,
-              status: "400",
+              status: '400',
             });
           }
 
-          console.log("done.");
+          console.log('done.');
           return res.send({
             //message: `Создание карты завершено, timeId: ${timeId}`,
             message: timeId,
-            error: "Запрос успешно добавлен",
-            status: "200",
+            error: 'Запрос успешно добавлен',
+            status: '200',
             success: true,
           });
         });
@@ -926,19 +974,19 @@ app.post(`/create_service`, async function (req, res) {
         console.log(`сохранение не работает: ${e} `);
         return res.send({
           message: `сохранение не работает: ${e} `,
-          status: "400",
+          status: '400',
         });
       }
     } catch (e) {
       console.log(`Ошибка создания карточки: ${e} `);
       return res.send({
         message: `Ошибка создания карточки: ${e} `,
-        status: "400",
+        status: '400',
       });
     }
   } catch (err) {
     res.send({
-      message: "Ошибка создания услуги",
+      message: 'Ошибка создания услуги',
       show: false,
       err,
       success: false,
@@ -952,7 +1000,7 @@ app.post(`/services`, async function (req, res) {
   let user;
   if (id) {
     user = await UserModel.findOne({ where: { id } });
-    if (user.role == "ADMIN") {
+    if (user.role == 'ADMIN') {
       admin = true;
     } else {
       admin = false;
@@ -968,7 +1016,7 @@ app.post(`/service-card`, async function (req, res) {
     let card = await CardService.findOne({ where: { id: id } });
     res.send({ card });
   } catch (err) {
-    res.send({ message: "Такой услуги не найдено", show: false, err });
+    res.send({ message: 'Такой услуги не найдено', show: false, err });
   }
 });
 
@@ -982,7 +1030,7 @@ app.get(`/delete_service`, async function (req, res) {
 
 app.post(`/trybook`, async function (req, res) {
   let { phone, fromdate, todate, id, number } = req.body;
-  let singleHotel = await HotelModel.findByPk(id, { include: ["NumberModel"] });
+  let singleHotel = await HotelModel.findByPk(id, { include: ['NumberModel'] });
   console.log(singleHotel);
   let gottaBook = singleHotel.NumberModel[number];
   let checkin = new Date(fromdate);
@@ -993,20 +1041,78 @@ app.post(`/trybook`, async function (req, res) {
 
 app.post(`/create-number`, async function (req, res) {
   try {
-    let { hotel, name, adults, children, description, value, price } = req.body;
+    let {
+      hotel,
+      name,
+      price,
+      floor,
+      lease_term,
+      total_area,
+      sleeping_rooms,
+      sleeping_places,
+      children_bed,
+      double_places,
+      single_spaces,
+      additional_sleeping_places,
+      bathrooms,
+      bathrooms_showers,
+      drying_for_inventory,
+      wifi,
+      warm_floor,
+      dishwasher,
+      parking_cars,
+      mall,
+      kazan,
+      bath_territory,
+      pool,
+      transfer_city,
+      transfer_mountain,
+      live_whith_animals,
+      additionally,
+    } = req.body;
     console.log(`creating number...`);
-    await addNumber(hotel, name, adults, children, description, value, price);
+    await addNumber(
+      hotel,
+      name,
+      price,
+      floor,
+      lease_term,
+      total_area,
+      sleeping_rooms,
+      sleeping_places,
+      children_bed,
+      double_places,
+      single_spaces,
+      additional_sleeping_places,
+      bathrooms,
+      bathrooms_showers,
+      drying_for_inventory,
+      wifi,
+      warm_floor,
+      dishwasher,
+      parking_cars,
+      mall,
+      kazan,
+      bath_territory,
+      pool,
+      transfer_city,
+      transfer_mountain,
+      live_whith_animals,
+      additionally
+    );
     console.log(`number create`);
     res.send({ message: `Готово`, status: `200` });
   } catch (err) {
     res.send({ error: err, status: `400` });
   }
 });
-app.get(`/number`, async function (req, res) {
+app.post(`/number`, async function (req, res) {
   try {
-    let { id } = req.query;
-    let number = await NumberModel.findAll({ where: { HotelModelId: id } });
-    console.log(number)
+    let { id } = req.body;
+    let number = [];
+    if (id) {
+      number = await NumberModel.findAll({ where: { HotelModelId: id } });
+    }
     return res.send({ number });
   } catch (err) {
     return res.send({ error: err });
@@ -1025,7 +1131,7 @@ app.post(`/create_lift`, async function (req, res) {
       working_hours_finish,
     } = req.body;
     try {
-      console.log("building card...");
+      console.log('building card...');
       let card = await LiftModel.build({
         title: title,
         geo: geo,
@@ -1035,39 +1141,39 @@ app.post(`/create_lift`, async function (req, res) {
         working_hours_start: working_hours_start,
         working_hours_finish: working_hours_finish,
       });
-      console.log("saving card...");
+      console.log('saving card...');
       try {
         card.save().then((e) => {
           try {
-            console.log("binding id...");
+            console.log('binding id...');
             timeId = card.id;
           } catch (e) {
             console.log(`Ошибка создания timeId: ${e} `);
             return res.send({
               message: `Ошибка создания timeId: ${e} `,
-              status: "400",
+              status: '400',
             });
           }
 
-          console.log("done.");
+          console.log('done.');
           return res.send({
             //message: `Создание карты завершено, timeId: ${timeId}`,
             message: timeId,
-            status: "200",
+            status: '200',
           });
         });
       } catch (e) {
         console.log(`сохранение не работает: ${e} `);
         return res.send({
           message: `сохранение не работает: ${e} `,
-          status: "400",
+          status: '400',
         });
       }
     } catch (e) {
       console.log(`Ошибка создания карточки: ${e} `);
       return res.send({
         message: `Ошибка создания карточки: ${e} `,
-        status: "400",
+        status: '400',
       });
     }
   } catch (err) {
@@ -1086,9 +1192,9 @@ app.post(`/delete_lift`, async function (req, res) {
     let liftDelete = await LiftModel.findOne({ where: { id: id } });
     console.log(liftDelete, id);
     await liftDelete.destroy();
-    res.json({ message: "Удаление прошло успешно", status: 200 });
+    res.json({ message: 'Удаление прошло успешно', status: 200 });
   } catch (err) {
-    res.json({ message: "Ошибка удаления подъёмника", err });
+    res.json({ message: 'Ошибка удаления подъёмника', err });
   }
 });
 
@@ -1111,13 +1217,13 @@ app.post(`/create_skipass`, async function (req, res) {
     });
     await skipass.save();
     return res.send({
-      message: "Ски-пасс успешно создан",
+      message: 'Ски-пасс успешно создан',
       success: true,
       status: 200,
     });
   } catch (err) {
     res.send({
-      message: "Ошибка создания ски-пасса",
+      message: 'Ошибка создания ски-пасса',
       success: false,
       err,
       status: 400,
@@ -1131,12 +1237,12 @@ app.post(`/delete_skipass`, async function (req, res) {
     let skipass = await SkipassModel.findOne({ where: { id: id } });
     await skipass.destroy();
     res.send({
-      message: "Удаление прошло успешно",
+      message: 'Удаление прошло успешно',
       status: 200,
       success: true,
     });
   } catch (err) {
-    res.send({ message: "Ошибка удаления ски-пасса", err, success: false });
+    res.send({ message: 'Ошибка удаления ски-пасса', err, success: false });
   }
 });
 
@@ -1162,20 +1268,20 @@ app.post(`/send_mail`, async function (req, res) {
   try {
     let { email, phone, fromdate, todate } = req.body;
     let transporter = nodemailer.createTransport({
-      host: "smtp.beget.com",
+      host: 'smtp.beget.com',
       port: 2525,
       secure: false,
       auth: {
-        user: "codered-it@coderedit.site",
-        pass: "Stas_2001",
+        user: 'codered-it@coderedit.site',
+        pass: 'Stas_2001',
       },
     });
 
     let mailOptions = {
-      from: "<codered-it@coderedit.site>",
+      from: '<codered-it@coderedit.site>',
       to: email,
-      subject: "Бронирование",
-      text: "Прошло бронирование",
+      subject: 'Бронирование',
+      text: 'Прошло бронирование',
       html: `Прошло бронирование на сайте http://sneg-info.ru по вашему объявлению.<br>Номер клиента: ${phone}.<br>С <b>${fromdate}</b> по <b>${todate}</b>`,
     };
 
@@ -1183,7 +1289,7 @@ app.post(`/send_mail`, async function (req, res) {
       if (error) {
         return console.log(error);
       }
-      console.log("Message sent: %s", info.messageId);
+      console.log('Message sent: %s', info.messageId);
     });
     res.send({ status: 200, success: true });
   } catch (err) {
@@ -1191,28 +1297,30 @@ app.post(`/send_mail`, async function (req, res) {
   }
 });
 
-
-app.post(`/send_tg`, async function(req, res) {
+app.post(`/send_tg`, async function (req, res) {
   try {
-    let { phone, chatID, fromdate, todate } = req.body
-    bot.sendMessage(chatID, `Прошло бронирование на сайте http://sneg-info.ru по вашему объявлению. Номер клиента: ${phone}. С ${fromdate} по ${todate}`)
-    res.send({ status: 200, success: true })
-  } catch(err) {
-    console.log(err)
+    let { phone, chatID, fromdate, todate } = req.body;
+    bot.sendMessage(
+      chatID,
+      `Прошло бронирование на сайте http://sneg-info.ru по вашему объявлению. Номер клиента: ${phone}. С "${fromdate}" по "${todate}"`
+    );
+    res.send({ status: 200, success: true });
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
 app.post(`/admin_requests`, async function (req, res) {
   try {
     let { nameModel, category } = req.body;
     let requests = [];
-    if (category == "habitation") {
+    if (category == 'habitation') {
       requests = await HotelModel.findAll({
         where: { verified: false, subcategory: nameModel },
       });
-    } else if (nameModel == "transfer") {
+    } else if (nameModel == 'transfer') {
       requests = await CardTransfer.findAll({ where: { verified: false } });
-    } else if (nameModel == "service") {
+    } else if (nameModel == 'service') {
       requests = await CardService.findAll({ where: { verified: false } });
     } else {
       requests = await CardModel.findAll({
@@ -1229,24 +1337,27 @@ app.post(`/accept_request`, async function (req, res) {
   try {
     let { id, nameModel } = req.body;
     let card;
-    if (nameModel == "hotels") {
+    console.log(id, nameModel);
+    if (nameModel == 'hotels' || nameModel == 'cottage') {
       card = await HotelModel.findOne({ where: { id: id } });
-    } else if (nameModel == "transfer") {
+    } else if (nameModel == 'transfer') {
       card = await CardTransfer.findOne({ where: { id: id } });
-    } else if (nameModel == "service") {
+    } else if (nameModel == 'service') {
       card = await CardService.findOne({ where: { id: id } });
     } else {
       card = await CardModel.findOne({ where: { id: id } });
     }
+    console.log(card);
     card.verified = true;
     await card.save();
     res.send({
-      message: "Принято",
+      message: 'Принято',
       status: 200,
       success: true,
     });
   } catch (err) {
-    res.send({ message: "Ошибка создания запроса", err, success: false });
+    console.log(err);
+    res.send({ message: 'Ошибка создания запроса', err, success: false });
   }
 });
 
@@ -1254,23 +1365,24 @@ app.post(`/reject_request`, async function (req, res) {
   try {
     let { id, nameModel } = req.body;
     let card;
-    if (nameModel == "hotel") {
+    console.log(id, nameModel);
+    if (nameModel == 'hotels') {
       card = await HotelModel.findOne({ where: { id: id } });
-    } else if (nameModel == "transfer") {
+    } else if (nameModel == 'transfer') {
       card = await CardTransfer.findOne({ where: { id: id } });
-    } else if (nameModel == "service") {
+    } else if (nameModel == 'service') {
       card = await CardService.findOne({ where: { id: id } });
     } else {
       card = await CardModel.findOne({ where: { id: id } });
     }
     await card.destroy();
     res.send({
-      message: "Удаление прошло успешно",
+      message: 'Удаление прошло успешно',
       status: 200,
       success: true,
     });
   } catch (err) {
-    res.send({ message: "Ошибка удаления запроса", err, success: false });
+    res.send({ message: 'Ошибка удаления запроса', err, success: false });
   }
 });
 app.get(`/check`, async function (req, res) {
@@ -1282,7 +1394,7 @@ app.get(`/check`, async function (req, res) {
 
   if (token) {
     userRoles.forEach((role) => {
-      if (role == "ADMIN") {
+      if (role == 'ADMIN') {
         admin = true;
       }
     });
@@ -1297,7 +1409,7 @@ app.post(`/check_admin`, async function (req, res) {
     let user;
     if (id) {
       user = await UserModel.findOne({ where: { id } });
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         admin = true;
       }
     }
@@ -1310,7 +1422,7 @@ app.post(`/check_admin`, async function (req, res) {
 app.post(`/notifications`, async function (req, res) {
   try {
     let { nameModel, category } = req.body;
-    if (nameModel == "reqAll") {
+    if (nameModel == 'reqAll') {
       let transfer = await CardTransfer.findAll({ where: { verified: false } });
       let service = await CardService.findAll({ where: { verified: false } });
       let cards = await CardModel.findAll({ where: { verified: false } });
@@ -1324,7 +1436,7 @@ app.post(`/notifications`, async function (req, res) {
         transfer.length + service.length + cards.length + habitation.length;
       res.send({ s });
     }
-    if (nameModel == "all") {
+    if (nameModel == 'all') {
       let transfer = await CardTransfer.findAll({ where: { verified: false } });
       let service = await CardService.findAll({ where: { verified: false } });
       if (transfer) {
@@ -1342,7 +1454,7 @@ app.post(`/notifications`, async function (req, res) {
 
       let rental = await CardModel.findAll({
         where: {
-          category: "rental",
+          category: 'rental',
           verified: false,
         },
       });
@@ -1352,7 +1464,7 @@ app.post(`/notifications`, async function (req, res) {
 
       let forChildren = await CardModel.findAll({
         where: {
-          category: "forChildren",
+          category: 'forChildren',
           verified: false,
         },
       });
@@ -1361,14 +1473,14 @@ app.post(`/notifications`, async function (req, res) {
       }
 
       let instructorTours = await CardModel.findAll({
-        where: { category: "instructorTours", verified: false },
+        where: { category: 'instructorTours', verified: false },
       });
       if (instructorTours) {
         instructorTours = instructorTours.length;
       }
 
       let events = await CardModel.findAll({
-        where: { category: "event", verified: false },
+        where: { category: 'event', verified: false },
       });
       if (events) {
         events = events.length;
@@ -1382,139 +1494,139 @@ app.post(`/notifications`, async function (req, res) {
         instructorTours: instructorTours,
         events: events,
       });
-    } else if (nameModel == "habitation") {
+    } else if (nameModel == 'habitation') {
       let hotel = await HotelModel.findAll({
-        where: { verified: false, subcategory: "hotels" },
+        where: { verified: false, subcategory: 'hotels' },
       });
       if (hotel) {
         hotel = hotel.length;
       }
 
       let cottage = await HotelModel.findAll({
-        where: { subcategory: "cottage", verified: false },
+        where: { subcategory: 'cottage', verified: false },
       });
       if (cottage) {
         cottage = cottage.length;
       }
 
       let flat = await HotelModel.findAll({
-        where: { subcategory: "flat", verified: false },
+        where: { subcategory: 'flat', verified: false },
       });
       if (flat) {
         flat = flat.length;
       }
 
       let room = await HotelModel.findAll({
-        where: { subcategory: "rooms", verified: false },
+        where: { subcategory: 'rooms', verified: false },
       });
       if (room) {
         room = room.length;
       }
 
       let hostel = await HotelModel.findAll({
-        where: { subcategory: "hostel", verified: false },
+        where: { subcategory: 'hostel', verified: false },
       });
       if (hostel) {
         hostel = hostel.length;
       }
 
       let longterm = await HotelModel.findAll({
-        where: { subcategory: "longterm" },
+        where: { subcategory: 'longterm' },
       });
       if (longterm) {
         longterm = longterm.length;
       }
 
       res.send({ hotel, cottage, flat, room, hostel, longterm });
-    } else if (nameModel == "forChildren") {
+    } else if (nameModel == 'forChildren') {
       let childrenRooms = await CardModel.findAll({
-        where: { subcategory: "childrenRooms", verified: false },
+        where: { subcategory: 'childrenRooms', verified: false },
       });
       if (childrenRooms) {
         childrenRooms = childrenRooms.length;
       }
 
       let nanny = await CardModel.findAll({
-        where: { subcategory: "nanny", verified: false },
+        where: { subcategory: 'nanny', verified: false },
       });
       if (nanny) {
         nanny = nanny.length;
       }
 
       let otherEntertainment = await CardModel.findAll({
-        where: { subcategory: "otherEntertainment", verified: false },
+        where: { subcategory: 'otherEntertainment', verified: false },
       });
       if (otherEntertainment) {
         otherEntertainment = otherEntertainment.length;
       }
 
       let instructor = await CardModel.findAll({
-        where: { subcategory: "instructor", verified: false },
+        where: { subcategory: 'instructor', verified: false },
       });
       if (instructor) {
         instructor = instructor.length;
       }
 
       res.send({ childrenRooms, nanny, otherEntertainment, instructor });
-    } else if (nameModel == "event") {
+    } else if (nameModel == 'event') {
       let bans = await CardModel.findAll({
-        where: { subcategory: "bans", verified: false },
+        where: { subcategory: 'bans', verified: false },
       });
       if (bans) {
         bans = bans.length;
       }
 
       let massage = await CardModel.findAll({
-        where: { subcategory: "massage", verified: false },
+        where: { subcategory: 'massage', verified: false },
       });
       if (massage) {
         massage = massage.length;
       }
 
       let restaurants = await CardModel.findAll({
-        where: { subcategory: "restaurants", verified: false },
+        where: { subcategory: 'restaurants', verified: false },
       });
       if (restaurants) {
         restaurants = restaurants.length;
       }
 
       let nightClubs = await CardModel.findAll({
-        where: { subcategory: "nightClubs", verified: false },
+        where: { subcategory: 'nightClubs', verified: false },
       });
       if (nightClubs) {
         nightClubs = nightClubs.length;
       }
 
       let hoofing = await CardModel.findAll({
-        where: { subcategory: "hoofing", verified: false },
+        where: { subcategory: 'hoofing', verified: false },
       });
       if (hoofing) {
         hoofing = hoofing.length;
       }
 
       let karaoke = await CardModel.findAll({
-        where: { subcategory: "karaoke", verified: false },
+        where: { subcategory: 'karaoke', verified: false },
       });
       if (karaoke) {
         karaoke = karaoke.length;
       }
 
       let ratrak = await CardModel.findAll({
-        where: { subcategory: "ratrak", verified: false },
+        where: { subcategory: 'ratrak', verified: false },
       });
       if (ratrak) {
         ratrak = ratrak.length;
       }
 
       let helicopter = await CardModel.findAll({
-        where: { subcategory: "helicopter", verified: false },
+        where: { subcategory: 'helicopter', verified: false },
       });
       if (helicopter) {
         helicopter = helicopter.length;
       }
 
       let zoos = await CardModel.findAll({
-        where: { subcategory: "zoos", verified: false },
+        where: { subcategory: 'zoos', verified: false },
       });
       if (zoos) {
         zoos = zoos.length;
@@ -1531,60 +1643,60 @@ app.post(`/notifications`, async function (req, res) {
         helicopter,
         zoos,
       });
-    } else if (nameModel == "rental") {
+    } else if (nameModel == 'rental') {
       let inventory = await CardModel.findAll({
-        where: { subcategory: "inventory", verified: false },
+        where: { subcategory: 'inventory', verified: false },
       });
       if (inventory) {
         inventory = inventory.length;
       }
 
       let hookah = await CardModel.findAll({
-        where: { subcategory: "hookah", verified: false },
+        where: { subcategory: 'hookah', verified: false },
       });
       if (hookah) {
         hookah = hookah.length;
       }
 
       let transport = await CardModel.findAll({
-        where: { subcategory: "transport", verified: false },
+        where: { subcategory: 'transport', verified: false },
       });
       if (transport) {
         transport = transport.length;
       }
 
       let other = await CardModel.findAll({
-        where: { subcategory: "other", verified: false },
+        where: { subcategory: 'other', verified: false },
       });
       if (other) {
         other = other.length;
       }
 
       res.send({ inventory, hookah, transport, other });
-    } else if (nameModel == "instructorTours") {
+    } else if (nameModel == 'instructorTours') {
       let instructorAdults = await CardModel.findAll({
-        where: { subcategory: "instructorAdults", verified: false },
+        where: { subcategory: 'instructorAdults', verified: false },
       });
       if (instructorAdults) {
         instructorAdults = instructorAdults.length;
       }
 
       let instructorChildren = await CardModel.findAll({
-        where: { subcategory: "instructorChildren", verified: false },
+        where: { subcategory: 'instructorChildren', verified: false },
       });
       if (instructorChildren) {
         instructorChildren = instructorChildren.length;
       }
 
       let winterTours = await CardModel.findAll({
-        where: { subcategory: "winterTours", verified: false },
+        where: { subcategory: 'winterTours', verified: false },
       });
       if (winterTours) {
         winterTours = winterTours.length;
       }
 
       let summerTours = await CardModel.findAll({
-        where: { subcategory: "summerTours", verified: false },
+        where: { subcategory: 'summerTours', verified: false },
       });
       if (summerTours) {
         summerTours = summerTours.length;

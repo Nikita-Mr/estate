@@ -21,12 +21,10 @@ export default {
     return {
       name: {
         '/': 'Главная',
-        '/search': 'Поиск',
         home: 'Главная',
         weather: 'Погода',
         book_a_seat: 'Бронирование места',
         book_a_transfer: 'Бронирование трансфера',
-        search: 'Поиск',
         register: 'Регистрация',
         login: 'Вход',
         info: 'Информация',
@@ -43,16 +41,16 @@ export default {
         instructorToursItems: 'Карточки инструктор/туры',
         news: 'Новости',
         ads: 'Объявления',
-        adsItems: 'Карточки объявления',
+        adsItems: 'Объявления',
         transfer: 'Трансфер',
         'taxi-delivery': 'Такси-доставка',
-        serviceCardOpen: 'Карточки такси-доставки',
-        card: 'Карточка',
-        createCard: 'Создание карточки',
-        createNews: 'Создание новостей',
-        createTransfer: 'Создание трансферов',
-        createService: 'Создание услуг',
-        transfercard: 'Карточка трансфера',
+        serviceCardOpen: 'Такси-доставка',
+        card: 'Объект',
+        createCard: 'Создание объекта',
+        createNews: 'Создание новости',
+        createTransfer: 'Создание трансфера',
+        createService: 'Создание услуги',
+        transfercard: 'Трансфер',
         lift: 'Подъемники',
         appcreatelift: 'Создание Подъемников',
         appcameras: 'Камеры',
@@ -67,11 +65,13 @@ export default {
         adminhabitation: 'ADMIN проживание',
         admininstructortours: 'ADMIN инструкторы/туры',
         adminrental: 'ADMIN прокаты',
-        admintransfertaksi: 'ADMIN трансфер такси',
+        admintransfertaksi: 'ADMIN трансфер/такси',
         adminads: 'ADMIN объявления',
       },
       id: '',
       admin: false,
+      NAMES: ['info', 'transfer-taksi', 'habitation', 'rental', 'event', 'forChildren', 'instructor-tours', 'news', 'ads'],
+      index: 0
     };
   },
   watch() {
@@ -106,6 +106,24 @@ export default {
       }
       return res;
     },
+
+    go_back() {
+      if (this.index == 0) {
+        this.index = this.NAMES.length - 1
+      } else {
+        this.index -= 1
+      }
+      this.$router.push({ name: this.NAMES[this.index] })
+    },
+
+    go_up() {
+      if (this.index == this.NAMES.length - 1) {
+        this.index = 0
+      } else {
+        this.index += 1
+      }
+      this.$router.push({ name: this.NAMES[this.index] })
+    }
   },
   mounted() {
     this.notifications();
@@ -117,7 +135,13 @@ export default {
   <app-nav></app-nav>
   <app-slider></app-slider>
   <div class="site-page">
-    <span>{{ namepage($route.name) }}</span>
+    <span @click="go_back">
+      <img class="arrow left_arrow" src="/src/assets/img/arrow-down-sign-to-navigate.png" alt="" />
+    </span>
+    <span class="namepage">{{ namepage($route.name) }}</span>
+    <span @click="go_up">
+      <img class="arrow right_arrow" src="/src/assets/img/arrow-down-sign-to-navigate.png" alt="" />
+    </span>
   </div>
   <app-center></app-center>
   <div class="wrapperBottom">
@@ -127,10 +151,49 @@ export default {
 </template>
 
 <style>
+.modalDelete{
+  position: fixed !important;
+  top: 0;
+}
+.site-page img{
+  cursor: pointer;
+}
+
+.arrow {
+  width: 30px;
+}
+
+.arrow:hover, .arrow:active {
+  filter: brightness(1000%);
+}
+
+.left_arrow {
+  transform: rotate(90deg);
+}
+
+.right_arrow {
+  transform: rotate(270deg);
+}
+
+.namepage {
+  width: 255px;
+  text-align: center;
+  -webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
 .site-page {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
   color: var(--mainColor);
   font-size: clamp(18px, 5vw, 30px);
-  margin: 0 0 0 20px;
+  margin: 20px 0 0 20px;
+  z-index: 11;
   
 }
 .wrapper-main{
