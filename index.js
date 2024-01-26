@@ -38,6 +38,7 @@ const {
   NumberModel,
   LiftModel,
   SkipassModel,
+  RequestPaymentModel,
   RequestsModel,
 } = require("./modules/models");
 const { secret } = require(`./config`);
@@ -47,6 +48,7 @@ const { tryBook, addNumber } = require(`./modules/booking`);
 const { initPayment, awaitPayment } = require(`./modules/payments`);
 const { name } = require("dayjs/locale/ru");
 const internal = require("stream");
+const { default: axios } = require("axios");
 
 let app = express();
 let port = process.env.PORT || 3005;
@@ -150,6 +152,7 @@ app.post(`/filter`, async function (req, res) {
   let { namefilter, cityfrom, cityto, datefrom, passenger } = req.body;
   let filter;
   let Array = [];
+  console.log(cityfrom);
   filter = await CardTransfer.findAll({
     where: {
       cityfrom: cityfrom,
@@ -198,6 +201,20 @@ app.post(`/transfer`, async function (req, res) {
   }
 });
 
+app.post(`/transfer_edit`, async function (req, res) {
+  try {
+    let { id } = req.body;
+    if (id) {
+      let card = await CardTransfer.findOne({ where: { id } });
+      res.send({ card });
+    } else {
+      res.send({ success: false, message: "Объявление не найдено" });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 app.post(`/news`, async function (req, res) {
   let admin;
   let { id } = req.body;
@@ -217,14 +234,11 @@ app.post(`/news`, async function (req, res) {
 
 app.get(`/habitation`, async function (req, res) {
   try {
-    console.log(req.query);
     let { name, category } = req.query;
     let cards;
     let admin = false;
     let token = req.headers.authorization;
-    console.log(token);
     let { role: userRoles } = jwt.verify(token, secret);
-    console.log(userRoles);
 
     if (name) {
       cards = await HotelModel.findAll({
@@ -242,7 +256,6 @@ app.get(`/habitation`, async function (req, res) {
 
     res.send({ expired: false, cards, admin });
   } catch (e) {
-    console.log("я тут");
     console.log(e);
     res.send({ expired: "1" });
   }
@@ -318,6 +331,10 @@ app.post(`/upload`, async function (req, res) {
       service.img = file.name;
       //console.log(card);
       await service.save();
+    } else if (model == "transfer") {
+      let transfer = await CardTransfer.findOne({ where: { id: timeId } });
+      transfer.img = file.name;
+      await transfer.save();
     } else {
       let card = await HotelModel.findOne({ where: { id: timeId } });
       card.img = file.name;
@@ -370,6 +387,11 @@ app.post(`/upload`, async function (req, res) {
     card.img = imgName;
     await card.save();
     return res.send({ message: "Успешно", status: "200" });
+  } else if (model == "transfer") {
+    let transfer = await CardTransfer.findOne({ where: { id: id } });
+    transfer.img = imgName;
+    await transfer.save();
+    return res.send({ message: "Успешно", status: "200" });
   } else {
     if (category == `habitation`) {
       let card = await HotelModel.findOne({ where: { id: id } });
@@ -409,6 +431,7 @@ app.post(`/create-card`, async function (req, res) {
       adress,
       email,
       chatID,
+      userID,
       img,
       category,
     } = req.body;
@@ -425,6 +448,7 @@ app.post(`/create-card`, async function (req, res) {
         card.img = img;
         card.email = email;
         card.chatID = chatID;
+        card.userID = userID;
         card.verified = false;
         await card.save();
         console.log(card);
@@ -444,6 +468,7 @@ app.post(`/create-card`, async function (req, res) {
           email: email,
           chatID: chatID,
           nameCard: "no",
+          userID: userID,
           verified: false,
         });
         console.log("saving card...");
@@ -588,6 +613,7 @@ app.post(`/registration`, async function (req, res) {
       phone: number,
       password: hashPassword,
       role: "USER",
+      balance: 0
     });
     console.log(newUser);
     await newUser.save();
@@ -617,7 +643,7 @@ app.post(`/login`, async function (req, res) {
       return res.json({ message: "Введен неверный пароль", status: 400 });
     }
     let token = generateAccessToken(user.id, [user.role]);
-    return res.json({ token, message: "Вошел", status: 200, id: user.id });
+    return res.json({ token, message: "Успешно", status: 200, id: user.id });
   } catch (err) {
     res.json({ message: "Login error" });
   }
@@ -775,7 +801,7 @@ app.post(`/ads`, async function (req, res) {
       user = await UserModel.findOne({ where: { id } });
       if (user.role == "ADMIN") {
         admin = true;
-      } else {
+      } else {а
         admin = false;
       }
     }
@@ -832,64 +858,141 @@ app.post(`/create_transfer`, async function (req, res) {
   try {
     let {
       name,
+      region,
+      regionTo,
       cityfrom,
       cityto,
       datefrom,
-      dateto,
       timefrom,
-      timeto,
       car,
       typeCar,
       passenger,
-      price,
-      taxordel,
+      price_sit,
+      price_salon,
+      length,
+      chatID,
       point,
+      userID,
+      edit,
+      id
     } = req.body;
-    let transfer = await CardTransfer.create({
-      name: name,
-      cityfrom: cityfrom,
-      cityto: cityto,
-      datefrom: datefrom,
-      dateto: dateto,
-      timefrom: timefrom,
-      timeto: timeto,
-      car: car,
-      typeCar: typeCar,
-      passenger: passenger,
-      price: price,
-      verified: false,
-      taxordel: taxordel,
-      point: point,
-    });
-    await transfer.save();
-    return res.send({
-      message: "Трансфер успешно создан",
-      show: true,
-      status: "200",
-    });
+    try {
+      if (edit) {
+        if (id) {
+          console.log(region)
+          let card = await CardTransfer.findOne({ where: { id } })
+          card.name = name
+          card.region = region
+          card.cityfrom = cityfrom
+          card.cityto = cityto
+          card.datefrom = datefrom
+          card.timefrom = timefrom
+          card.car = car
+          card.typeCar = typeCar
+          card.passenger = passenger
+          card.price_sit = price_sit
+          card.price_salon = price_salon
+          card.length = length
+          card.chatID = chatID
+          card.point = point
+          card.regionTo = regionTo
+          await card.save()
+          res.send({ success: true, error: 'Сохранение прошло успешно', status: 200 })
+        } else {
+          res.send({ success: false, error: 'Ошибка', status: 400 })
+        }
+      } else {
+        console.log("building card...");
+        let card = await CardTransfer.build({
+          name: name,
+          region: region,
+          regionTo: regionTo,
+          cityfrom: cityfrom,
+          cityto: cityto,
+          datefrom: datefrom,
+          price_salon: price_salon,
+          timefrom: timefrom,
+          price_sit: price_sit,
+          car: car,
+          typeCar: typeCar,
+          passenger: passenger,
+          length: length,
+          chatID: chatID,
+          userID: userID,
+          verified: false,
+          point: point,
+          img: {},
+        });
+        console.log("saving card...");
+        try {
+          card.save().then((e) => {
+            try {
+              console.log("binding id...");
+              timeId = card.id;
+            } catch (e) {
+              console.log(`Ошибка создания timeId: ${e} `);
+              return res.send({
+                message: `Ошибка создания timeId: ${e} `,
+                status: "400",
+                show: false,
+              });
+            }
+
+            console.log("done.");
+            return res.send({
+              //message: `Создание карты завершено, timeId: ${timeId}`,
+              message: timeId,
+              error: "Запрос успешно добавлен",
+              status: "200",
+              success: true,
+              show: true,
+            });
+          });
+        } catch (e) {
+          console.log(`сохранение не работает: ${e} `);
+          return res.send({
+            message: `сохранение не работает: ${e} `,
+            status: "400",
+            show: false,
+          });
+        }
+      }
+    } catch (e) {
+      console.log(`Ошибка создания карточки: ${e} `);
+      return res.send({
+        message: `Ошибка создания карточки: ${e} `,
+        status: "400",
+        show: false,
+      });
+    }
   } catch (err) {
-    res.send({ message: "Ошибка создания трансфера", show: false, err });
+    res.send({
+      message: "Ошибка создания трансфера",
+      show: false,
+      err,
+      success: false,
+    });
   }
 });
 
-app.post(`/delete_transfer`, async function(req, res) {
+app.post(`/delete_transfer`, async function (req, res) {
   try {
-    let { id } = req.body
+    let { id } = req.body;
     if (id) {
-      let transfer = await CardTransfer.findOne({ where: { id } })
-      await transfer.destroy()
-      res.send({ status: 200, success: true })
+      let transfer = await CardTransfer.findOne({ where: { id } });
+      await transfer.destroy();
+      res.send({ status: 200, success: true });
     } else {
-      res.send({ success: 400, message: 'Ошибка удаления трансфера' })
+      res.send({ success: 400, message: "Ошибка удаления трансфера" });
     }
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
 app.post(`/create_service`, async function (req, res) {
   try {
-    let { name, phone, description } = req.body;
+    let { name, phone, description, userID } = req.body;
     try {
       console.log("building card...");
       let card = await CardService.build({
@@ -897,6 +1000,7 @@ app.post(`/create_service`, async function (req, res) {
         name: name,
         phone: phone,
         description: description,
+        userID: userID,
         verified: false,
       });
       console.log("saving card...");
@@ -1005,7 +1109,7 @@ app.post(`/create-number`, async function (req, res) {
 app.post(`/number`, async function (req, res) {
   try {
     let { id } = req.body;
-    let number = []
+    let number = [];
     if (id) {
       number = await NumberModel.findAll({ where: { HotelModelId: id } });
     }
@@ -1103,6 +1207,31 @@ app.post(`/skipass`, async function (req, res) {
   }
 });
 
+app.post(`/find_skipass`, async function (req, res) {
+  try {
+    let id = req.body.id;
+    let skipass = await SkipassModel.findOne({ where: { id } });
+    res.send({ skipass });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post(`/edit_skipass`, async function (req, res) {
+  try {
+    let { title, content, price, id } = req.body;
+    let skipass = await SkipassModel.findOne({ where: { id } });
+    skipass.title = title;
+    skipass.content = content;
+    skipass.price = price;
+    await skipass.save();
+    res.send({ success: true, message: "Успешно" });
+  } catch (err) {
+    res.send({ success: false, message: "Ошибка сохранения" });
+    console.log(err);
+  }
+});
+
 app.post(`/create_skipass`, async function (req, res) {
   try {
     let { title, content, price } = req.body;
@@ -1144,13 +1273,15 @@ app.post(`/delete_skipass`, async function (req, res) {
 
 app.post(`/payment`, async function (req, res) {
   try {
-    let { price, name, id } = req.body;
+    let { price, name, id, userID } = req.body;
     let transfer = await CardTransfer.findOne({ where: { id: id } });
+    let user = await UserModel.findOne({ where: { id: userID } })
     let { paymentRef, payment } = await initPayment(price, name);
     awaitPayment(payment).then(async (result) => {
       if (result) {
         transfer.passenger -= 1;
         await transfer.save();
+        user.balance += price * 0.9
       }
     });
 
@@ -1193,16 +1324,18 @@ app.post(`/send_mail`, async function (req, res) {
   }
 });
 
-
-app.post(`/send_tg`, async function(req, res) {
+app.post(`/send_tg`, async function (req, res) {
   try {
-    let { phone, chatID, fromdate, todate } = req.body
-    bot.sendMessage(chatID, `Прошло бронирование на сайте http://sneg-info.ru по вашему объявлению. Номер клиента: ${phone}. С "${fromdate}" по "${todate}"`)
-    res.send({ status: 200, success: true })
-  } catch(err) {
-    console.log(err)
+    let { phone, chatID, fromdate, todate } = req.body;
+    bot.sendMessage(
+      chatID,
+      `Прошло бронирование на сайте http://sneg-info.ru по вашему объявлению. Номер клиента: ${phone}. С "${fromdate}" по "${todate}"`
+    );
+    res.send({ status: 200, success: true });
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
 app.post(`/admin_requests`, async function (req, res) {
   try {
@@ -1231,8 +1364,12 @@ app.post(`/accept_request`, async function (req, res) {
   try {
     let { id, nameModel } = req.body;
     let card;
-    console.log(id, nameModel)
-    if (nameModel == "hotels" || nameModel == 'cottage') {
+    console.log(id, nameModel);
+    if (
+      nameModel == "hotels" ||
+      nameModel == "cottage" ||
+      nameModel == "rooms"
+    ) {
       card = await HotelModel.findOne({ where: { id: id } });
     } else if (nameModel == "transfer") {
       card = await CardTransfer.findOne({ where: { id: id } });
@@ -1241,7 +1378,7 @@ app.post(`/accept_request`, async function (req, res) {
     } else {
       card = await CardModel.findOne({ where: { id: id } });
     }
-    console.log(card)
+    console.log(card);
     card.verified = true;
     await card.save();
     res.send({
@@ -1250,7 +1387,7 @@ app.post(`/accept_request`, async function (req, res) {
       success: true,
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.send({ message: "Ошибка создания запроса", err, success: false });
   }
 });
@@ -1259,7 +1396,7 @@ app.post(`/reject_request`, async function (req, res) {
   try {
     let { id, nameModel } = req.body;
     let card;
-    console.log(id, nameModel)
+    console.log(id, nameModel);
     if (nameModel == "hotels") {
       card = await HotelModel.findOne({ where: { id: id } });
     } else if (nameModel == "transfer") {
@@ -1325,9 +1462,10 @@ app.post(`/notifications`, async function (req, res) {
           verified: false,
         },
       });
+      let payments = await RequestPaymentModel.findAll({ where: { done: false } })
 
       let s =
-        transfer.length + service.length + cards.length + habitation.length;
+        transfer.length + service.length + cards.length + habitation.length + payments.length;
       res.send({ s });
     }
     if (nameModel == "all") {
@@ -1380,6 +1518,11 @@ app.post(`/notifications`, async function (req, res) {
         events = events.length;
       }
 
+      let payments = await RequestPaymentModel.findAll({ where: { done: false } })
+      if (payments) {
+        payments = payments.length
+      }
+
       res.send({
         transfer: transfer,
         habitation: habitation,
@@ -1387,6 +1530,7 @@ app.post(`/notifications`, async function (req, res) {
         forChildren: forChildren,
         instructorTours: instructorTours,
         events: events,
+        payments: payments
       });
     } else if (nameModel == "habitation") {
       let hotel = await HotelModel.findAll({
@@ -1648,3 +1792,169 @@ app.post(`/profile`, async function (req, res) {
     console.log(err);
   }
 });
+
+app.post(`/myads`, async function (req, res) {
+  try {
+    let { id } = req.body;
+    let cards = [];
+    let hotels = [];
+    let transfers = [];
+    let services = [];
+    if (id) {
+      cards = await CardModel.findAll({
+        where: { userID: id, verified: true },
+      });
+      hotels = await HotelModel.findAll({
+        where: { userID: id, verified: true },
+      });
+      transfers = await CardTransfer.findAll({
+        where: { userID: id, verified: true },
+      });
+      services = await CardService.findAll({
+        where: { userID: id, verified: true },
+      });
+    }
+    res.send({ cards, hotels, transfers, services });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post(`/transfer_days`, async function(req, res) {
+  try {
+    let { month, cityfrom, cityto } = req.body
+    if (cityfrom && cityto) {
+      let transfers = await CardTransfer.findAll({ where: { cityfrom, cityto } })
+      let days = []
+      for (let i = 0; i < transfers.length; i++) {
+        let transfer = transfers[i]
+        if (month.includes(transfer.datefrom) && transfer.passenger > 0) {
+          days.push(transfer)
+        }
+      }
+      days.sort((a, b) => new Date(a.datefrom) - new Date(b.datefrom));
+      res.send({ days })
+    } else {
+      let transfers = await CardTransfer.findAll()
+      let days = []
+      for (let i = 0; i < transfers.length; i++) {
+        let transfer = transfers[i]
+        if (month.includes(transfer.datefrom) && transfer.passenger > 0) {
+          days.push(transfer)
+        }
+      }
+      days.sort((a, b) => new Date(a.datefrom) - new Date(b.datefrom));
+      res.send({ days })
+    }
+  } catch(err) {
+    console.log(err)
+  }
+})
+
+app.post(`/confirmation`, async function(req, res) {
+  try {
+    let { phone, codeInput } = req.body
+    let code
+    let number = phone.slice(1)
+    console.log(number, codeInput)
+    if (codeInput) {
+      console.log(codeInput)
+      if (codeInput == code) {
+        res.send({ verified: true })
+      } else {
+        res.send({ verified: false })
+      }
+    } else {
+      const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      const api_id = 'F2117CBA-89E3-7C23-1C4F-61E1F9338C54'
+      let success
+      console.log(ip, api_id)
+      let response = await axios.post('https://sms.ru/code/call', {
+        phone: number,
+        ip: ip,
+        api_id: api_id
+      })
+      console.log(response.data)
+      if (response.data) {
+        code = response.data.code
+        success = response.data.success
+      } else {
+        success = false
+      }
+      res.send({ success })
+    }
+  } catch(err) {
+    console.log(err)
+  }
+})
+
+app.post(`/request_payments`, async function(req, res) {
+  try {
+    let { userID } = req.body
+    if (userID) {
+      let user = await UserModel.findOne({ id: userID })
+      if (user) {
+        res.send({ balance: user.balance })
+      }
+    } else {
+      let requests = await RequestPaymentModel.findAll({ done: false })
+      res.send({ requests })
+    }
+  } catch(err) {
+    console.log(err)
+  }
+})
+
+app.post(`/request_payment`, async function(req, res) {
+  try {
+    let { userID, amount, card_number } = req.body
+    if (userID && amount && card_number) {
+      let user = await UserModel.findOne({ id: userID })
+      let request = await RequestPaymentModel.create({
+        username: user.username,
+        surname: user.surname,
+        userID: userID,
+        amount: amount,
+        card_number: card_number,
+        phone: user.phone,
+        done: false
+      })
+      await request.save()
+      res.send({ success: true, status: 200, message: 'Запрос на вывод успешно создан, ожидайте' })
+    } else {
+      res.send({ success: false, status: 400, message: 'Недостаточно данных!' })
+    }
+  } catch(err) {
+    console.log(err)
+  }
+})
+
+app.post(`/accept_payments`, async function(req, res) {
+  try {
+    let { id } = req.body
+    let request = await RequestPaymentModel.findOne({ id })
+    let user = await UserModel.findOne({ id: request.userID })
+    if (user.balance >= request.amount) {
+      user.balance -= request.amount
+      request.done = true
+      await user.save()
+      await request.save()
+      res.send({ message: '', success: true })
+    } else {
+      res.send({ message: 'Сумма вывода превышает баланс пользователя!' })
+    }
+  } catch(err) {
+    console.log(err)
+  }
+})
+
+app.post(`/reject_payments`, async function(req, res) {
+  try {
+    let { id } = req.body
+    let request = await RequestPaymentModel.findOne({ id })
+    await request.destroy()
+    res.send({ success: true })
+  } catch(err) {
+    console.log(err)
+  }
+})

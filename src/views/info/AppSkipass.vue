@@ -1,6 +1,7 @@
 <script>
 import { RouterLink, RouterView } from "vue-router";
 import axios from "axios";
+import router from "../../router/router";
 
 export default {
   components: {},
@@ -32,6 +33,10 @@ export default {
       this.loadInfo();
     },
 
+    async edit_skipass(id) {
+      this.$router.push({ name: 'skipasscreate', query: { id: id, edit: true } })
+    },
+
     getCookieValue(name) {
       const cookies = document.cookie.split("; ");
       let res;
@@ -56,11 +61,11 @@ export default {
     <div v-if="admin" class="create-news">
       <RouterLink to="/skipass/create">Создать ски-пасс</RouterLink>
     </div>
-    <div class="accordion" id="accordionExample">
+    <div class="accordion" id="accordionPanelsStayOpenExample">
       <div class="accordion-item" v-for="(item, i) in skipass">
         <h2 class="accordion-header" :id="'heading' + i">
           <button
-            class="accordion-button collapsed"
+            class="accordion-button"
             type="button"
             data-bs-toggle="collapse"
             :data-bs-target="'#collapse' + i"
@@ -69,6 +74,9 @@ export default {
           >
             {{ item.title }}
             <div class="divDelete">
+              <button v-if="admin" class="edit" @click="edit_skipass(item.id)">
+                Редактировать
+              </button>
               <button v-if="admin" class="delete" @click="delete_skipass(item.id)">
                 Удалить
               </button>
@@ -118,21 +126,32 @@ export default {
 .divDelete {
   width: 100%;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 5px;
+  gap: 10px;
   z-index: 10;
 }
 
-.delete {
+.delete, .edit {
   width: fit-content;
-  position: absolute;
   background: transparent;
   color: #ee2e31;
   border: 1px solid #ee2e31;
   border-radius: 10px;
   padding: 5px 10px;
   z-index: 1000000;
+
+  transition: all 400ms;
+}
+
+.edit {
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.delete:hover, .edit:hover {
+  transform: scale(1.07);
 }
 
 a {
@@ -156,8 +175,7 @@ a:hover {
 .wrapperNews {
   margin-top: 10px;
   width: 100%;
-  max-height: 600px;
-  min-height: 600px;
+  height: 70vh;
   overflow-y: scroll;
 }
 

@@ -26,6 +26,7 @@ import AppCreateNews from '../components/AppCreateNews.vue'
 import AppCreateTransfer from '../components/AppCreateTransfer.vue'
 import AppCreateService from '../components/AppCreateService.vue'
 import AppTransferCardOpen from '../components/AppTransferCardOpen.vue'
+import AppTransferEdit from '../components/AppTransferEdit.vue'
 import ServiceCard from '../components/ServiceCard.vue'
 import AppLift from '../views/info/AppLift.vue'
 import AppCreateLift from '../views/info/AppCreateLift.vue'
@@ -44,6 +45,10 @@ import AdminTransferTaksi from '../views/admin/AdminTransferTaksi.vue'
 import AdminInstructorTours from '../views/admin/AdminInstructorTours.vue'
 import AdminAds from '../views/admin/AdminAds.vue'
 import AppProfile from '../components/AppProfile.vue'
+import MyAds from '../components/MyAds.vue'
+import PhonePolicy from '../components/PhonePolicy.vue'
+import AppWithdrawal from '../components/AppWithdrawal.vue'
+import AdminPayments from '../views/admin/AdminPayments.vue'
 
 
 const router = createRouter({
@@ -210,6 +215,11 @@ const router = createRouter({
       component: AppTransferCardOpen,
     },
     {
+      path: '/transfer/edit',
+      name: 'transferedit',
+      component: AppTransferEdit,
+    },
+    {
       path: '/lift',
       name: 'lift',
       component: AppLift,
@@ -294,6 +304,27 @@ const router = createRouter({
       name: 'profile',
       component: AppProfile,
     },
+    {
+      path: '/myads',
+      name: 'myads',
+      component: MyAds,
+    },
+    {
+      path: '/phone_policy',
+      name: 'phonepolicy',
+      component: PhonePolicy,
+    },
+    {
+      path: '/withdrawal',
+      name: 'withdrawal',
+      component: AppWithdrawal,
+    },
+    {
+      path: '/request_payments',
+      name: 'reqpayments',
+      component: AdminPayments,
+    }
+
   ]
 })
 

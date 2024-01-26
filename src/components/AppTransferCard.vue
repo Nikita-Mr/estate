@@ -2,26 +2,36 @@
 import { RouterLink, RouterView } from 'vue-router';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-export default {
+import { defineComponent } from "vue";
+import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
+
+import "vue3-carousel/dist/carousel.css";
+export default defineComponent({
   props: {
     name: String,
     cityfrom: String,
     cityto: String,
     datefrom: String,
-    dateto: String,
     timefrom: String,
-    timeto: String,
     typeCar: String,
     car: String,
-    passenger: String,
-    price: String,
+    img: String,
+    passenger: Number,
+    price_salon: Number,
+    price_sit: Number,
+    length: String,
     boardedPlaces: Number,
     passenger2: Number
   },
-  components: {},
+  components: {
+    Carousel,
+    Slide,
+    Navigation,
+    Pagination,
+  },
   data() {
     return {
-      passenger2: this.passenger/2
+      passenger3: this.passenger/2
     };
   },
   methods: {
@@ -33,7 +43,7 @@ export default {
     },
   },
   mounted() {},
-};
+});
 </script>
 
 <template>
@@ -47,14 +57,13 @@ export default {
               <span class="sub">{{ getDate(datefrom) }}</span>
             </div>
             <div class="second">
-              <span>{{ timeto }}</span>
-              <span class="sub">{{ getDate(dateto) }}</span>
+              <span class="moreText">Длительность поездки: {{ length }} часа</span>
             </div>
           </div>
           <!-- <div class="line"></div> -->
           <div class="city">
             <div class="first">
-              <span>{{ cityfrom }}</span>
+              <span class="textCity">{{ cityfrom }}</span>
               <span class="sub">Мест: {{ passenger }}</span>
             </div>
             <div class="second">
@@ -63,8 +72,8 @@ export default {
                 <div
                   class="circlesvg"
                   :class="{
-                    green: boardedPlaces < passenger2 && typeCar == `bus`,
-                    green: boardedPlaces < passenger2 && typeCar == `car`,
+                    green: boardedPlaces < passenger3 && typeCar == `bus`,
+                    green: boardedPlaces < passenger3 && typeCar == `car`,
                   }"
                 >
                   <ion-icon name="person"></ion-icon>
@@ -73,11 +82,11 @@ export default {
                   class="circlesvg"
                   :class="{
                     yellow:
-                      boardedPlaces >= passenger2 - 2 &&
-                      boardedPlaces <= passenger2 + 2 &&
+                      boardedPlaces >= passenger3 - 2 &&
+                      boardedPlaces <= passenger3 + 2 &&
                       typeCar == `bus`,
                     yellow:
-                      boardedPlaces >= passenger2 - 1 &&
+                      boardedPlaces >= passenger3 - 1 &&
                       boardedPlaces <= passenger1 + 1 &&
                       typeCar == `car`,
                   }"
@@ -89,11 +98,11 @@ export default {
                   :class="{
                     red:
                       boardedPlaces <= passenger &&
-                      boardedPlaces > passenger2 &&
+                      boardedPlaces > passenger3 &&
                       typeCar == `bus`,
                     red:
                       boardedPlaces <= passenger &&
-                      boardedPlaces > passenger2 &&
+                      boardedPlaces > passenger3 &&
                       typeCar == `car`,
                   }"
                 >
@@ -104,19 +113,24 @@ export default {
           </div>
         </div>
         <div class="cars">
-          <div class="circlesvg">
-            <ion-icon name="bus" v-if="typeCar == `bus`"></ion-icon
-            ><ion-icon name="car" v-if="typeCar == `car`"></ion-icon>
+          <div class="img">
+            <Carousel :autoplay="4000" :wrap-around="true">
+              <Slide v-for="slide in img" :key="slide">
+                <div class="carousel__item">
+                  <img class="carousel_img" :src="`/dist/assets/img/user/` + slide" alt="" />
+                </div>
+              </Slide>
+            </Carousel>
           </div>
-          <span>{{ typeCar == `car` ? name : car }}</span>
+          <span class="modelCar">{{ typeCar == `car` ? name : car }}</span>
         </div>
       </div>
       <div class="wrapprice">
         <div class="price">
-          <span v-if="boardedPlaces != passenger">{{ price }}₽</span>
+          <span v-if="boardedPlaces != passenger">{{ price_sit }}₽</span>
           <span v-if="boardedPlaces == passenger">Нет мест</span>
           <span v-if="boardedPlaces != passenger" class="sub discount"
-            >{{ price - 1000 }}₽</span
+            >{{ price_sit + 300 }}₽</span
           >
         </div>
         <div class="content">
@@ -129,11 +143,46 @@ export default {
 </template>
 
 <style scoped>
+
+* {
+  color: #fff;
+}
+
+.moreText {
+  width: 110px;
+  font-size: small;
+}
+
+.img {
+  width: 25%;
+  min-width: 45px;
+  min-height: 45px;
+}
+
+.modelCar {
+  font-size: 1rem;
+  width: 70%;
+}
+
+.carousel_img {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+}
+
+.wrapperTransfer {
+  margin: 7px;
+}
+
+.cars {
+ padding-top: 7px;
+}
+
 .time {
-  width: 70px;
+  width: 50%;
 }
 .city {
-  width: min-content;
+  width: 60%;
 }
 .cardTransfer {
   display: flex;
@@ -151,17 +200,20 @@ export default {
 }
 .info {
   display: flex;
+  gap: 15px;
   height: 100px;
   margin-bottom: 10px;
   min-width: 230px;
+  justify-content: space-between;
 }
 .first span {
   width: 100%;
 }
 .first {
-  height: 50%;
+  height: 67%;
   display: flex;
   flex-wrap: wrap;
+  width: 200px;
 }
 .sub {
   font-size: 13px;
@@ -245,9 +297,39 @@ span:not(.sub, .cars span) {
   background: #ee2e31;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 400px) {
+
+  .first {
+    width: 85px;
+    word-break: break-all;
+  }
+  .textCity {
+    width: 130px;
+    word-break: break-all;
+  }
+
   .cardTransfer {
-    padding: 5px;
+    padding: 8px;
   }
 }
+
+@media (max-width: 480px) {
+
+  .info {
+    min-width: 200px;
+  }
+}
+
+@media (max-height: 720px) {
+  .cardTransfer {
+    width: 96%;
+  }
+}
+
+@media (max-width: 770px) {
+  .container {
+    max-width: 100%;
+  }
+}
+
 </style>

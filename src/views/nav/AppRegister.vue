@@ -1,19 +1,26 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
-import axios, { AxiosError } from 'axios';
+import { RouterLink, RouterView } from "vue-router";
+import axios, { AxiosError } from "axios";
 
 export default {
   components: {},
   data() {
     return {
-      username: '',
-      surname: '',
-      email: '',
-      number: '+7',
-      password: '',
-      error: '',
+      username: "",
+      surname: "",
+      email: "",
+      number: "+7",
+      password: "",
+      error: "",
       status: 0,
+      code: "",
+      confirmation: false,
     };
+  },
+  computed: {
+    formatPhoneNumber() {
+      return this.number ? this.number.replace(/[^+\d]/g, "") : "";
+    },
   },
   methods: {
     async submit() {
@@ -27,17 +34,54 @@ export default {
       this.error = error.data.message;
       this.status = error.data.status;
       setTimeout(() => {
-        if (this.status == '200') {
+        if (this.status == "200") {
           this.$refs.form.reset();
           document.cookie = new String();
           document.cookie = `token=${this.token}; max-age=1123200`;
 
-          this.$router.push({ name: 'login' });
+          this.$router.push({ name: "login" });
         }
       }, 1000);
       setTimeout(() => {
         (this.error = ``), (this.status = ``);
-      }, 3000);
+      }, 30000000);
+    },
+
+    toconfirm() {
+      this.confirmation = true;
+    },
+
+    async call() {
+      let response = await axios.post(`/confirmation`, {
+        phone: this.number,
+      });
+    },
+
+    async check() {
+      let response = await axios.post(`/confirmation`, {
+        codeInput: this.code,
+      });
+      this.verified = response.data.verified;
+      if (this.verified) {
+        this.confirmation = false;
+        this.status = 200;
+        this.error = "Верификация прошла успешно";
+      } else {
+        this.status = 400;
+        this.error = "Введенный код не совпадает с правильным";
+      }
+    },
+
+    updateValue(e) {
+      let input = e.target.value.replace(/[^+\d]/g, "");
+      if (input.length > 12) {
+        input = input.slice(0, 12);
+      }
+      if (!input.startsWith("+")) {
+        input = "+";
+      }
+      this.number = input;
+      e.target.value = this.formatPhoneNumber;
     },
   },
   mounted() {},
@@ -47,7 +91,7 @@ export default {
 <template>
   <div class="wrapper">
     <div class="form-box">
-      <form ref="form" @submit.prevent="submit">
+      <form v-if="!confirmation" ref="form" @submit.prevent="submit">
         <h2 class="title">Регистрация</h2>
         <div class="input-box">
           <input v-model="username" type="text" required id="name" />
@@ -58,12 +102,13 @@ export default {
           <label for="surname" class="surname">Фамилия</label>
         </div>
         <div class="input-box">
-          <input v-model="email" type="email" required id="email" />
-          <label for="email" class="email">Почта</label>
+          <input v-model="email" type="email" required id="emailInput" />
+          <label for="emailInput" class="">Почта</label>
         </div>
         <div class="input-box">
           <input
-            v-model="number"
+            :value="formatPhoneNumber"
+            @input="updateValue($event)"
             type="tel"
             size="20"
             maxlength="12"
@@ -74,26 +119,46 @@ export default {
         </div>
         <div class="input-box">
           <input v-model="password" type="password" required id="password" />
-          <label for="password" class="password"
-            >Пароль (не менее 8 символов)</label
-          >
+          <label for="password" class="password">Пароль</label>
         </div>
         <div class="group mb-3">
           <RouterLink to="/login" class="node">Перейти к входу</RouterLink>
         </div>
         <div class="sign-up">
-          <button type="submit" class="sign-up-btn disabled" id="sign-up">
-            Зарегистрироваться
+          <button @click="toconfirm" class="sign-up-btn" id="sign-up">
+            Продолжить
           </button>
-        </div>
-        <div
-          v-if="error"
-          :class="{ error: status == '400', success: status == '200' }"
-        >
-          <span>{{ error }}</span>
         </div>
         <div class="email_check"></div>
       </form>
+      <div class="wrapper-for-register" v-if="confirmation">
+        <h2 class="title">Подтверждение</h2>
+        <div class="text">
+          Для подтверждения номера телефона введите последние 4 цифры номера,
+          который позвонит на ваш указанный номер
+        </div>
+        <div class="input-box">
+          <input v-model="code" type="text" required id="code" />
+          <label for="code" class="name">Последние 4 цифры</label>
+        </div>
+        <div class="group mb-3">
+          <RouterLink to="/phone_policy" class="node"
+            >Политика соглашения</RouterLink
+          >
+        </div>
+        <div class="sign-up">
+          <button @click="call" class="call">Позвонить</button>
+          <button @click="check" type="submit" class="sign-up-btn" id="sign-up">
+            Проверить
+          </button>
+        </div>
+        <div class="email_check"></div>
+      </div>
+    </div>
+    <div v-if="error" class="notification-container">
+      <div :class="{ error: status == 400, success: status == 200 }">
+        <span>{{ error }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -102,21 +167,27 @@ export default {
 * {
   font-weight: 550;
 }
+.notification-container {
+  position: fixed;
+  bottom: 3%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .success {
-  position: absolute;
-  bottom: -100px;
-  width: 300px;
-  text-align: center;
-  padding: 10px;
-  color: #a0dd75;
+  background-color: #87e752;
+  border-radius: 15px;
+  padding: 7px 12px;
+  color: #fff;
 }
 .error {
-  position: absolute;
-  bottom: -100px;
-  width: 300px;
-  text-align: center;
-  padding: 10px;
-  color: #dd7575;
+  background-color: #ed1c24;
+  border-radius: 15px;
+  padding: 7px 12px;
+  color: #fff;
+  font-weight: 550;
 }
 .wrapper {
   display: flex;
@@ -124,6 +195,11 @@ export default {
   align-items: center;
   width: 100%;
   height: 100%;
+}
+
+.text {
+  font-size: small;
+  text-align: center;
 }
 
 .form-box {
@@ -138,7 +214,8 @@ export default {
   flex-basis: 300px;
 }
 
-form {
+form,
+.wrapper-for-register {
   width: 100%;
 }
 
@@ -153,6 +230,15 @@ a {
   border-bottom: 2px solid #b3b3b3bc;
 }
 
+.call {
+  padding: 3px 5px;
+  width: fit-content;
+  border: 1px solid #d5d5d5;
+  background: transparent;
+  border-radius: 7px;
+  color: #d5d5d5;
+}
+
 .input-box input {
   position: relative;
   width: 100%;
@@ -163,12 +249,13 @@ a {
   outline: none;
   font-size: 16px;
   padding: 0 35px 0 5px;
-  /* color: #fff; */
+  color: #fff;
 }
 
 input:focus ~ label,
+input[type="email"]:focus ~ label,
 input:valid ~ label {
-  top: -12px;
+  top: -10px;
 }
 
 .input-box label {
@@ -189,7 +276,8 @@ input:valid ~ label {
 .sign-up {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
+  gap: 10px;
 }
 
 .node {
@@ -203,5 +291,25 @@ input:valid ~ label {
   backdrop-filter: blur(6px);
   border-radius: 10px;
   padding: 5px 7px;
+}
+
+@media (max-height: 780px) {
+  .form-box {
+    flex-basis: 90%;
+  }
+
+  .input-box input {
+    height: 30px;
+  }
+
+  .form-box {
+    margin: 15px 0;
+  }
+
+  input:focus ~ label,
+  input[type="email"]:focus ~ label,
+  input:valid ~ label {
+    top: -7px;
+  }
 }
 </style>

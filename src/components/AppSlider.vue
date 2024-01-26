@@ -225,14 +225,13 @@ a {
   width: fit-content;
   position: absolute;
   left: 30px;
-  top: calc(50% - 300px);
   transform: translate(-400px);
-  transition: transform 300ms;
+  transition: all 500ms;
   z-index: 3;
 }
 .active {
   transform: translate(0);
-  transition: all 300ms;
+  transition: all 500ms;
 }
 
 .wrap-line {
@@ -251,7 +250,7 @@ a {
 
 .wrap-line:active .wrapper-for-slider {
   transform: translate(0);
-  transition: transform 300ms;
+  transition: all 500ms;
 }
 .line {
   width: 3px;
@@ -275,7 +274,7 @@ a {
     padding: 12px 21px;
     border-radius: 15px;
     border: 1px solid #fff;
-    top: calc(50% - 350px);
+    top: 1%
   }
 }
 </style>

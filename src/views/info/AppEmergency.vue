@@ -9,7 +9,7 @@ export default {
         emergency: [{text: 'Спасатели', number: '+7-903-985-99-48'}, {text: 'Скорая помощь', number: '(384-73) 3-33-03'},
                     {text: 'Скорая Шерегеш', number: '+7-913-337-42-67'}, {text: 'Пожарная часть', number: '(384-73) 3-31-22, 01'},
                     {text: 'МЧС', number: '(384-73) 3-31-12, 01'}, {text: 'Отдел ГО и ЧС администрации Таштагольского р-на', number: '(384-73) 3-34-20'}, 
-                    {text: 'Полиция', number: '(384-73) 3-02-02'}, {text: 'Полиция Шерегеш', number: '+7-913-428-66-40}'}]
+                    {text: 'Полиция', number: '(384-73) 3-02-02'}, {text: 'Полиция Шерегеш', number: '+7-913-428-66-40'}]
     };
   },
   methods: {},
@@ -19,7 +19,6 @@ export default {
 
 <template>
   <div class="wrapper">
-    <div class="title">Экстренные службы</div>
     <div class="wrapper-for-content">
         <div class="content">
             <div class="box" v-for="item in emergency">
@@ -39,7 +38,6 @@ export default {
     align-items: center;
     width: 100%;
 }
-
 .box {
     display: flex;
     justify-content: center;
@@ -80,6 +78,24 @@ export default {
 @media (max-width: 420px) {
     .content {
         padding: 20px 10px;
+    }
+}
+
+@media (max-width: 770px) {
+    .wrapper-for-content {
+        width: 90%;
+    }
+}
+
+@media (max-width: 380px) {
+    .wrapper-for-content {
+        width: 83%;
+    }
+}
+
+@media (max-height: 680px) {
+    .content {
+        height: 70vh;
     }
 }
 </style>

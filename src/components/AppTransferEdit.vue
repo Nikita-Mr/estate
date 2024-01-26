@@ -301,14 +301,43 @@ export default defineComponent({
       ],
       region: null,
       city: null,
-      regionTo: null,
-      cityTo: null,
       img: "",
       files: "",
-      error: '',
+      edit: false,
+      id: "",
+      card: "",
     };
   },
   methods: {
+    async loadCard() {
+      this.edit = this.$route.query.edit;
+      this.id = this.$route.query.id;
+      if (this.edit) {
+        let response = await axios.post(`/transfer_edit`, {
+          id: this.id,
+        });
+        this.card = response.data.card;
+        if (this.card) {
+          this.nametransfer = this.card.name;
+          this.region = this.card.region;
+          this.city = this.card.cityfrom;
+          this.cityto = this.card.cityto;
+          this.datefrom = this.card.datefrom;
+          this.timefrom = this.card.timefrom;
+          this.typeCar = this.card.typeCar;
+          this.car = this.card.car;
+          this.passenger = this.card.passenger;
+          this.price_sit = this.card.price_sit;
+          this.price_salon = this.card.price_salon;
+          this.length = this.card.length;
+          this.chatID = this.card.chatID;
+          this.img = this.card.img;
+          this.point = this.card.point;
+          console.log(this.region);
+        }
+      }
+    },
+
     handleFilesUpload() {
       this.files = this.$refs.files.files;
     },
@@ -318,62 +347,125 @@ export default defineComponent({
         let file = this.files[i];
         formData.append("files", file);
       }
-      await axios
-        .post(`/create_transfer`, {
-          name: this.nametransfer,
-          region: this.region.name,
-          cityfrom: this.city,
-          regionTo: this.regionTo,
-          cityto: this.cityTo,
-          datefrom: this.datefrom,
-          timefrom: this.timefrom,
-          typeCar: this.typeCar,
-          car: this.car,
-          passenger: this.passenger,
-          price_salon: this.price_salon,
-          price_sit: this.price_sit,
-          length: this.length,
-          chatID: this.chatID,
-          point: this.point,
-          userID: this.getCookieValue("id"),
-        })
-        .then((e) => {
-          console.log(`card creation return: ${e.data.text}`);
+      if (this.region.name) {
+        await axios
+          .post(`/create_transfer`, {
+            name: this.nametransfer,
+            region: this.region.name,
+            cityfrom: this.city,
+            cityto: this.cityto,
+            datefrom: this.datefrom,
+            timefrom: this.timefrom,
+            typeCar: this.typeCar,
+            car: this.car,
+            passenger: this.passenger,
+            price_salon: this.price_salon,
+            price_sit: this.price_sit,
+            length: this.length,
+            chatID: this.chatID,
+            point: this.point,
+            userID: this.getCookieValue("id"),
+            edit: true,
+            id: this.id,
+          })
+          .then((e) => {
+            console.log(`card creation return: ${e.data.text}`);
 
-          let routeAppend = new String();
+            let routeAppend = new String();
 
-          console.log(`response info is: ${e.data.message}`);
-          if (!isNaN(e.data.message))
-            routeAppend = `?id=${e.data.message}&model=transfer`;
+            console.log(`response info is: ${e.data.message}`);
+            if (!isNaN(e.data.message))
+              routeAppend = `?id=${e.data.message}&model=transfer`;
 
-          let uploadRoute = `/upload${routeAppend}`;
+            let uploadRoute = `/upload${routeAppend}`;
 
-          console.log(`card creation response ${e.data.message}`);
-          console.log(`upload route is ${uploadRoute}`);
+            console.log(`card creation response ${e.data.message}`);
+            console.log(`upload route is ${uploadRoute}`);
 
-          axios
-            .post(uploadRoute, formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
-            .then((r) => {
-              console.log(`got code 200 on upload: ${e.data.text}`);
-            })
-            .catch((r) => {
-              console.log(`got code 400 on upload: ${e.data.text}`);
-            });
-          this.error = e.data.error;
-          this.status = e.data.status;
-          this.success = e.data.success;
-          if (this.success) {
-            setTimeout(() => {
-              this.error = "";
-              this.status = "";
-              this.$router.go(-1);
-            }, 2500);
-          }
-        });
+            axios
+              .post(uploadRoute, formData, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then((r) => {
+                console.log(`got code 200 on upload: ${e.data.text}`);
+              })
+              .catch((r) => {
+                console.log(`got code 400 on upload: ${e.data.text}`);
+              });
+            this.error = e.data.error;
+            this.status = e.data.status;
+            this.success = e.data.success;
+            console.log(this.error);
+            if (this.success) {
+              setTimeout(() => {
+                this.error = "";
+                this.status = "";
+                this.$router.go(-1);
+              }, 1500);
+            }
+          });
+      } else {
+        await axios
+          .post(`/create_transfer`, {
+            name: this.nametransfer,
+            region: this.region.name,
+            cityfrom: this.city,
+            cityto: this.cityto,
+            datefrom: this.datefrom,
+            timefrom: this.timefrom,
+            typeCar: this.typeCar,
+            car: this.car,
+            passenger: this.passenger,
+            price_salon: this.price_salon,
+            price_sit: this.price_sit,
+            length: this.length,
+            chatID: this.chatID,
+            point: this.point,
+            userID: this.getCookieValue("id"),
+            edit: true,
+            id: this.id,
+          })
+          .then((e) => {
+            console.log(`card creation return: ${e.data.text}`);
+
+            let routeAppend = new String();
+
+            console.log(`response info is: ${e.data.message}`);
+            if (!isNaN(e.data.message))
+              routeAppend = `?id=${e.data.message}&model=transfer`;
+
+            let uploadRoute = `/upload${routeAppend}`;
+
+            console.log(`card creation response ${e.data.message}`);
+            console.log(`upload route is ${uploadRoute}`);
+
+            axios
+              .post(uploadRoute, formData, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then((r) => {
+                console.log(`got code 200 on upload: ${e.data.text}`);
+              })
+              .catch((r) => {
+                console.log(`got code 400 on upload: ${e.data.text}`);
+              });
+            this.error = e.data.error;
+            this.status = e.data.status;
+            this.success = e.data.success;
+            console.log(this.error);
+            if (this.success) {
+              setTimeout(() => {
+                this.error = "";
+                this.status = "";
+                this.$router.go(-1);
+              }, 1500);
+            }
+          });
+      }
       // if (this.status == "200") {
       //   this.$router.push({ name: this.$route.query.name });
       // }
@@ -414,14 +506,9 @@ export default defineComponent({
       }
       return res;
     },
-
-    async notifications() {
-      let response = await axios.post(`/notifications`, {
-        nameModel: "reqAll",
-      });
-
-      this.$emit('updateS', response.data.s);
-    },
+  },
+  mounted() {
+    this.loadCard();
   },
 });
 </script>
@@ -498,7 +585,7 @@ export default defineComponent({
             </div>
           </div>
           <div class="input-group">
-            <div class="title">Регион (откуда):</div>
+            <div class="title">Регион:</div>
             <div class="wrapper-for-input">
               <select v-model="region">
                 <option v-for="region in regions" :value="region">
@@ -522,26 +609,16 @@ export default defineComponent({
           </div>
 
           <div class="input-group">
-            <div class="title">Регион (куда):</div>
+            <div class="title">Куда:</div>
             <div class="wrapper-for-input">
-              <select v-model="regionTo">
-                <option v-for="region in regions" :value="region">
-                  {{ region.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div
-            class="input-group"
-            :class="{ active: this.regionTo, 'd-none': !this.regionTo }"
-          >
-            <div class="title">Город:</div>
-            <div class="wrapper-for-input" v-if="regionTo">
-              <select v-model="cityTo">
-                <option v-for="city in regionTo.cities" :value="city">
-                  {{ city }}
-                </option>
-              </select>
+              <input
+                v-model="cityto"
+                type="text"
+                name="cityto"
+                class="form-input cityto"
+                required
+                id=""
+              />
             </div>
           </div>
           <div class="input-group">
@@ -702,7 +779,7 @@ export default defineComponent({
         </div>
       </div>
       <div v-else class="div-for-button">
-        <button class="create-transfer">Опубликовать</button>
+        <button class="create-transfer">Сохранить</button>
       </div>
     </form>
   </div>
@@ -838,7 +915,7 @@ img {
   align-items: center;
   flex-direction: column;
   gap: 40px;
-  height: 65vh;
+  height: 70vh;
 }
 
 form {

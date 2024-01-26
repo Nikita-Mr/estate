@@ -30,8 +30,7 @@ export default {
     <li class="item-event">
       <RouterLink to="/lift">
       <div class="event">
-        График работы подъемников, <br>
-        оперативная информация
+        Оперативная информация о работе подъёмников
       </div>
       </RouterLink>
     </li>
@@ -45,14 +44,14 @@ export default {
     <li class="item-event">
       <RouterLink to="/skipass">
       <div class="event">
-        Стоимость проезда <br> на подъемниках, СКИ-пасы
+        График работы и стоимость подъёмников
       </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/map">
       <div class="event">
-        Карта курорта
+        Карта
       </div>
       </RouterLink>
     </li>

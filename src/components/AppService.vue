@@ -5,17 +5,13 @@ import axios from 'axios';
 
 export default {
   props: {
-    img: String,
+    img: Array,
     name: String,
     phone: String,
     description: String,
     i: Number
   },
   components: {},
-  data() {
-    return {
-    }
-  },
   methods: {
   open(){
     this.$router.push({
@@ -85,13 +81,15 @@ h5 {
 .card {
   color: var(--mainColor);
   background-color: transparent;
-  border: 1px solid var(--mainColor);
   cursor: pointer;
   min-height: 290px;
+  box-shadow: 0 0 10px 0 black;
+  border-radius: 15px;
 
+  transition: all 500ms;
 }
 .card:hover {
   box-shadow: 0 0 10px 0 var(--mainColor);
-  transform: scale(105%);
+  transform: scale(1.05);
 }
 </style>

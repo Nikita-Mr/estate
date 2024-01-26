@@ -5,49 +5,56 @@ export default {
   components: {},
   data() {
     return {
-      email: ``,
-      password: ``,
       token: ``,
-      error: false,
-      status: Number,
+      error: ``,
+      status: '',
       id: "",
-      idc: "",
+      cardNumber: "",
+      amount: "",
     };
+  },
+  computed: {
+    formatCardNumber() {
+      return this.cardNumber ? this.cardNumber.match(/.{1,4}/g).join(" ") : "";
+    },
   },
   methods: {
     async submit() {
-      let error = await axios.post(`/login`, {
-        email: this.email,
-        password: this.password,
-      });
-      this.error = error.data.message;
-      this.status = error.data.status;
-      this.token = error.data.token;
-      this.id = error.data.id;
-      if (this.token) {
-        document.cookie = `token=${this.token}; max-age=0`;
-        document.cookie = `id=${this.id}; max-age=0`;
-        document.cookie = `token=${this.token}; max-age=1123200`;
-        document.cookie = `id=${this.id}; max-age=1123200`;
+      let response_balance = await axios.post(`/request_payments`, {
+        userID: this.id
+      })
+      this.balance = response_balance.data.balance
+      if (this.balance >= this.amount) {
+        let response = await axios.post(`/request_payment`, {
+          card_number: this.cardNumber,
+          amount: this.amount,
+          userID: this.id,
+        });
+        this.status = response.data.status
+        this.error = response.data.message  
+        if (this.status == '200') {
+          setTimeout(() => {
+            this.status = ''
+            this.status = ''
+            this.$router.push({ name: 'profile' })
+          }, 30000)
+        }
+      } else {
+        this.status = 400
+        this.error = 'Сумма вывода превышает ваш баланс!'
       }
-      setTimeout(() => {
-        if (this.status == 200) {
-          this.$refs.form.reset();
-          location.reload();
-        }
-      }, 1000);
-      setTimeout(() => {
-        (this.error = ``), (this.status = ``);
-        if (error) {
-          (this.email = ``), (this.password = ``);
-        }
-      }, 3000000);
     },
     start() {
-      this.idc = this.getCookieValue("id");
-      if (this.idc) {
-        this.$router.push({ name: "home" });
+      this.id = this.getCookieValue("id");
+    },
+
+    updateValue(e) {
+      let input = e.target.value.replace(/ /g, "");
+      if (input.length > 16) {
+        input = input.slice(0, 16);
       }
+      this.cardNumber = input;
+      e.target.value = this.formatCardNumber;
     },
 
     getCookieValue(name) {
@@ -72,44 +79,38 @@ export default {
   <div class="wrapper">
     <div class="form-box">
       <form ref="form" @submit.prevent="submit">
-        <h2 class="title">Вход</h2>
+        <h2 class="title">Вывод средств</h2>
         <div class="input-box">
           <input
-            v-model="email"
-            name="email"
-            type="email"
-            class="email"
+            :value="formatCardNumber"
+            @input="updateValue($event)"
+            name="card_number"
+            type="text"
+            class="card_number"
             required
           />
-          <label for="">Почта</label>
+          <label for="">Номер карты</label>
         </div>
         <div class="input-box">
           <input
-            v-model="password"
-            name="password"
-            type="password"
-            class="password"
+            v-model="amount"
+            name="amount"
+            type="text"
+            class="amount"
             required
           />
-          <label for="">Пароль</label>
-        </div>
-        <div class="group mb-3">
-          <RouterLink to="/register" class="node"
-            >Перейти к регистрации</RouterLink
-          >
+          <label for="">Сумма</label>
         </div>
         <div class="sign-up">
-          <button type="submit" class="sign-up-btn">Войти</button>
+          <button type="submit" class="sign-up-btn">Вывести</button>
         </div>
       </form>
     </div>
-    <transition name="ant">
-      <div v-if="error" class="notification-container">
-        <div :class="{ error: status == 400, success: status == 200 }">
-          <span>{{ error }}</span>
-        </div>
+    <div v-if="error" class="notification-container">
+      <div :class="{ error: status == 400, success: status == 200 }">
+        <span>{{ error }}</span>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 
@@ -117,37 +118,23 @@ export default {
 * {
   font-weight: 550;
 }
-
-.ant-enter-active {
-  transition: all 0.5s ease;
-}
-.ant-leave-active {
-  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.ant-enter,
-.ant-leave-to {
-  transform: translateX(100px);
-  opacity: 0;
-}
-
-.notification-container {
+ .notification-container {
   position: fixed;
   bottom: 3%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
+ }
+ 
 .success {
-  background-color: #87e752;
+  background-color: #87E752;
   border-radius: 15px;
   padding: 7px 12px;
   color: #fff;
 }
 .error {
-  background-color: #ed1c24;
+  background-color: #ED1C24;
   border-radius: 15px;
   padding: 7px 12px;
   color: #fff;
@@ -242,16 +229,9 @@ input:valid ~ label {
 }
 
 @media (max-height: 780px) {
-  .form-box {
-    flex-basis: 90%;
-  }
 
   .input-box input {
     height: 30px;
-  }
-
-  .form-box {
-    margin: 15px 0;
   }
 
   input:focus ~ label,

@@ -1,13 +1,14 @@
 <script>
-import { RouterLink, RouterView } from "vue-router";
-import axios from "axios";
-import { defineComponent } from "vue";
-import dayjs from "dayjs";
-import "dayjs/locale/ru";
-import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
-import AppCard from "/src/components/AppCard.vue";
+import { RouterLink, RouterView } from 'vue-router';
+import axios from 'axios';
+import { defineComponent } from 'vue';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
+import AppCard from '/src/components/AppCard.vue';
+import * as XLSX from 'xlsx/xlsx.mjs';
 
-import "vue3-carousel/dist/carousel.css";
+import 'vue3-carousel/dist/carousel.css';
 
 export default defineComponent({
   components: {
@@ -21,11 +22,11 @@ export default defineComponent({
     return {
       INFO: {},
       NUMBER: {},
-      user: "",
+      user: '',
       price: ``,
       admin: ``,
       target: 0,
-      phone: "",
+      phone: '',
       fromdate: Date,
       todate: Date,
       adults: ``,
@@ -37,12 +38,15 @@ export default defineComponent({
       status: ``,
       numberid: ``,
       buttonTarg: 0,
-      success: "",
-      email: "",
+      success: '',
+      email: '',
       view: false,
       adress: ``,
       point: ``,
       switch: 1,
+      workbook: '',
+      createn: 0,
+      edit: false
     };
   },
   mounted() {
@@ -55,9 +59,9 @@ export default defineComponent({
     async renderMap() {
       let response = await axios.get(`https://geocode-maps.yandex.ru/1.x/`, {
         params: {
-          apikey: "62143967-f105-468b-b0e5-f820e63f8c40",
+          apikey: '62143967-f105-468b-b0e5-f820e63f8c40',
           geocode: `Шерегеш+${this.adress}`,
-          format: "json",
+          format: 'json',
         },
       });
       let address = `Шерегеш ${this.adress}`;
@@ -72,12 +76,12 @@ export default defineComponent({
             .then((res) => {
               const firstGeoObject = res.geoObjects.get(0);
               const coordinates = firstGeoObject.geometry.getCoordinates();
-              console.log("Координаты:", coordinates);
+              console.log('Координаты:', coordinates);
 
-              myMap = new ymaps.Map("customMap", {
+              myMap = new ymaps.Map('customMap', {
                 center: coordinates, // устанавливаем центр карты
                 zoom: 15, // масштаб карты
-                behaviors: ["default", "scrollZoom"], // включаем скроллинг колесом
+                behaviors: ['default', 'scrollZoom'], // включаем скроллинг колесом
                 controls: [], // убираем все элементы управления
               });
 
@@ -85,7 +89,7 @@ export default defineComponent({
                 coordinates,
                 {},
                 {
-                  preset: "islands#blueDotIcon", // выбираем иконку для точки
+                  preset: 'islands#blueDotIcon', // выбираем иконку для точки
                 }
               );
 
@@ -99,8 +103,9 @@ export default defineComponent({
       });
     },
     async loadCard() {
+      this.edit = this.$route.query.edit
       this.view = this.$route.query.view;
-      if (this.view == "true") {
+      if (this.view == 'true') {
         this.view = true;
       } else {
         this.view = false;
@@ -119,24 +124,25 @@ export default defineComponent({
     getDate(data) {
       let date = new Date(data);
       let day = dayjs(date);
-      dayjs.locale("ru");
+      dayjs.locale('ru');
       return day.format(`dd, D MMM`);
     },
     async deleteCard() {
       await axios
-        .post("/deleteCard", {
+        .post('/deleteCard', {
           id: this.INFO.id,
           name: this.$route.query.name,
         })
         .then((e) => {
-          if (e.data.status == "200") {
+          if (e.data.status == '200') {
             this.$router.go(-1);
           }
         });
     },
-    async edit() {
+    async goEdit() {
+      this.target = 1
       this.$router.push({
-        path: "/create-card",
+        path: '/create-card',
         query: { id: this.INFO.id, name: this.$route.query.name, edit: true },
       });
     },
@@ -213,18 +219,18 @@ export default defineComponent({
 
     async check_admin() {
       let response = await axios.post(`/check_admin`, {
-        id: this.getCookieValue("id"),
+        id: this.getCookieValue('id'),
       });
       this.admin = response.data.admin;
     },
 
     getCookieValue(name) {
-      const cookies = document.cookie.split("; ");
+      const cookies = document.cookie.split('; ');
       let res;
       for (let i = 0; i < cookies.length; i++) {
         let cookie = cookies[i];
         if (cookie.slice(0, 2) == name) {
-          res = cookie.replace(name + "=", "");
+          res = cookie.replace(name + '=', '');
         }
       }
       return res;
@@ -233,6 +239,71 @@ export default defineComponent({
     go_up() {
       this.target = 1;
       this.$refs.modal.scrollTop = 0;
+    },
+    async handleDropAsync(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var f = e.target.files[0];
+      /* f is a File */
+
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var data = e.target.result;
+        /* reader.readAsArrayBuffer(file) -> data will be an ArrayBuffer */
+        var workbook = XLSX.read(data);
+        console.log(workbook);
+        const firstSheetName = workbook.SheetNames[0];
+
+        // Получение данных первого листа в формате JSON
+        const worksheet = workbook.Sheets[firstSheetName];
+        this.workbook = XLSX.utils.sheet_to_json(worksheet);
+        console.log(this.workbook);
+        // Вывод данных построчно
+        this.workbook.forEach(async (row, i) => {
+          await this.create(i); // СЮЮЮЮЮЮЮЮЮЮддддддддааааааааааа почему то не работает функция
+        });
+      };
+      reader.readAsArrayBuffer(f);
+    },
+    async create(i) {
+      await axios.post('/create-card', {
+        title: this.title,
+        price: this.price,
+        p: this.description,
+        phone: this.phone,
+        adress: this.adress,
+        email: this.email,
+        chatID: this.chatID,
+        subcategory: this.$route.query.name,
+        category: this.$route.query.category,
+        userID: this.getCookieValue('id'),
+
+        floor: this.workbook[i]['Этажей'],
+        lease_term: this.workbook[i]['Минимальный срок аренды, суток'],
+        total_area: this.workbook[i]['общая площадь, кв м'],
+        sleeping_rooms: this.workbook[i]['спальных комнат'],
+        sleeping_places: this.workbook[i]['спальных мест основных'],
+        children_bed: this.workbook[i]['Детская кровать'],
+        double_places: this.workbook[i]['двуспальные места'],
+        single_spaces: this.workbook[i]['односпальные места'],
+        additional_sleeping_places:
+          this.workbook[i]['дополнительные спальные места'],
+        bathrooms: this.workbook[i]['санузлов'],
+        bathrooms_showers: this.workbook[i]['ванных/душевых'],
+        drying_for_inventory: this.workbook[i]['сушилка для инвентаря'],
+        wifi: this.workbook[i]['Wi-Fi'],
+        warm_floor: this.workbook[i]['Тёплый пол'],
+        dishwasher: this.workbook[i]['посудомойка'],
+        parking_cars: this.workbook[i]['парковка, машин'],
+        mall: this.workbook[i]['мангал'],
+        kazan: this.workbook[i]['казан'],
+        bath_territory: this.workbook[i]['баня на территории'],
+        pool: this.workbook[i]['Бассейн Летом/зимой'],
+        transfer_city: this.workbook[i]['Трансфер с городов'],
+        transfer_mountain: this.workbook[i]['Трансфер на гору'],
+        live_whith_animals: this.workbook[i]['Можно проживать с животными'],
+        additionally: this.workbook[i]['дополнительно'],
+      });
     },
   },
 });
@@ -332,32 +403,58 @@ export default defineComponent({
             class="map"
             :class="{ none: this.switch == 1 }"
           ></div>
-
-          <form
-            v-if="admin && $route.query.name == `habitation`"
-            @submit.prevent="createNumber"
+          <button class="publish" @click="createn = 1">
+            Опубликовать номер
+          </button>
+          <input
+            type="file"
+            ref="files"
+            id="file"
+            v-on:change="handleDropAsync"
+          />
+          <label class="publish excel" for="file">
+            Опубликовать номера в формате Excel
+          </label>
+          <div
+            class="modalDelete"
+            ref="modal"
+            :class="{ 'd-none': createn == 0 }"
           >
-            <input type="text" v-model="name" placeholder="Название номера" />
-            <input type="number" v-model="price" placeholder="Цена" />
-            <input
-              type="number"
-              v-model="adults"
-              placeholder="Кол-во взрослых"
-            />
-            <input
-              type="number"
-              v-model="children"
-              placeholder="Кол-во детей"
-            />
-            <input type="text" v-model="description" placeholder="Описание" />
-            <input
-              type="number"
-              v-model="value"
-              placeholder="Кол-во номеров в гостинице"
-            />
-            <button v-if="buttonTarg == 0">Создать</button>
-            <span v-if="buttonTarg == 1">Созданно</span>
-          </form>
+            <form
+              v-if="admin && $route.query.name == `habitation`"
+              @submit.prevent="createNumber"
+            >
+              <input type="text" v-model="name" placeholder="Название номера" />
+              <input type="number" v-model="price" placeholder="Цена" />
+              <input
+                type="number"
+                v-model="adults"
+                placeholder="Кол-во взрослых"
+              />
+              <input
+                type="number"
+                v-model="children"
+                placeholder="Кол-во детей"
+              />
+              <input type="text" v-model="description" placeholder="Описание" />
+              <input
+                type="number"
+                v-model="value"
+                placeholder="Кол-во номеров в гостинице"
+              />
+              <button v-if="buttonTarg == 0">Создать</button>
+              <span v-if="buttonTarg == 1">Созданно</span>
+              <button
+                class="btn btn-light"
+                type="button"
+                @click="createn = 0"
+              >
+                Отмена
+              </button>
+              
+            </form>
+          </div>
+
           <app-card
             v-if="!admin && this.switch == 1"
             v-for="(item, index) in NUMBER"
@@ -379,7 +476,7 @@ export default defineComponent({
       </div>
       <div class="reviews"></div>
       <div class="button-wrapper" v-if="!view">
-        <!-- <button @click="target = 1" v-if="!admin">Забронировать</button> -->
+        <button @click="goEdit" class="btn btn-light" v-if="edit">Редактировать</button>
         <button @click="target = 1" class="btn btn-danger" v-if="admin">
           Удалить
         </button>
@@ -389,6 +486,25 @@ export default defineComponent({
 </template>
 
 <style scoped>
+input[type='file'] {
+  display: none !important;
+}
+.publish {
+  border: 1px solid #fff;
+  border-radius: 10px;
+  width: auto !important;
+  padding: 5px 10px;
+  background: #fff;
+  transition: all 400ms;
+}
+
+.publish:hover {
+  transform: scale(1.06);
+}
+.excel {
+  color: #000;
+  cursor: pointer;
+}
 .none {
   display: none;
 }
@@ -396,6 +512,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: 10px;
+  z-index: 100;
 }
 .map {
   width: 90%;

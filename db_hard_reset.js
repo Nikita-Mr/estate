@@ -34,7 +34,8 @@ const THE_FUCKING_CURE = async () =>
         email: 'example@example.com',
         phone: '+79042065393',
         password: 'admin123',
-        role: "ADMIN"
+        role: "ADMIN",
+        balance: 1000
     }, );
     
     const otherUser = await UserModel.create({
@@ -43,7 +44,8 @@ const THE_FUCKING_CURE = async () =>
         email: 'name@mail.ru',
         phone: 'phone',
         password: 'password',
-        role: "ADMIN"
+        role: "ADMIN",
+        balance: 0
     }, );
     console.log('created user...');
 

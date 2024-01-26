@@ -27,6 +27,8 @@ export default {
         book_a_transfer: 'Бронирование трансфера',
         register: 'Регистрация',
         login: 'Вход',
+        profile: 'Профиль',
+        myads: 'Мои объявления',
         info: 'Информация',
         'transfer-taksi': 'Трансфер такси',
         habitation: 'Проживание',
@@ -56,10 +58,10 @@ export default {
         appcameras: 'Камеры',
         appmap: 'Карта',
         appemergency: 'Экстренные службы',
-        skipass: 'СКИ-пасы',
+        skipass: 'График работы и стоимость подъёмников',
         skipasscreate: 'Создание СКИ-пасов',
         adminreq: 'ADMIN Запросы',
-        adminsections: 'ADMIN панель',
+        adminsections: 'Запросы',
         adminevents: 'ADMIN развлечения',
         adminforchildren: 'ADMIN для детей',
         adminhabitation: 'ADMIN проживание',
@@ -67,6 +69,9 @@ export default {
         adminrental: 'ADMIN прокаты',
         admintransfertaksi: 'ADMIN трансфер/такси',
         adminads: 'ADMIN объявления',
+        phonepolicy: 'Политика',
+        reqpayments: 'Запросы на вывод средств',
+        withdrawal: 'Форма вывода'
       },
       id: '',
       admin: false,
@@ -91,7 +96,6 @@ export default {
       this.admin = response.data.admin;
     },
     namepage(el) {
-      console.log(this.name[el]);
       return this.name[el];
     },
 
@@ -151,7 +155,6 @@ export default {
 </template>
 
 <style>
-
 .arrow {
   width: 30px;
 }
@@ -176,6 +179,7 @@ export default {
 .site-page {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 20px;
   color: var(--mainColor);
   font-size: clamp(18px, 5vw, 30px);
@@ -227,6 +231,31 @@ input:-webkit-autofill:active {
   .wrapperBottom {
     width: 90%;
     right: 4%;
+  }
+}
+
+@media (max-width: 680px) {
+  .arrow {
+    width: 21px;
+  }
+
+  .namepage {
+    width: 180px;
+  }
+}
+
+@media (max-height: 720px) {
+  .wrapperBottom {
+    bottom: 0%;
+  }
+
+  .list-item-name {
+    font-size: 11px;
+    line-height: 1.05;
+  }
+
+  .site-page {
+    margin: 0;
   }
 }
 

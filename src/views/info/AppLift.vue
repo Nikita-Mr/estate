@@ -163,8 +163,7 @@ a:hover {
 .wrapperLifts {
   margin-top: 10px;
   width: 90%;
-  max-height: 600px;
-  min-height: 600px;
+  height: 70vh;
   overflow-y: scroll;
 }
 

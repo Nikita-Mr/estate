@@ -39,6 +39,19 @@ export default defineComponent({
     handleFilesUpload() {
       this.files = this.$refs.files.files;
     },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
+    },
+
     async submitFiles() {
       let formData = new FormData();
       for (var i = 0; i < this.files.length; i++) {
@@ -54,6 +67,7 @@ export default defineComponent({
           adress: this.adress,
           email: this.email,
           chatID: this.chatID,
+          userID: this.getCookieValue("id"),
           subcategory: this.$route.query.name,
           category: this.$route.query.category,
         })
@@ -276,23 +290,37 @@ export default defineComponent({
         <button v-if="!edit" @click="submitFiles">Создать</button>
         <button v-if="edit" @click="editCard">Сохранить</button>
       </div>
-      <div :class="{ success: status == 200, error: status != 200 }">
-        {{ error }}
+      <div v-if="error" class="notification-container">
+        <div :class="{ error: status == 400, success: status == 200 }">
+          <span>{{ error }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.error {
-  position: absolute;
-  bottom: -100px;
-  color: crimson;
+.notification-container {
+  position: fixed;
+  bottom: 3%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 .success {
-  position: absolute;
-  bottom: -100px;
-  color: #62a87c;
+  background-color: #87e752;
+  border-radius: 15px;
+  padding: 7px 12px;
+  color: #fff;
+}
+.error {
+  background-color: #ed1c24;
+  border-radius: 15px;
+  padding: 7px 12px;
+  color: #fff;
+  font-weight: 550;
 }
 
 .telegramBot {
@@ -348,6 +376,7 @@ export default defineComponent({
   position: relative;
 }
 .cross {
+  color: red;
   z-index: 20;
   width: 20px;
   background: transparent;
@@ -359,7 +388,14 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+
+  transition: all 500ms;
 }
+
+.cross:hover {
+  transform: scale(1.4);
+}
+
 .carousel {
   height: 100%;
 }

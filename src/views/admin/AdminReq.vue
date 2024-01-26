@@ -113,12 +113,10 @@ export default {
           </div>
         </div>
       </div>
-      <div
-        class="create-news"
-        :class="{ success: status == 200, error: !status }"
-        v-if="success"
-      >
-        {{ message }}
+      <div v-if="message" class="notification-container">
+        <div :class="{ error: status == 400, success: status == 200 }">
+          <span>{{ message }}</span>
+        </div>
       </div>
 </template>
 
@@ -131,37 +129,45 @@ a{
   top: 5%;
   right: 3%;
   padding: 2px;
-  color: red;
-  border: 1px solid red;
+  background-color: #ed1c24;
   border-radius: 100%;
   height: 25px;
   width: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
+  font-weight: 550;
 }
 
+.notification-container {
+  position: fixed;
+  bottom: 3%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ }
+ 
 .success {
-  position: absolute;
-  bottom: -100px;
-  width: 300px;
-  text-align: center;
-  padding: 10px;
-  color: #a0dd75;
+  background-color: #87E752;
+  border-radius: 15px;
+  padding: 7px 12px;
+  color: #fff;
 }
 .error {
-  position: absolute;
-  bottom: -100px;
-  width: 300px;
-  text-align: center;
-  padding: 10px;
-  color: #dd7575;
+  background-color: #ED1C24;
+  border-radius: 15px;
+  padding: 7px 12px;
+  color: #fff;
+  font-weight: 550;
 }
 .wrapper {
   width: 90%;
   height: 70vh;
   flex-basis: 100%;
   overflow-y: scroll;
+  padding: 11px;
 }
 
 .btn {

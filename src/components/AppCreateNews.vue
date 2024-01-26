@@ -15,7 +15,7 @@ export default {
     async createNews() {
       let response = await axios.post(`/create_news`, {
         title: this.title,
-        content: this.content
+        content: this.content,
       })
       this.success = response.data.success
       this.message = response.data.message
@@ -52,7 +52,7 @@ export default {
   border: 1px solid #d5d5d5;
   box-shadow: 0px 0 10px 0 #ffffff71;
   border-radius: 15px;
-  width: 30%;
+  width: 50%;
 }
 
 .titleInput::placeholder {
@@ -109,5 +109,12 @@ textarea {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  height: 65vh;
+}
+
+@media (max-width: 768px) {
+  .contentTextarea {
+    width: 80%;
+  }
 }
 </style>

@@ -29,7 +29,7 @@ export default {
     },
   },
   mounted() {
-    this.notifications()
+    this.notifications();
   },
 };
 </script>
@@ -92,7 +92,7 @@ export default {
 </template>
 
 <style scoped>
-a{
+a {
   position: relative;
 }
 .alert {
@@ -100,14 +100,15 @@ a{
   top: 5%;
   right: 3%;
   padding: 2px;
-  color: red;
-  border: 1px solid red;
+  background-color: #ed1c24;
   border-radius: 100%;
   height: 25px;
   width: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
+  font-weight: 550;
 }
 .list-events {
   width: 100%;

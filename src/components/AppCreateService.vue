@@ -46,6 +46,7 @@ export default defineComponent({
           name: this.name,
           phone: this.phone,
           description: this.description,
+          userID: this.getCookieValue('id')
         })
         .then((e) => {
           console.log(`card creation return: ${e.data.text}`);
@@ -73,20 +74,20 @@ export default defineComponent({
             .catch((r) => {
               console.log(`got code 400 on upload: ${e.data.text}`);
             });
-          this.error = e.data.message;
+          this.error = e.data.error;
           this.status = e.data.status;
           this.success = e.data.success;
           if (this.success) {
             setTimeout(() => {
               this.error = "";
               this.status = "";
-              this.$router.go(-1);
-            }, 2000);
+              // this.$router.go(-1);
+            }, 300000);
           }
         });
-      if (this.status == "200") {
-        this.$router.push({ name: this.$route.query.name });
-      }
+      // if (this.status == "200") {
+      //   this.$router.push({ name: this.$route.query.name });
+      // }
     },
     url(file) {
       return URL.createObjectURL(file);
@@ -190,8 +191,7 @@ export default defineComponent({
           v-on:change="handleFilesUpload"
         />
         <label v-if="files == `` && img == ``" for="file">
-          <div class="line"></div>
-          <div class="line"></div>
+          <div class="line"><img src="../assets/img/img_add.png" alt="" /></div>
         </label>
 
         <Carousel v-if="files != ``" :autoplay="4000" :wrap-around="true">
@@ -253,32 +253,41 @@ export default defineComponent({
         <button v-if="edit" @click="editCard">Сохранить</button>
       </div>
     </div>
-    <div
-      class="create-news"
-      :class="{ success: status == 200, error: !status }"
-      v-if="status"
-    >
-      {{ error }}
+    <div v-if="error" class="notification-container">
+      <div :class="{ error: status == 400, success: status == 200 }">
+        <span>{{ error }}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+
+* {
+  color: #fff;
+}
+
+.notification-container {
+  position: fixed;
+  bottom: 3%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ }
+ 
 .success {
-  position: absolute;
-  bottom: -100px;
-  width: 300px;
-  text-align: center;
-  padding: 10px;
-  color: #a0dd75;
+  background-color: #87E752;
+  border-radius: 15px;
+  padding: 7px 12px;
+  color: #fff;
 }
 .error {
-  position: absolute;
-  bottom: -100px;
-  width: 300px;
-  text-align: center;
-  padding: 10px;
-  color: #dd7575;
+  background-color: #ED1C24;
+  border-radius: 15px;
+  padding: 7px 12px;
+  color: #fff;
+  font-weight: 550;
 }
 .button-wrapper button {
   padding: 5px 15px;
@@ -294,11 +303,6 @@ export default defineComponent({
   scale: 1.03;
 }
 
-@media (max-width: 426px) {
-  label {
-    height: 200px !important;
-  }
-}
 .imgCross {
   position: relative;
 }
@@ -363,10 +367,21 @@ input {
   background: transparent;
   border: 1px solid var(--mainColor);
   border-radius: 10px;
-  padding: 0 35px 0 5px;
+  padding: 0 5px 0 5px;
   width: 100%;
   height: 50px;
+
+  transition: all 400ms;
 }
+
+input::placeholder {
+  color: #fff;
+}
+
+input:hover {
+  color: black;
+}
+
 input:nth-child(2) {
   width: 95%;
   height: 40px;
@@ -396,26 +411,13 @@ label {
   border: 1px solid var(--mainColor);
   border-radius: 10px;
 }
-.line {
-  position: absolute;
-  transform: rotate(0deg) !important;
-  width: 20% !important;
-}
-.line:last-child {
-  transform: rotate(90deg) !important;
-  display: block;
+.line img {
+  width: 50px !important;
+  height: 50px !important;
 }
 
 .carousel {
   height: 100%;
-}
-@media (max-width: 426px) {
-  .info {
-    width: 100% !important;
-  }
-  .img {
-    width: 100% !important;
-  }
 }
 
 .img {
@@ -495,5 +497,29 @@ button {
 
 button:active {
   box-shadow: none;
+}
+
+@media (max-width: 426px) {
+  .info {
+    width: 100% !important;
+  }
+  .img {
+    width: 100% !important;
+  }
+
+  label {
+    height: 200px !important;
+  }
+
+  button {
+    width: 70%;
+    padding: 5px;
+  }
+}
+
+@media (max-width: 300px) {
+  button {
+    width: 85%;
+  }
 }
 </style>

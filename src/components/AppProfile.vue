@@ -13,6 +13,7 @@ export default {
       token: "",
       id: "",
       user: "",
+      active: 1
     };
   },
   methods: {
@@ -58,12 +59,17 @@ export default {
 <template>
   <div class="wrapper-profile">
     <div class="title">
-      <span>Профиль</span>
+      <router-link class="profile" :class="{active: this.active == 1}" @click="active = 1" to="/profile"><span>Профиль</span></router-link>
+      <router-link class="myads" :class="{active: this.active == 2}" @click="active = 2" to="/myads"><span>Мои объявления</span></router-link>
     </div>
     <div class="wrapper-group">
       <div class="group">
-        <span>Имя Фамилия: </span>
-        <span>{{ user.username + " " + user.surname }}</span>
+        <span>Имя: </span>
+        <span>{{ user.username }}</span>
+      </div>
+      <div class="group">
+        <span>Фамилия: </span>
+        <span>{{ user.surname }}</span>
       </div>
       <div class="group">
         <span>Номер: </span>
@@ -72,6 +78,12 @@ export default {
       <div class="group">
         <span>Email: </span>
         <span>{{ user.email }}</span>
+      </div>  
+      <div class="group">
+        <span>Баланс: </span>
+        <span>{{ user.balance }} рублей
+          <router-link to="/withdrawal">Вывести</router-link>
+        </span>
       </div>
     </div>
     <div class="exit">
@@ -94,6 +106,24 @@ export default {
 * {
   color: #fff;
   font-size: 1.1rem;
+}
+
+.myads {
+  border-left: 1px solid #fff;
+}
+
+.active {
+  box-shadow: 0 0 10px 0 var(--mainColor);
+  border-radius: 2px;
+}
+
+.profile, .myads {
+  padding: 7px;
+  transition: all 400ms;
+}
+
+.profile:hover, .myads:hover {
+  box-shadow: 0 0 10px 0 var(--mainColor);
 }
 
 span {
@@ -138,8 +168,21 @@ input {
   width: 100%;
 }
 
+.group a {
+  color: #06D6A0;
+  text-decoration: underline;
+
+  transition: all 500ms;
+}
+
+.group a:hover, .group a:focus {
+  color: #FA824C;
+  text-decoration: none;
+}
+
 .group span {
   right: 0;
+  text-align: center;
 }
 
 .wrapper-group {
@@ -153,13 +196,13 @@ input {
 .title {
   display: flex;
   justify-content: center;
-  align-items: center;
   padding: 10px;
   width: 100%;
   border-bottom: 1px solid #fff;
 }
 
 .title span {
+  text-align: center;
   font-size: 2rem !important;
 }
 
@@ -203,8 +246,21 @@ input {
     font-size: 1rem;
   }
 
-  .group {
-    flex-direction: column;
+  .wrapper-profile {
+    width: 97%;
+    padding: 0;
+  }
+}
+
+@media (max-width: 1000px) {
+  .title span {
+    font-size: 1.6rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .title span {
+    font-size: 1.2rem !important;
   }
 }
 </style>

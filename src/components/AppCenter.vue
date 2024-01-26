@@ -1,11 +1,22 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView } from "vue-router";
+
+export default {
+  components: {},
+  data() {},
+  methods: {
+    click_go() {
+      this.$router.go(-1);
+    },
+  },
+  mounted() {},
+};
 </script>
 
 <template>
   <div class="wrapper-main">
     <div class="container">
-      <button class="webBack" @click="$router.go(-1)">
+      <button class="webBack" @click="click_go">
         <img src="/src/assets/img/arrow-down-sign-to-navigate.png" alt="" />
       </button>
       <RouterView />
@@ -20,13 +31,14 @@ import { RouterLink, RouterView } from 'vue-router';
     position: absolute !important;
     overflow-y: scroll !important;
     display: block !important;
-    height: 400px !important;
+    height: 70vh !important;
   }
 }
 .webBack {
   background: transparent;
   border: none;
   position: absolute;
+  z-index: 14;
   left: 0;
 }
 .webBack:hover {
@@ -46,11 +58,11 @@ import { RouterLink, RouterView } from 'vue-router';
   padding: 0;
   color: var(--mainColor);
 }
-.accordion-button[aria-expanded='true'] {
+.accordion-button[aria-expanded="true"] {
   background: transparent;
   color: var(--mainColor);
 }
-.accordion-button[aria-expanded='true'] .card {
+.accordion-button[aria-expanded="true"] .card {
   height: auto !important;
 }
 
@@ -59,10 +71,10 @@ import { RouterLink, RouterView } from 'vue-router';
   border: none;
 }
 .accordion-button:not(.collapsed)::after {
-  background-image: url('../assets/img/arrow-down-sign-to-navigate.png');
+  background-image: url("../assets/img/arrow-down-sign-to-navigate.png");
 }
 .accordion-button::after {
-  background-image: url('../assets/img/arrow-down-sign-to-navigate.png');
+  background-image: url("../assets/img/arrow-down-sign-to-navigate.png");
 }
 img {
   width: auto;
@@ -116,7 +128,7 @@ a {
 
 @media (max-width: 507px) {
   .item-event {
-    cursor: '';
+    cursor: "";
     margin-bottom: 10px;
     background-color: transparent;
     flex-basis: 47%;
@@ -127,7 +139,7 @@ a {
 }
 .container {
   min-height: 70%;
-  max-height: 600px;
+  /* max-height: 600px; */
   /* background: rgba(255, 255, 255, 0.08); */
   border-radius: 16px;
   /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); */
@@ -179,8 +191,7 @@ a {
 
 @media (max-height: 780px) {
   .container {
-    min-height: 70vh;
-    max-height: 500px;
+    height: 70vh;
     width: 85%;
   }
 
@@ -191,7 +202,7 @@ a {
 
 @media (max-height: 710px) {
   .container {
-    min-height: 55vh;
+    height: 70vh;
   }
 }
 

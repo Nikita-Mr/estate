@@ -12,6 +12,7 @@ export default {
       forChildren: 0,
       instructorTours: 0,
       events: 0,
+      payments: 0,
     };
   },
   methods: {
@@ -26,16 +27,25 @@ export default {
       this.forChildren = response.data.forChildren;
       this.instructorTours = response.data.instructorTours;
       this.events = response.data.events;
+      this.payments = response.data.payments;
     },
   },
   mounted() {
-    this.notifications()
+    this.notifications();
   },
 };
 </script>
 
 <template>
   <ul class="list-events">
+    <div class="wrapper-for-payments">
+      <router-link to="/request_payments"
+        >Выплаты
+        <div v-if="payments" class="alert">
+          {{ payments }}
+        </div>
+      </router-link>
+    </div>
     <li class="item-event">
       <RouterLink to="/admin/transfer-taksi">
         <div class="event">Трансфер/Такси</div>
@@ -88,8 +98,7 @@ export default {
 </template>
 
 <style scoped>
-
-a{
+a {
   position: relative;
 }
 .alert {
@@ -97,14 +106,15 @@ a{
   top: 5%;
   right: 3%;
   padding: 2px;
-  color: red;
-  border: 1px solid red;
+  background-color: #ed1c24;
   border-radius: 100%;
   height: 25px;
   width: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
+  font-weight: 550;
 }
 .list-events {
   width: 100%;
@@ -116,6 +126,26 @@ a{
   flex-wrap: wrap;
   margin: 0;
   padding: 0;
+}
+
+.wrapper-for-payments {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: fit-content;
+  margin-bottom: 20px;
+}
+
+.wrapper-for-payments a {
+  border: 1px solid #d5d5d5;
+  min-width: 140px;
+  width: 15%;
+  padding: 7px;
+  border-radius: 8px;
+  box-shadow: 0px 0 10px 0 #ffffff71;
+
+  transition: all 400ms;
 }
 
 .item-event {
@@ -145,7 +175,8 @@ a{
   transition: all 400ms;
 }
 
-.event:hover {
+.event:hover,
+.wrapper-for-payments a:hover {
   border: 1px solid black;
   box-shadow: 0px 0 10px 0 black;
 }

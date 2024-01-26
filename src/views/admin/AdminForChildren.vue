@@ -6,26 +6,26 @@ export default {
   components: {},
   data() {
     return {
-        childrenRooms: 0,
-        nanny: 0,
-        otherEntertainment: 0,
-        instructor: 0
-    }
+      childrenRooms: 0,
+      nanny: 0,
+      otherEntertainment: 0,
+      instructor: 0,
+    };
   },
   methods: {
     async notifications() {
-        let response = await axios.post(`/notifications`, {
-            nameModel: 'forChildren'
-        })
+      let response = await axios.post(`/notifications`, {
+        nameModel: "forChildren",
+      });
 
-        this.childrenRooms = response.data.childrenRooms
-        this.nanny = response.data.nanny
-        this.otherEntertainment = response.data.otherEntertainment
-        this.instructor = response.data.instructor
-    }
+      this.childrenRooms = response.data.childrenRooms;
+      this.nanny = response.data.nanny;
+      this.otherEntertainment = response.data.otherEntertainment;
+      this.instructor = response.data.instructor;
+    },
   },
   mounted() {
-    this.notifications()
+    this.notifications();
   },
 };
 </script>
@@ -74,23 +74,24 @@ export default {
 </template>
 
 <style scoped>
-a{
-    position: relative;
-  }
-  .alert {
-    position: absolute;
-    top: 5%;
-    right: 3%;
-    padding: 2px;
-    color: red;
-    border: 1px solid red;
-    border-radius: 100%;
-    height: 25px;
-    width: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+a {
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  padding: 2px;
+  background-color: #ed1c24;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 550;
+}
 .list-events {
   width: 100%;
   height: 100%;

@@ -91,4 +91,19 @@ a, a:hover {
     }
   }
 }
+
+@media (max-height: 720px) {
+  .icon {
+    height: 40px;
+  }
+
+  .list-item:hover, .list-item:active, .list-item:focus {
+    color: var(--highlight);
+    transform: translateY(-10px);
+    .list-item-name {
+      transform: translateY(37px);
+      opacity: 1;
+    }
+  }
+}
 </style>

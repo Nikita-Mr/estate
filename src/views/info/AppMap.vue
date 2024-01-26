@@ -42,7 +42,7 @@ export default {
 <style scoped>
 .map {
   width: 90%;
-  height: 500px;
+  height: 70vh;
   border: 1px solid #fff;
   box-shadow: 0px 0 10px 0 #ffffff71;
 }

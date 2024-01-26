@@ -1,26 +1,37 @@
 <script>
-import axios from 'axios';
+import axios from "axios";
 import { RouterLink, RouterView } from "vue-router";
+import { ref } from "vue";
 
 export default {
   components: {},
-  data() {
-    return {
-      s: 0
-    }
-  }, 
-  methods: {
-    async notifications() {
+  setup() {
+    let s = ref(0);
+    async function notifications() {
       let response = await axios.post(`/notifications`, {
         nameModel: "reqAll",
       });
 
-      this.s = response.data.s;
-      console.log(this.s)
+      s.value = response.data.s;
+    }
+
+    notifications();
+
+    return {
+      s,
+    };
+  },
+
+  data() {
+    return {
+    };
+  },
+  methods: {
+    updateS(newS) {
+      this.s = newS;
     },
   },
   mounted() {
-    this.notifications()
   },
 };
 </script>
@@ -45,14 +56,15 @@ a {
   top: -10px;
   right: -17px;
   padding: 2px;
-  color: red;
-  border: 1px solid red;
+  background-color: #ed1c24;
   border-radius: 100%;
   height: 25px;
   width: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
+  font-weight: 550;
 }
 .icon {
   padding-top: 8px;
@@ -92,7 +104,8 @@ a {
   opacity: 0;
 }
 
-a, a:hover {
+a,
+a:hover {
   color: var(--highlight);
   display: flex;
   flex-direction: column;

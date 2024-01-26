@@ -1,8 +1,7 @@
 <script>
-import { RouterLink, RouterView } from "vue-router";
-import AppCard from "/src/components/AppCard.vue";
-import axios from "axios";
-
+import { RouterLink, RouterView } from 'vue-router';
+import AppCard from '/src/components/AppCard.vue';
+import axios from 'axios';
 export default {
   components: {
     AppCard,
@@ -10,18 +9,28 @@ export default {
   data() {
     return {
       INFO: [],
-      admin: "",
+      admin: '',
       expired: false,
+      id: ''
     };
   },
   mounted() {
+    this.check_admin()
     this.loadInfo();
   },
   methods: {
+    async check_admin() {
+      this.id = this.getCookieValue("id");
+      let response = await axios.post(`/check_admin`, {
+        id: this.id,
+      });
+      this.admin = response.data.admin;
+    },
+
     async loadInfo() {
       if (this.$route.path == `/habitation/items`) {
         let response = await axios.post(`/habitation`, {
-          id: this.getCookieValue("id"),
+          id: this.getCookieValue('id'),
           category: this.$route.path.slice(1, -6),
           name: this.$route.query.name,
         });
@@ -34,7 +43,7 @@ export default {
       }
       if (this.$route.path == `/event/items`) {
         let events = await axios.post(`/event`, {
-          id: this.getCookieValue("id"),
+          id: this.getCookieValue('id'),
           category: this.$route.path.slice(1, -6),
           name: this.$route.query.name,
         });
@@ -44,7 +53,7 @@ export default {
       }
       if (this.$route.path == `/rental/items`) {
         let rental = await axios.post(`/rental`, {
-          id: this.getCookieValue("id"),
+          id: this.getCookieValue('id'),
           category: this.$route.path.slice(1, -6),
           name: this.$route.query.name,
         });
@@ -54,7 +63,7 @@ export default {
       }
       if (this.$route.path == `/forChildren/items`) {
         let forChildren = await axios.post(`/forChildren`, {
-          id: this.getCookieValue("id"),
+          id: this.getCookieValue('id'),
           category: this.$route.path.slice(1, -6),
           name: this.$route.query.name,
         });
@@ -64,7 +73,7 @@ export default {
       }
       if (this.$route.path == `/instructor-tours/items`) {
         let InstructorTours = await axios.post(`/instructor-tours`, {
-          id: this.getCookieValue("id"),
+          id: this.getCookieValue('id'),
           category: this.$route.path.slice(1, -6),
           name: this.$route.query.name,
         });
@@ -74,7 +83,7 @@ export default {
       }
       if (this.$route.path == `/ads/items`) {
         let ads = await axios.post(`/ads`, {
-          id: this.getCookieValue("id"),
+          id: this.getCookieValue('id'),
           category: this.$route.path.slice(1, -6),
           name: this.$route.query.name,
         });
@@ -85,12 +94,12 @@ export default {
     },
 
     getCookieValue(name) {
-      const cookies = document.cookie.split("; ");
+      const cookies = document.cookie.split('; ');
       let res;
       for (let i = 0; i < cookies.length; i++) {
         let cookie = cookies[i];
         if (cookie.slice(0, 2) == name) {
-          res = cookie.replace(name + "=", "");
+          res = cookie.replace(name + '=', '');
         }
       }
       return res;
@@ -98,34 +107,33 @@ export default {
 
     open(id) {
       this.$router.push({
-        path: "/card",
+        path: '/card',
         query: { id: id, name: this.$route.path.slice(1, -6) },
       });
     },
     category(name) {
       return name.slice(0, -5);
     },
+
   },
 };
 </script>
 
 <template>
   <div class="hotel-wrapper">
-    <div class="cols create-card">
-      <RouterLink
-        :to="
-          `/create-card?name=` +
-          $route.query.name +
-          `&category=${category($route.name)}`
-        "
-        class="publish"
-      >
-        <!-- <div class="cross">
-          <div class="line"></div>
-          <div class="line"></div>
-        </div> -->
-        Опубликовать объект
-      </RouterLink>
+    <div class="cols create-card" v-if="id">
+      <div class="group">
+        <RouterLink
+          :to="
+            `/create-card?name=` +
+            $route.query.name +
+            `&category=${category($route.name)}`
+          "
+          class="publish"
+        >
+          Опубликовать объект
+        </RouterLink>
+      </div>
     </div>
     <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
       <div v-for="(cardInfo, index) in INFO" class="cols">
@@ -146,6 +154,16 @@ export default {
 </template>
 
 <style scoped>
+
+.group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.container {
+  align-items: flex-start !important;
+}
 .create-card {
   width: 100%;
   display: flex;
@@ -172,7 +190,7 @@ export default {
   flex-direction: column;
   font-size: 1.7rem;
   color: #fff;
-  height: 60vh;
+  height: 55vh;
 }
 
 .empty img {

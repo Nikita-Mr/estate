@@ -11,6 +11,7 @@
   "dependencies": {
     "-": "^0.0.1",
     "@tinymce/tinymce-vue": "^4.0.7",
+    "@vueuse/core": "^10.7.2",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -35,14 +36,14 @@
     "sequelize": "^6.33.0",
     "sequelize-cli": "^6.6.1",
     "sqlite3": "^5.1.6",
-    "tinymce": "^6.7.0",
     "util": "^0.12.5",
-    "vue": "^3.3.4",
+    "vue": "^3.4.5",
     "vue-router": "^4.2.2",
-    "vue-tinymce": "^1.0.5",
     "vue-yandex-maps": "^0.11.17",
     "vue3-carousel": "^0.3.1",
     "webpack": "4.44",
+    "xlsx": "^0.18.5",
+    "xlsx-populate": "^1.21.0",
     "yookassa": "^0.1.1"
   },
   "devDependencies": {

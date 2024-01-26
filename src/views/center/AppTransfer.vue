@@ -3,6 +3,7 @@ import axios from "axios";
 import { RouterLink, RouterView } from "vue-router";
 import AppCard from "/src/components/AppCard.vue";
 import AppTransferCard from "/src/components/AppTransferCard.vue";
+import { months } from "dayjs/locale/ru";
 
 export default {
   components: {
@@ -19,6 +20,11 @@ export default {
       datefrom: new Date().toLocaleDateString("en-CA"),
       passenger: 1,
       message: ``,
+      id: "",
+      cal: false,
+      month: [],
+      transfers_day: [],
+      inputDate: ''
     };
   },
   methods: {
@@ -32,12 +38,12 @@ export default {
       });
       this.Transfer = response.data.Array;
       this.message = response.data.message;
-      this.admin = response.data.admin;
     },
 
     async check_admin() {
+      this.id = this.getCookieValue("id");
       let response = await axios.post(`/check_admin`, {
-        id: this.getCookieValue("id"),
+        id: this.id,
       });
       this.admin = response.data.admin;
     },
@@ -46,6 +52,67 @@ export default {
       let response = await axios.post(`/transfer`);
       // this.Transfer = response.data.transfer;
     },
+
+    show_day(s) {
+      let arr = s.split("-");
+      s = arr.reverse().join(".");
+      return s;
+    },
+
+    async calendar() {
+      let today = new Date();
+      this.month = [];
+      this.cal = true;
+      for (let i = 0; i < 32; i++) {
+        let date = new Date(today);
+        date.setDate(today.getDate() + i);
+        this.month.push(date.toISOString().slice(0, 10));
+      }
+      let response = await axios.post(`/transfer_days`, {
+        cityfrom: this.cityfrom,
+        cityto: this.cityto,
+        month: this.month,
+      });
+      let days = response.data.days;
+      this.Transfer = days
+      if (days) {
+        this.transfers_day = [];
+        let day = {
+          count: 0,
+          date: "",
+          average_price: 0,
+          transfers: []
+        };
+        let lastDay = {
+          datefrom: "",
+        };
+        for (let i = 0; i < days.length; i++) {
+          let transfer = days[i];
+          if (transfer.datefrom == lastDay.datefrom) {
+            day.count += 1;
+            day.average_price = Math.floor(
+              (lastDay.price_sit + transfer.price_sit) / day.count
+            );
+            day.transfers.push(transfer)
+          } else {
+            if (day.count > 0) {
+              this.transfers_day.push(day)
+            }
+            day = {
+              count: 1,
+              date: transfer.datefrom,
+              average_price: transfer.price_sit,
+              transfers: [transfer]
+            };
+          }
+          if (i == days.length - 1) {
+            this.transfers_day.push(day)
+          }
+          lastDay = transfer
+        }
+      }
+    },
+
     getCookieValue(name) {
       const cookies = document.cookie.split("; ");
       let res;
@@ -57,6 +124,12 @@ export default {
       }
       return res;
     },
+
+    subDate(date) {
+      this.inputDate = date
+      this.Transfer = this.transfers_day.filter(obj => obj.date == date)[0].transfers
+      console.log(this.Transfer)
+    }
   },
   mounted() {
     this.check_admin();
@@ -67,16 +140,31 @@ export default {
 
 <template>
   <div class="wrapper">
+    <div class="create-transfer" v-if="id">
+      <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
+    </div>
     <div class="wrapper-for-form">
       <div class="form">
-        <div class="title mb-3">Трансфер</div>
         <form class="form" @submit.prevent="find">
           <div class="input-group">
             <input v-model="cityfrom" type="text" placeholder="Откуда" />
             <input v-model="cityto" type="text" placeholder="Куда" />
-            <input v-model="datefrom" type="date" />
+            <!-- <input v-model="datefrom" type="date" /> -->
+            <input
+              @click="calendar"
+              type="text"
+              placeholder="Календарь поездок"
+              v-model="inputDate"
+            />
             <input v-model="passenger" type="number" min="1" />
             <button class="btn btn-primary" type="submit">Поиск</button>
+          </div>
+          <div class="cal" v-if="cal">
+            <div tabindex="0" @click="subDate(day.date, i)" v-for="day in this.transfers_day" class="day">
+              <span>{{ show_day(day.date) }}</span>
+              <span>Поездок в этот день - {{ day.count }}</span>
+              <span>Средняя цена билета - {{day.average_price}} руб.</span>
+            </div>
           </div>
         </form>
       </div>
@@ -96,15 +184,16 @@ export default {
           :cityfrom="card.cityfrom"
           :cityto="card.cityto"
           :datefrom="card.datefrom"
-          :dateto="card.dateto"
+          :length="card.length"
           :timefrom="card.timefrom"
-          :timeto="card.timeto"
           :typeCar="card.typeCar"
           :car="card.car"
           :passenger="card.passenger"
           :passenger2="card.passenger / 2"
-          :price="card.price"
+          :price_sit="card.price_sit"
+          :price_salon="card.price_salon"
           :boardedPlaces="card.boardedPlaces"
+          :img="card.img"
         >
         </app-transfer-card>
         <h1 v-if="message">{{ message }}</h1>
@@ -112,13 +201,48 @@ export default {
     </div>
 
     <div class="transfers"></div>
-    <div class="create-transfer">
-      <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
-    </div>
   </div>
 </template>
 
 <style scoped>
+.cal {
+  width: 70%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-radius: 15px;
+  gap: 7px;
+}
+
+.day {
+  background-color: #F4EDED;
+  box-shadow: 0px 0px 5px 0px #F4EDED;
+  flex: 25%;
+  color: black;
+  font-weight: 500;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  max-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  transition: all 500ms;
+}
+
+.day:active, .day:focus, .day:hover {
+  background: transparent;
+  color: #fff;
+}
+
+.day span {
+  font-weight: 600;
+  font-size: smaller;
+  text-align: center;
+}
+
 .empty {
   display: flex;
   justify-content: center;
@@ -173,6 +297,8 @@ form {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .btn-primary {
@@ -216,7 +342,7 @@ input::placeholder {
 .wrapper {
   width: 100%;
   height: 70vh;
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -232,8 +358,6 @@ input::placeholder {
 }
 
 .create-transfer {
-  position: absolute;
-  bottom: 2% !important;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -264,6 +388,7 @@ input::placeholder {
 @media (max-width: 770px) {
   .input-group {
     flex-direction: column;
+    width: 95%;
   }
 
   .input-group input,
@@ -274,15 +399,29 @@ input::placeholder {
 
   .cards {
     width: 93%;
+    margin: 5px;
+  }
+  
+  .day span {
+    font-size: 10px;
+  }
+
+  .cal {
+    padding: 2px;
+  }
+
+  .wrapper {
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 }
 
 @media (max-height: 780px) {
   .wrapper {
+    display: grid;
     overflow-y: scroll;
     overflow-x: hidden;
     width: 80%;
-    padding-top: 150px;
   }
 
   .title {
@@ -310,7 +449,6 @@ input::placeholder {
   .cards {
     padding: 2px;
   }
-
 }
 
 @media (max-height: 710px) {
@@ -321,7 +459,6 @@ input::placeholder {
 
 @media (max-height: 680px) {
   .wrapper {
-    padding-top: 165px !important;
     width: 100%;
   }
 }

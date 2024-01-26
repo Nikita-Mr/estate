@@ -1,7 +1,7 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView } from "vue-router";
 
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   props: {
@@ -13,20 +13,29 @@ export default {
     id: Number,
     children: Number,
     adults: Number,
-    target: Number
+    target: Number,
+    nameCard: String,
+    fromMyAds: Boolean,
   },
   components: {},
   data() {},
   methods: {
     open() {
-      this.$router.push({
-        path: '/card',
-        query: { id: this.id, name: this.$route.path.slice(1, -6) },
-      });
+      if (this.fromMyAds) {
+        this.$router.push({
+          path: "/card",
+          query: { id: this.id, name: this.nameCard, edit: this.fromMyAds },
+        });
+      } else {
+        this.$router.push({
+          path: "/card",
+          query: { id: this.id, name: this.$route.path.slice(1, -6) },
+        });
+      }
     },
     sendVariable() {
-      this.$emit('variable', {target: 1, numberid: this.i});
-    }
+      this.$emit("variable", { target: 1, numberid: this.i });
+    },
   },
   mounted() {},
 };
@@ -74,7 +83,13 @@ export default {
                 Мест для взрослых: {{ adults }}
               </p>
               <p class="card-text">{{ p }}</p>
-              <button class="btn btn-light" @click="sendVariable" v-if="children">Забронировать</button>
+              <button
+                class="btn btn-light"
+                @click="sendVariable"
+                v-if="children"
+              >
+                Забронировать
+              </button>
             </div>
           </div>
         </div>

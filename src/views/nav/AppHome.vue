@@ -89,7 +89,7 @@ export default {
 <style scoped>
 .list-events {
   width: 100%;
-  height: 500px;
+  height: 70vh;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -161,13 +161,6 @@ export default {
   .list-events{
     display: block;
     overflow-y: scroll;
-  }
-}
-
-
-@media (max-height: 780px) {
-  .list-events {
-    height: 55vh !important;
   }
 }
 </style>

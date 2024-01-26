@@ -1,12 +1,12 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
-import axios from 'axios';
-import { defineComponent } from 'vue';
-import { Carousel, Navigation, Slide, Pagination } from 'vue3-carousel';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ru';
+import { RouterLink, RouterView } from "vue-router";
+import axios from "axios";
+import { defineComponent } from "vue";
+import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
 
-import 'vue3-carousel/dist/carousel.css';
+import "vue3-carousel/dist/carousel.css";
 
 export default defineComponent({
   components: {
@@ -21,23 +21,24 @@ export default defineComponent({
       admin: ``,
       target: 0,
       todaydate: dayjs(new Date()).format(`ddd, D MMM`),
-      message: '',
+      message: "",
       passenger2: 0,
-      success: '',
-      paymentRef: '',
-      view: false
+      success: "",
+      paymentRef: "",
+      view: false,
+      editB: false
     };
   },
   mounted() {
-    this.check_admin()
+    this.check_admin();
     this.loadCard();
   },
   methods: {
     async check_admin() {
-			let response = await axios.post(`/check_admin`, {
-        id: this.getCookieValue('id')
+      let response = await axios.post(`/check_admin`, {
+        id: this.getCookieValue("id"),
       });
-			this.admin = response.data.admin
+      this.admin = response.data.admin;
     },
 
     getCookieValue(name) {
@@ -53,42 +54,44 @@ export default defineComponent({
     },
 
     async loadCard() {
-      this.view = this.$route.query.view
+      this.view = this.$route.query.view;
+      this.editB = this.$route.query.edit;
       let response = await axios.post(`/transfer`, {
-        id: this.$route.query.id
+        id: this.$route.query.id,
       });
       this.INFO = response.data.transfer;
-      this.passenger2 = this.INFO.passenger / 2
+      this.passenger2 = this.INFO.passenger / 2;
     },
     async deleteCard() {
       await axios
-        .post('/delete_transfer', {
+        .post("/delete_transfer", {
           id: this.INFO.id,
           name: this.$route.query.name,
         })
         .then((e) => {
-          if (e.data.status == '200') {
+          if (e.data.status == "200") {
             setTimeout(() => {
               this.$router.go(-1);
-            }, 1000)
+            }, 1000);
           }
         });
     },
     async edit() {
       this.$router.push({
-        path: '/create-card',
-        query: { id: this.INFO.id, name: this.$route.query.name, edit: true },
+        path: "/transfer/edit",
+        query: { id: this.INFO.id, edit: true },
       });
     },
     getDate(data) {
       let date = new Date(data);
       let day = dayjs(date);
-      dayjs.locale('ru');
+      dayjs.locale("ru");
       return day.format(`dd, D MMM`);
     },
     async book() {
       let response = await axios.post(`/transfer`, {
-        id: this.INFO.id, book: true
+        id: this.INFO.id,
+        book: true,
       });
       this.message = response.data.message;
       this.loadCard();
@@ -97,21 +100,36 @@ export default defineComponent({
     async payment() {
       let response = await axios.post(`/payment`, {
         name: this.INFO.name,
-        price: this.INFO.price,
-        id: this.INFO.id
-      })
-      this.paymentRef = response.data.paymentRef
-      this.success = response.data.success
+        price: this.INFO.price_sit,
+        id: this.INFO.id,
+        userID: this.INFO.userID
+      });
+      this.paymentRef = response.data.paymentRef;
+      this.success = response.data.success;
       if (this.success) {
-        window.location.href = this.paymentRef
+        window.location.href = this.paymentRef;
       }
-    }
+    },
   },
 });
 </script>
 
 <template>
   <div class="card-wrapper">
+    <div class="img">
+      <Carousel :autoplay="4000" :wrap-around="true">
+        <Slide v-for="slide in INFO.img" :key="slide">
+          <div class="carousel__item">
+            <img :src="`/dist/assets/img/user/` + slide" alt="" />
+          </div>
+        </Slide>
+
+        <template #addons>
+          <Navigation />
+          <Pagination />
+        </template>
+      </Carousel>
+    </div>
     <div class="card">
       <div class="modalDelete" :class="{ 'd-none': target == 0 }">
         <div class="button-wrapper">
@@ -130,12 +148,7 @@ export default defineComponent({
               <span>{{ INFO.timefrom }}</span>
               <span class="sub">{{ getDate(INFO.datefrom) }}</span>
             </div>
-            <div class="second">
-              <span>{{ INFO.timeto }}</span>
-              <span class="sub">{{ getDate(INFO.dateto) }}</span>
-            </div>
           </div>
-          <div class="line"></div>
           <div class="city">
             <div class="first">
               <span>{{ INFO.cityfrom }}</span>
@@ -191,25 +204,37 @@ export default defineComponent({
         </div>
         <hr />
         <div class="passenger-price">
-          <span>Итого за 1 пассажира {{ INFO.price }} ₽</span>
+          <span>Итого за 1 пассажира {{ INFO.price_sit }} ₽</span>
+        </div>
+        <div class="passenger-price">
+          <span>Цена за весь салон: {{ INFO.price_salon }} ₽</span>
         </div>
         <hr />
         <div class="driver">
           <span class="text-center mt-3">{{ INFO.name }}</span>
-          <span class="text-center mt-3">Иногда отменяет поездки</span>
-          <span class="text-center mt-3">Максимум двое сзади</span>
+        </div>
+        <div class="driver">
+          <span class="text-center mt-3"
+            >Длительность поездки (в часах): {{ INFO.length }}</span
+          >
+        </div>
+        <div class="driver">
+          <span class="text-center mt-3"
+            >Место сбора: {{ INFO.point }}</span
+          >
         </div>
       </div>
       <div class="reviews"></div>
       <div class="button-wrapper" v-if="!view">
         <span v-if="message" class="text-center mt-3">{{ message }}</span>
         <button v-if="!admin" @click="book">Забронировать</button>
-        <button @click="deleteCard" class="btn btn-outline-danger" v-if="admin">
+        <button v-if="editB" @click="edit" class="btn btn-info">
+          Редактировать
+        </button>
+        <button @click="deleteCard" class="btn btn-danger" v-if="admin">
           Удалить
         </button>
-        <button @click="payment" class="btn btn-outline-success">
-          Оплатить
-        </button>
+        <button @click="payment" class="btn btn-success">Оплатить</button>
       </div>
     </div>
   </div>
@@ -314,7 +339,14 @@ span:not(.sub, .cars span) {
 h2 {
   width: 100%;
   text-align: center;
+
+  transition: all 400ms;
 }
+
+h2:hover {
+  color: #fff;
+}
+
 .delete {
   background-color: rgba(230, 86, 86, 0.992);
   color: #fff;
@@ -339,10 +371,6 @@ h2 {
   .wrapper {
     width: 100% !important;
   }
-
-  .img {
-    width: 100% !important;
-  }
 }
 
 .img {
@@ -353,11 +381,12 @@ h2 {
 }
 
 .card-wrapper {
+  display: flex;
+  align-items: center;
   width: 80%;
   color: var(--mainColor);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-  min-height: 400px;
-  max-height: 400px;
+  height: 65vh;
   overflow-y: scroll;
 }
 .card-wrapper::-webkit-scrollbar {
@@ -380,6 +409,14 @@ h2 {
   display: block;
 }
 
+span {
+  transition: all 400ms;
+}
+
+span:hover {
+  color: #fff;
+}
+
 .info {
   display: flex;
   justify-content: center;
@@ -399,6 +436,7 @@ h2 {
   background: transparent;
   border: none;
   min-height: 400px;
+  height: 55vh;
   position: relative;
 }
 
@@ -471,5 +509,28 @@ button:active {
 
 .adress {
   font-size: 1rem !important;
+}
+
+@media (max-width: 1250px) {
+  .card-wrapper {
+    flex-direction: column;
+  }
+  .img {
+    width: 100%;
+    height: auto;
+    float: left;
+    position: relative;
+  }
+}
+
+@media (max-height: 700px) {
+  .card-wrapper {
+    height: 70vh;
+    width: 95%;
+  }
+
+  .card {
+    height: 70vh;
+  }
 }
 </style>

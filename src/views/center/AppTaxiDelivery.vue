@@ -1,7 +1,7 @@
 <script>
-import axios from 'axios';
-import { RouterLink, RouterView } from 'vue-router';
-import AppService  from '/src/components/AppService.vue';
+import axios from "axios";
+import { RouterLink, RouterView } from "vue-router";
+import AppService from "/src/components/AppService.vue";
 
 export default {
   components: {
@@ -9,17 +9,17 @@ export default {
   },
   data() {
     return {
-      INFO: [],
+      info: [],
       admin: false,
-      id: ''
+      id: "",
     };
   },
   methods: {
     async ServiceLoad() {
       let response = await axios.post(`/services`, {
-        id: this.getCookieValue('id')
+        id: this.getCookieValue("id"),
       });
-      this.INFO = response.data.services;
+      this.info = response.data.services;
       this.admin = response.data.admin;
     },
 
@@ -35,20 +35,34 @@ export default {
       return res;
     },
   },
-  mounted() {
-    this.ServiceLoad();
+  async mounted() {
+    try {
+      await this.ServiceLoad();
+    } catch (error) {
+      console.error(error);
+    }
   },
 };
 </script>
 
 <template>
   <div class="wrapper-for-content">
+    <div class="create-service">
+      <RouterLink v-if="admin" to="/create-service"
+        >Опубликовать услугу</RouterLink
+      >
+    </div>
     <div class="hotel-wrapper">
       <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
-        <div v-for="(cardInfo, index) in INFO" class="cols">
+        <div v-for="(cardInfo, index) in info" class="cols">
           <AppService
             v-if="cardInfo.verified"
-            @click="$router.push({ path: `/taxi-delivery/card`, query: { id: cardInfo.id } })"
+            @click="
+              $router.push({
+                path: `/taxi-delivery/card`,
+                query: { id: cardInfo.id },
+              })
+            "
             :img="cardInfo.img"
             :name="cardInfo.name"
             :phone="cardInfo.phone"
@@ -57,13 +71,11 @@ export default {
           />
         </div>
       </div>
-      <div v-if="INFO.length == 0 || !INFO" class="empty"><img src="../../assets/img/empty.png" alt=""><span>Пусто...</span></div>
-    </div>
-    <div class="create-service">
-      <RouterLink v-if="admin" to="/create-service">Опубликовать услугу</RouterLink>
+      <div v-if="info.length == 0 || !info" class="empty">
+        <img src="../../assets/img/empty.png" alt="" /><span>Пусто...</span>
+      </div>
     </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -83,20 +95,12 @@ export default {
 .empty img {
   height: 70px;
 }
-.create-service {
-  position: absolute;
-  bottom: 2%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
 
 .wrapper-for-content {
   width: 100%;
+  position: relative;
 }
 .create-service {
-  position: absolute;
-  bottom: 2%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -110,10 +114,9 @@ export default {
   border: 1px solid var(--mainColor);
   color: var(--mainColor);
 
-
   transition: scale 500ms;
 }
-.create-service a:hover{
+.create-service a:hover {
   scale: 1.06;
 }
 
@@ -148,6 +151,7 @@ export default {
 }
 .cols {
   padding: 10px;
+  width: 25%;
 }
 .hotel-wrapper {
   padding: 15px;
@@ -156,10 +160,23 @@ export default {
   justify-content: center;
   gap: 15px;
   flex-wrap: wrap;
-  height: 500px;
+  height: 65vh;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 .hotel-wrapper::-webkit-scrollbar {
   width: 0;
+}
+
+@media (max-width: 1200px) {
+  .cols {
+    width: 33%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .cols {
+    width: 48%;
+  }
 }
 </style>
