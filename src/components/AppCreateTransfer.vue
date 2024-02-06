@@ -5,7 +5,6 @@ import { defineComponent } from "vue";
 import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
 
 import "vue3-carousel/dist/carousel.css";
-import { param } from "express-validator";
 
 export default defineComponent({
   components: {
@@ -323,7 +322,7 @@ export default defineComponent({
           name: this.nametransfer,
           region: this.region.name,
           cityfrom: this.city,
-          regionTo: this.regionTo,
+          regionTo: this.regionTo.name,
           cityto: this.cityTo,
           datefrom: this.datefrom,
           timefrom: this.timefrom,
@@ -702,7 +701,7 @@ export default defineComponent({
         </div>
       </div>
       <div v-else class="div-for-button">
-        <button class="create-transfer">Опубликовать</button>
+        <button class="publish">Опубликовать</button>
       </div>
     </form>
   </div>
@@ -938,21 +937,6 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.create-transfer {
-  margin-bottom: 15px;
-  padding: 5px 15px;
-  background-color: transparent;
-  border: 1px solid #62a87c;
-  border-radius: 10px;
-  color: #62a87c;
-  font-weight: 600;
-  transition: scale 500ms;
-}
-
-.create-transfer:hover {
-  scale: 1.06;
 }
 
 .wrapper-for-form {

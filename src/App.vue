@@ -48,18 +48,18 @@ export default {
         'taxi-delivery': 'Такси-доставка',
         serviceCardOpen: 'Такси-доставка',
         card: 'Объект',
-        createCard: 'Создание объекта',
-        createNews: 'Создание новости',
-        createTransfer: 'Создание трансфера',
-        createService: 'Создание услуги',
+        createCard: 'Публикация объекта',
+        createNews: 'Публикация новости',
+        createTransfer: 'Публикация трансфера',
+        createService: 'Публикация услуги',
         transfercard: 'Трансфер',
         lift: 'Подъемники',
-        appcreatelift: 'Создание Подъемников',
+        appcreatelift: 'Публикация Подъемников',
         appcameras: 'Камеры',
         appmap: 'Карта',
         appemergency: 'Экстренные службы',
         skipass: 'График работы и стоимость подъёмников',
-        skipasscreate: 'Создание СКИ-пасов',
+        skipasscreate: 'Публикация СКИ-пасов',
         adminreq: 'ADMIN Запросы',
         adminsections: 'Запросы',
         adminevents: 'ADMIN развлечения',
@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     reload() {
-      window.location.assign(`http://localhost:5173`);
+      window.location.assign(`http://sneg-info.ru`);
       Vue.config.silent = true;
     },
     async notifications() {
@@ -155,6 +155,78 @@ export default {
 </template>
 
 <style>
+@keyframes gradient {
+  0% {
+      background-position: 0, 50%;
+  }
+
+  50% {
+      background-position: 100% 50%;
+  }
+
+  100% {
+      background-position: 0 50%;
+  }
+}
+
+.info_open {
+  background: linear-gradient(45deg, #ece9e6, #fff);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+}
+
+.publish {
+  background: linear-gradient(45deg, #56ab2f, #a8e063);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  border: none;
+  border-radius: 10px;
+  width: auto !important;
+  padding: 5px 15px;
+  transition: all 400ms; 
+  color: #fff;
+  font-weight: 550;
+  
+  transition: all 500ms ease;
+}
+
+.publish:hover {
+  transform: scale(1.06);
+}
+
+.btn-delete {
+  background: linear-gradient(45deg, #ed213a, #93291e);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+
+  transition: all 500ms ease;
+}
+
+.btn-cancel {
+  background: linear-gradient(45deg, #bdc3c7, #2c3e50);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  border: none;
+  color: #fff;
+
+  transition: all 500ms ease;
+}
+
+.btn-cancel:hover {
+  transform: scale(1.06);
+}
+
+button {
+  transition: all 500ms ease;
+}
+
+button:hover {
+  transform: scale(1.06);
+}
+
 .arrow {
   width: 30px;
 }
@@ -182,7 +254,7 @@ export default {
   align-items: center;
   gap: 20px;
   color: var(--mainColor);
-  font-size: clamp(18px, 5vw, 30px);
+  font-size: 1.9rem;
   margin: 20px 0 0 20px;
   z-index: 11;
   
@@ -242,6 +314,16 @@ input:-webkit-autofill:active {
   .namepage {
     width: 180px;
   }
+
+  .site-page {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 990px) {
+  .site-page {
+    font-size: 1.5rem;
+  }
 }
 
 @media (max-height: 720px) {
@@ -256,6 +338,12 @@ input:-webkit-autofill:active {
 
   .site-page {
     margin: 0;
+  }
+}
+
+@media (max-height: 810px) {
+  .wrapperBottom {
+    bottom: -1%;
   }
 }
 

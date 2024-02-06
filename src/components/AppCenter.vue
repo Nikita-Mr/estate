@@ -176,13 +176,19 @@ a {
 }
 
 .wrapper-main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 80vh;
   width: 100%;
+  display: flex;
+  align-items: center;
   z-index: 1;
 }
+
+@media (max-width: 770px) {
+  .container {
+    width: 90%;
+  }
+}
+
 @media (max-width: 450px) {
   .main {
     width: 80%;
@@ -190,6 +196,10 @@ a {
 }
 
 @media (max-height: 780px) {
+  .wrapper-main {
+    height: 70vh;
+  }
+
   .container {
     height: 70vh;
     width: 85%;

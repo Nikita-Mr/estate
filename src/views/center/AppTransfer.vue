@@ -141,7 +141,7 @@ export default {
 <template>
   <div class="wrapper">
     <div class="create-transfer" v-if="id">
-      <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
+      <RouterLink to="/create-transfer" class="publish">Опубликовать поездку</RouterLink>
     </div>
     <div class="wrapper-for-form">
       <div class="form">
@@ -364,14 +364,7 @@ input::placeholder {
 }
 
 .create-transfer a {
-  width: fit-content !important;
-  padding: 5px 10px;
-  border-radius: 10px;
-  background: transparent;
-  border: 1px solid var(--mainColor);
-  color: var(--mainColor);
-
-  transition: scale 500ms;
+  transition: all 500ms ease;
 }
 
 .create-transfer a:hover {

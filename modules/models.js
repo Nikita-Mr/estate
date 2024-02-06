@@ -105,13 +105,38 @@ HotelModel.init(
         title:                      { type: DataTypes.STRING,  allowNull: false, },
         address:                    { type: DataTypes.STRING,  allowNull: false, },
         img:                        { type: DataTypes.JSON,    allowNull: false, },
-        p:                          { type: DataTypes.STRING,  allowNull: false, },
+        p:                          { type: DataTypes.STRING,  allowNull: true, },
         phone:                      { type: DataTypes.STRING,  allowNull: false, },
         price:                      { type: DataTypes.INTEGER, allowNull: true,  },
         email:                      { type: DataTypes.STRING,  allowNull: false, },
-        chatID:                     { type: DataTypes.STRING,  allowNull: false, },
+        chatID:                     { type: DataTypes.STRING,  allowNull: true, },
         userID:                     { type: DataTypes.BOOLEAN, allowNull: false, },
         verified:                   { type: DataTypes.BOOLEAN, allowNull: false, },
+
+        floor:                      { type: DataTypes.INTEGER, allowNull: true,  },
+        lease_term:                 { type: DataTypes.INTEGER, allowNull: true,  },
+        total_area:                 { type: DataTypes.INTEGER, allowNull: true,  },   
+        sleeping_rooms:             { type: DataTypes.INTEGER, allowNull: true,  },   
+        sleeping_places:            { type: DataTypes.INTEGER, allowNull: true,  },
+        children_bed:               { type: DataTypes.STRING, allowNull: true,   },
+        double_places:              { type: DataTypes.INTEGER, allowNull: true,  },
+        single_spaces:              { type: DataTypes.INTEGER, allowNull: true,  },
+        additional_sleeping_places: { type: DataTypes.INTEGER, allowNull: true,  },
+        bathrooms:                  { type: DataTypes.INTEGER, allowNull: true,  },
+        bathrooms_showers:          { type: DataTypes.INTEGER, allowNull: true,  },
+        drying_for_inventory:       { type: DataTypes.STRING, allowNull: true,   },
+        wifi:                       { type: DataTypes.STRING, allowNull: true,   },
+        warm_floor:                 { type: DataTypes.STRING, allowNull: true,   },
+        dishwasher:                 { type: DataTypes.STRING, allowNull: true,   },
+        parking_cars:               { type: DataTypes.INTEGER, allowNull: true,  },
+        mall:                       { type: DataTypes.STRING, allowNull: true,   },
+        kazan:                      { type: DataTypes.STRING, allowNull: true,   },
+        bath_territory:             { type: DataTypes.STRING, allowNull: true,   },
+        pool:                       { type: DataTypes.STRING, allowNull: true,   },
+        transfer_city:              { type: DataTypes.STRING, allowNull: true,   },
+        transfer_mountain:          { type: DataTypes.STRING, allowNull: true,   },
+        live_whith_animals:         { type: DataTypes.STRING, allowNull: true,   },
+        additionally:               { type: DataTypes.STRING, allowNull: true,   },
     }, 
     { sequelize, modelName: 'HotelModel', }
 );
@@ -119,12 +144,8 @@ HotelModel.init(
 class NumberModel extends Sequelize.Model { }
 NumberModel.init(
     {
-        name:                       { type: DataTypes.STRING,  allowNull: false, },
-        adults:                     { type: DataTypes.INTEGER, allowNull: false, },
-        children:                   { type: DataTypes.INTEGER, allowNull: false, },
-        description:                { type: DataTypes.STRING,  allowNull: false, },
+        title:                      { type: DataTypes.STRING,  allowNull: false, },
         bookings:                   { type: DataTypes.JSON,    allowNull: true,  },
-        price:                      { type: DataTypes.INTEGER, allowNull: true,  },
         // количество номеров тарифа
         floor:                      { type: DataTypes.INTEGER, allowNull: true,  },
         lease_term:                 { type: DataTypes.INTEGER, allowNull: true,  },
@@ -150,8 +171,6 @@ NumberModel.init(
         transfer_mountain:          { type: DataTypes.STRING, allowNull: true,   },
         live_whith_animals:         { type: DataTypes.STRING, allowNull: true,   },
         additionally:               { type: DataTypes.STRING, allowNull: true,   },
-
-        value:                      { type: DataTypes.INTEGER, allowNull: false, },
     },
     { sequelize, modelName: 'NumberModel', }
 );

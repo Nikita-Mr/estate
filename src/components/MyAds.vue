@@ -83,7 +83,7 @@ export default {
     </div>
     <div class="wrapper-group">
       <div class="create-transfer" v-if="id">
-        <RouterLink to="/create-transfer">Опубликовать поездку</RouterLink>
+        <RouterLink to="/create-transfer" class="publish">Опубликовать поездку</RouterLink>
         <RouterLink
           :to="
             `/habitation`
@@ -97,45 +97,41 @@ export default {
           Опубликовать недвижимость
         </RouterLink>
       </div>
-      <app-transfer-card
-        v-if="transfers"
-        @click="
-          $router.push({ path: `/transfer/card`, query: { id: card.id, edit: true } })
-        "
-        v-for="(card, index) in transfers"
-        :i="index"
-        :name="card.name"
-        :cityfrom="card.cityfrom"
-        :cityto="card.cityto"
-        :datefrom="card.datefrom"
-        :timefrom="card.timefrom"
-        :length="card.length"
-        :typeCar="card.typeCar"
-        :car="card.car"
-        :img="card.img"
-        :passenger="card.passenger"
-        :passenger2="card.passenger / 2"
-        :price_sit="card.price_sit"
-        :price_salon="card.price_salon"
-        :boardedPlaces="card.boardedPlaces"
-      >
-      </app-transfer-card>
-      <AppService
-        v-if="services"
-        v-for="(cardInfo, index) in services"
-        @click="
-          $router.push({
-            path: `/taxi-delivery/card`,
-            query: { id: cardInfo.id },
-          })
-        "
-        :img="cardInfo.img"
-        :name="cardInfo.name"
-        :phone="cardInfo.phone"
-        :description="cardInfo.description"
-        :i="index"
-      />
       <div class="wrapper-card">
+        <app-transfer-card
+          v-if="transfers"
+          @click="
+            $router.push({ path: `/transfer/card`, query: { id: card.id, edit: true } })
+          "
+          v-for="(card, index) in transfers"
+          :i="index"
+          :name="card.name"
+          :cityfrom="card.cityfrom"
+          :cityto="card.cityto"
+          :datefrom="card.datefrom"
+          :timefrom="card.timefrom"
+          :length="card.length"
+          :typeCar="card.typeCar"
+          :car="card.car"
+          :img="card.img"
+          :passenger="card.passenger"
+          :passenger2="card.passenger / 2"
+          :price_sit="card.price_sit"
+          :price_salon="card.price_salon"
+          :boardedPlaces="card.boardedPlaces"
+        >
+        </app-transfer-card>
+        <AppService
+          v-if="services"
+          v-for="(cardInfo, index) in services"
+          
+          :img="cardInfo.img"
+          :name="cardInfo.name"
+          :phone="cardInfo.phone"
+          :description="cardInfo.description"
+          :id="cardInfo.id"
+          :i="index"
+        />
         <AppCard
           v-for="(cardInfo, index) in cards"
           v-if="cards"
@@ -179,7 +175,6 @@ export default {
 }
 * {
   color: #fff;
-  font-size: 1.1rem;
 }
 
 .myads {
@@ -250,22 +245,6 @@ input {
   align-items: center;
   gap: 20px;
 }
-
-.create-transfer a {
-  width: fit-content !important;
-  padding: 5px 10px;
-  border-radius: 10px;
-  background: transparent;
-  border: 1px solid var(--mainColor);
-  color: var(--mainColor);
-
-  transition: scale 500ms;
-}
-
-.create-transfer a:hover {
-  scale: 1.06;
-}
-
 
 .group span {
   right: 0;

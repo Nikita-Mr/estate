@@ -51,7 +51,7 @@ const initPayment = async (val, desc) =>
         },
         confirmation: {
             type: "redirect",
-            return_url: "http://localhost:3005/"
+            return_url: "http://sneg-info.ru"
         },
         description: desc
     });

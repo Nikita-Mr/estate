@@ -216,4 +216,12 @@ a:hover {
   }
 }
 
+@media (max-height: 810px) {
+  .navbar {
+    padding: 0;
+    margin: 0;
+    padding-top: 7px;
+  }
+}
+
 </style>

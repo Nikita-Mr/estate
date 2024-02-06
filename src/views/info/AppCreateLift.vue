@@ -84,7 +84,7 @@ export default {
         </div>
       </div>
       <div class="button-wrapper">
-        <button v-if="!edit" @click="create">Создать</button>
+        <button class="publish" v-if="!edit" @click="create">Опубликовать</button>
       </div>
     </div>
   </div>
@@ -93,16 +93,6 @@ export default {
 <style scoped>
 .button-wrapper button {
   padding: 5px 15px;
-  background-color: transparent;
-  border: 1px solid #62a87c;
-  border-radius: 10px;
-  color: #62a87c;
-  font-weight: 600;
-  transition: scale 500ms;
-}
-
-.button-wrapper button:hover {
-  scale: 1.03;
 }
 
 @media (max-width: 426px) {
@@ -179,6 +169,14 @@ input {
   width: 100%;
   height: 50px;
   color: #fff;
+
+  transition: all 500ms;
+}
+
+input:active, input:focus, input:hover {
+  box-shadow: 0 0 10px 0 black;
+  border: none;
+  outline: none;
 }
 
 #file {
@@ -283,14 +281,6 @@ img {
   width: 100%;
   display: flex;
   align-items: flex-end;
-}
-button {
-  display: block;
-  margin: 0 auto;
-  border: none;
-  width: 50%;
-  padding: 5px 0;
-  box-shadow: 0 0 10px 0 #00000037;
 }
 
 button:active {

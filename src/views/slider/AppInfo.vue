@@ -42,7 +42,7 @@ export default {
       </RouterLink>
     </li>
     <li class="item-event">
-      <RouterLink to="/skipass">
+      <RouterLink to="/lift">
       <div class="event">
         График работы и стоимость подъёмников
       </div>

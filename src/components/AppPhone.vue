@@ -13,7 +13,7 @@ export default {
   <div class="list-item">
     <router-link to="/emergency">
       <img class="icon" src="../assets/img/911.png" alt="" />
-      <span class="list-item-name">Телефоны экстренных служб</span>
+      <span class="list-item-name">Экстренная служба</span>
     </router-link>
   </div>
 </template>
@@ -41,7 +41,7 @@ export default {
   color: var(--highlight);
   transform: translateY(-10px);
   .list-item-name {
-    transform: translateY(45px);
+    transform: translateY(37px);
     opacity: 1;
   }
 }
@@ -52,7 +52,7 @@ export default {
   font-weight: 600;
   line-height: 1.2;
   position: absolute;
-  transform: translate(0, 50px);
+  transform: translate(0, 42px);
   transition: transform 0.5s ease, opacity 0.2s ease;
   opacity: 0;
 }
@@ -78,7 +78,7 @@ a, a:hover {
 
   .list-item:hover, .list-item:active, .list-item:focus {
     .list-item-name {
-      transform: translateY(25px);
+      transform: translateY(17px);
     }
   }
 
@@ -86,7 +86,7 @@ a, a:hover {
     color: var(--highlight);
     transform: translateY(-6px);
     .list-item-name {
-      transform: translateY(40px);
+      transform: translateY(32px);
       opacity: 1;
     }
   }
@@ -101,7 +101,7 @@ a, a:hover {
     color: var(--highlight);
     transform: translateY(-10px);
     .list-item-name {
-      transform: translateY(37px);
+      transform: translateY(29px);
       opacity: 1;
     }
   }

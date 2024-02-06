@@ -14,17 +14,17 @@ const mkdirp = require("mkdirp");
 const nodemailer = require("nodemailer");
 
 const TelegramApi = require("node-telegram-bot-api");
-// const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
+const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
 
-// let bot = new TelegramApi(tokenBot, { polling: true });
+let bot = new TelegramApi(tokenBot, { polling: true });
 
-// bot.on(`message`, (msg) => {
-//   let text = msg.text;
-//   let chatID = msg.chat.id;
-//   if (text == "/start") {
-//     bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
-//   }
-// });
+bot.on(`message`, (msg) => {
+  let text = msg.text;
+  let chatID = msg.chat.id;
+  if (text == "/start") {
+    bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
+  }
+});
 
 // модули самого бэкенда
 const {
@@ -304,6 +304,7 @@ app.post(`/upload`, async function (req, res) {
   }
   if (req.file) {
     let file = req.file;
+    console.log(file)
     //let filename = files[i].name;
     let date = new Date();
     let time = date.getTime();
@@ -351,6 +352,7 @@ app.post(`/upload`, async function (req, res) {
   }
   let files = req.files.files;
   let imgName = [];
+  console.log(files, "Файлы")
 
   //console.log(files);
   for (let i = 0; i < files.length; i++) {
@@ -422,97 +424,167 @@ app.post(`/create-card`, async function (req, res) {
   try {
     let {
       title,
-      price,
-      p,
       edit,
       subcategory,
       id,
       phone,
-      adress,
+      address,
       email,
+      price,
+      p,
       chatID,
       userID,
       img,
       category,
+      floor,
+      lease_term,
+      total_area,
+      sleeping_rooms,
+      sleeping_places,
+      children_bed,
+      double_places,
+      single_spaces,
+      additional_sleeping_places,
+      bathrooms,
+      bathrooms_showers,
+      drying_for_inventory,
+      wifi,
+      warm_floor,
+      dishwasher,
+      parking_cars,
+      mall,
+      kazan,
+      bath_territory,
+      pool,
+      transfer_city,
+      transfer_mountain,
+      live_whith_animals,
+      additionally,
     } = req.body;
-    //console.log(req.body)
-    console.log("request received...");
     if (category == `habitation`) {
       if (edit) {
+        console.log(1)
         let card = await HotelModel.findOne({ where: { id: id } });
         card.title = title;
         card.price = price;
-        card.p = p;
-        card.address = adress;
+        card.address = address;
         card.phone = phone;
         card.img = img;
+        card.p = p;
         card.email = email;
-        card.chatID = chatID;
-        card.userID = userID;
+        card.chatID = chatID
         card.verified = false;
+        card.floor = floor
+        card.lease_term = lease_term
+        card.total_area = total_area
+        card.sleeping_rooms = sleeping_rooms
+        card.sleeping_places = sleeping_places
+        card.children_bed = children_bed
+        card.double_places = double_places
+        card.single_spaces = single_spaces
+        card.additional_sleeping_places = additional_sleeping_places
+        card.bathrooms = bathrooms
+        card.bathrooms_showers = bathrooms_showers
+        card.drying_for_inventory = drying_for_inventory
+        card.wifi = wifi
+        card.warm_floor = warm_floor
+        card.dishwasher = dishwasher
+        card.parking_cars = parking_cars
+        card.mall = mall
+        card.kazan = kazan
+        card.bath_territory = bath_territory
+        card.pool = pool
+        card.transfer_city = transfer_city
+        card.transfer_mountain = transfer_mountain
+        card.live_whith_animals = live_whith_animals
+        card.additionally = additionally
         await card.save();
         console.log(card);
         return res.json({ status: "200" });
-      }
-      try {
-        console.log("building card...");
-        let card = await HotelModel.build({
-          img: {},
-          category: category,
-          subcategory: subcategory,
-          title: title,
-          price: price,
-          p: p,
-          phone: phone,
-          address: adress,
-          email: email,
-          chatID: chatID,
-          nameCard: "no",
-          userID: userID,
-          verified: false,
-        });
-        console.log("saving card...");
+      } else {
         try {
-          card.save().then((e) => {
-            try {
-              console.log("binding id...");
-              timeId = card.id;
-            } catch (e) {
-              console.log(`Ошибка создания timeId: ${e} `);
-              return res.send({
-                message: `Ошибка создания timeId: ${e} `,
-                status: "400",
-              });
-            }
-
-            console.log("done.");
-            return res.send({
-              //message: `Создание карты завершено, timeId: ${timeId}`,
-              message: timeId,
-              status: "200",
-            });
+          console.log(userID)
+          console.log(price)
+          let card = await HotelModel.build({
+            img: {},
+            category: category,
+            subcategory: subcategory,
+            title: title,
+            phone: phone,
+            address: address,
+            price: price,
+            p: p,
+            email: email,
+            chatID: chatID,
+            userID: userID,
+            nameCard: "no",
+            verified: false,
+            floor: floor,
+            lease_term: lease_term,
+            total_area: total_area,
+            sleeping_rooms: sleeping_rooms,
+            sleeping_places: sleeping_places,
+            children_bed: children_bed,
+            double_places: double_places,
+            single_spaces: single_spaces,
+            additional_sleeping_places: additional_sleeping_places,
+            bathrooms: bathrooms,
+            bathrooms_showers: bathrooms_showers,
+            drying_for_inventory: drying_for_inventory,
+            wifi: wifi,
+            warm_floor: warm_floor,
+            dishwasher: dishwasher,
+            parking_cars: parking_cars,
+            mall: mall,
+            kazan: kazan,
+            bath_territory: bath_territory,
+            pool: pool,
+            transfer_city: transfer_city,
+            transfer_mountain: transfer_mountain,
+            live_whith_animals: live_whith_animals,
+            additionally: additionally,
           });
+          console.log("saving card...");
+          try {
+            card.save().then((e) => {
+              try {
+                console.log("binding id...");
+                timeId = card.id;
+              } catch (e) {
+                console.log(`Ошибка создания timeId: ${e} `);
+                return res.send({
+                  message: `Ошибка создания timeId: ${e} `,
+                  status: "400",
+                });
+              }
+  
+              console.log("done.");
+              return res.send({
+                //message: `Создание карты завершено, timeId: ${timeId}`,
+                message: timeId,
+                status: "200",
+              });
+            });
+          } catch (e) {
+            console.log(`сохранение не работает: ${e} `);
+            return res.send({
+              message: `сохранение не работает: ${e} `,
+              status: "400",
+            });
+          }
         } catch (e) {
-          console.log(`сохранение не работает: ${e} `);
+          console.log(`Ошибка создания карточки: ${e} `);
           return res.send({
-            message: `сохранение не работает: ${e} `,
+            message: `Ошибка создания карточки: ${e} `,
             status: "400",
           });
         }
-      } catch (e) {
-        console.log(`Ошибка создания карточки: ${e} `);
-        return res.send({
-          message: `Ошибка создания карточки: ${e} `,
-          status: "400",
-        });
       }
     } else {
       if (edit) {
         let card = await CardModel.findOne({ where: { id: id } });
         card.title = title;
-        card.price = price;
-        card.p = p;
-        card.address = adress;
+        card.address = address;
         card.phone = phone;
         card.email = email;
         card.img = img;
@@ -527,14 +599,38 @@ app.post(`/create-card`, async function (req, res) {
           img: {},
           category: category,
           subcategory: subcategory,
+          chatID: chatID,
+          userID: userID,
           title: title,
-          price: price,
-          p: p,
           phone: phone,
-          address: adress,
+          address: address,
           email: email,
           nameCard: "no",
           verified: false,
+          floor: floor,
+          lease_term: lease_term,
+          total_area: total_area,
+          sleeping_rooms: sleeping_rooms,
+          sleeping_places: sleeping_places,
+          children_bed: children_bed,
+          double_places: double_places,
+          single_spaces: single_spaces,
+          additional_sleeping_places: additional_sleeping_places,
+          bathrooms: bathrooms,
+          bathrooms_showers: bathrooms_showers,
+          drying_for_inventory: drying_for_inventory,
+          wifi: wifi,
+          warm_floor: warm_floor,
+          dishwasher: dishwasher,
+          parking_cars: parking_cars,
+          mall: mall,
+          kazan: kazan,
+          bath_territory: bath_territory,
+          pool: pool,
+          transfer_city: transfer_city,
+          transfer_mountain: transfer_mountain,
+          live_whith_animals: live_whith_animals,
+          additionally: additionally,
         });
         console.log("saving card...");
         try {
@@ -613,7 +709,7 @@ app.post(`/registration`, async function (req, res) {
       phone: number,
       password: hashPassword,
       role: "USER",
-      balance: 0
+      balance: 0,
     });
     console.log(newUser);
     await newUser.save();
@@ -801,7 +897,8 @@ app.post(`/ads`, async function (req, res) {
       user = await UserModel.findOne({ where: { id } });
       if (user.role == "ADMIN") {
         admin = true;
-      } else {а
+      } else {
+        а;
         admin = false;
       }
     }
@@ -874,32 +971,36 @@ app.post(`/create_transfer`, async function (req, res) {
       point,
       userID,
       edit,
-      id
+      id,
     } = req.body;
     try {
       if (edit) {
         if (id) {
-          console.log(region)
-          let card = await CardTransfer.findOne({ where: { id } })
-          card.name = name
-          card.region = region
-          card.cityfrom = cityfrom
-          card.cityto = cityto
-          card.datefrom = datefrom
-          card.timefrom = timefrom
-          card.car = car
-          card.typeCar = typeCar
-          card.passenger = passenger
-          card.price_sit = price_sit
-          card.price_salon = price_salon
-          card.length = length
-          card.chatID = chatID
-          card.point = point
-          card.regionTo = regionTo
-          await card.save()
-          res.send({ success: true, error: 'Сохранение прошло успешно', status: 200 })
+          console.log(region);
+          let card = await CardTransfer.findOne({ where: { id } });
+          card.name = name;
+          card.region = region;
+          card.cityfrom = cityfrom;
+          card.cityto = cityto;
+          card.datefrom = datefrom;
+          card.timefrom = timefrom;
+          card.car = car;
+          card.typeCar = typeCar;
+          card.passenger = passenger;
+          card.price_sit = price_sit;
+          card.price_salon = price_salon;
+          card.length = length;
+          card.chatID = chatID;
+          card.point = point;
+          card.regionTo = regionTo;
+          await card.save();
+          res.send({
+            success: true,
+            error: "Сохранение прошло успешно",
+            status: 200,
+          });
         } else {
-          res.send({ success: false, error: 'Ошибка', status: 400 })
+          res.send({ success: false, error: "Ошибка", status: 400 });
         }
       } else {
         console.log("building card...");
@@ -992,7 +1093,7 @@ app.post(`/delete_transfer`, async function (req, res) {
 
 app.post(`/create_service`, async function (req, res) {
   try {
-    let { name, phone, description, userID } = req.body;
+    let { name, phone, description, userID, chatID } = req.body;
     try {
       console.log("building card...");
       let card = await CardService.build({
@@ -1001,6 +1102,7 @@ app.post(`/create_service`, async function (req, res) {
         phone: phone,
         description: description,
         userID: userID,
+        chatID: chatID,
         verified: false,
       });
       console.log("saving card...");
@@ -1068,7 +1170,8 @@ app.post(`/services`, async function (req, res) {
 
 app.post(`/service-card`, async function (req, res) {
   try {
-    let id = req.body.id;
+    let { id } = req.body;
+    console.log(id)
     let card = await CardService.findOne({ where: { id: id } });
     res.send({ card });
   } catch (err) {
@@ -1097,15 +1200,83 @@ app.post(`/trybook`, async function (req, res) {
 
 app.post(`/create-number`, async function (req, res) {
   try {
-    let { hotel, name, adults, children, description, value, price } = req.body;
+    let {
+      hotel,
+      title,
+      floor,
+      lease_term,
+      total_area,
+      sleeping_rooms,
+      sleeping_places,
+      children_bed,
+      double_places,
+      single_spaces,
+      additional_sleeping_places,
+      bathrooms,
+      bathrooms_showers,
+      drying_for_inventory,
+      wifi,
+      warm_floor,
+      dishwasher,
+      parking_cars,
+      mall,
+      kazan,
+      bath_territory,
+      pool,
+      transfer_city,
+      transfer_mountain,
+      live_whith_animals,
+      additionally,
+    } = req.body;
     console.log(`creating number...`);
-    await addNumber(hotel, name, adults, children, description, value, price);
+    await addNumber(
+      hotel,
+      title,
+      (price = lease_term),
+      floor,
+      lease_term,
+      total_area,
+      sleeping_rooms,
+      sleeping_places,
+      children_bed,
+      double_places,
+      single_spaces,
+      additional_sleeping_places,
+      bathrooms,
+      bathrooms_showers,
+      drying_for_inventory,
+      wifi,
+      warm_floor,
+      dishwasher,
+      parking_cars,
+      mall,
+      kazan,
+      bath_territory,
+      pool,
+      transfer_city,
+      transfer_mountain,
+      live_whith_animals,
+      (additionally = "a")
+    );
     console.log(`number create`);
-    res.send({ message: `Готово`, status: `200` });
+    res.send({ message: `Успешно`, status: `200` });
   } catch (err) {
     res.send({ error: err, status: `400` });
   }
 });
+
+app.post(`/deleteNumber`, async function (req, res) {
+  try {
+    let { id, name } = req.body;
+    let card;
+    card = await NumberModel.findOne({ where: { id: id } });
+    await card.destroy();
+    res.send({ status: "200" });
+  } catch (e) {
+    res.send({ message: "Ошибка" });
+  }
+});
+
 app.post(`/number`, async function (req, res) {
   try {
     let { id } = req.body;
@@ -1275,13 +1446,13 @@ app.post(`/payment`, async function (req, res) {
   try {
     let { price, name, id, userID } = req.body;
     let transfer = await CardTransfer.findOne({ where: { id: id } });
-    let user = await UserModel.findOne({ where: { id: userID } })
+    let user = await UserModel.findOne({ where: { id: userID } });
     let { paymentRef, payment } = await initPayment(price, name);
     awaitPayment(payment).then(async (result) => {
       if (result) {
         transfer.passenger -= 1;
         await transfer.save();
-        user.balance += price * 0.9
+        user.balance += price * 0.9;
       }
     });
 
@@ -1462,10 +1633,16 @@ app.post(`/notifications`, async function (req, res) {
           verified: false,
         },
       });
-      let payments = await RequestPaymentModel.findAll({ where: { done: false } })
+      let payments = await RequestPaymentModel.findAll({
+        where: { done: false },
+      });
 
       let s =
-        transfer.length + service.length + cards.length + habitation.length + payments.length;
+        transfer.length +
+        service.length +
+        cards.length +
+        habitation.length +
+        payments.length;
       res.send({ s });
     }
     if (nameModel == "all") {
@@ -1518,9 +1695,11 @@ app.post(`/notifications`, async function (req, res) {
         events = events.length;
       }
 
-      let payments = await RequestPaymentModel.findAll({ where: { done: false } })
+      let payments = await RequestPaymentModel.findAll({
+        where: { done: false },
+      });
       if (payments) {
-        payments = payments.length
+        payments = payments.length;
       }
 
       res.send({
@@ -1530,7 +1709,7 @@ app.post(`/notifications`, async function (req, res) {
         forChildren: forChildren,
         instructorTours: instructorTours,
         events: events,
-        payments: payments
+        payments: payments,
       });
     } else if (nameModel == "habitation") {
       let hotel = await HotelModel.findAll({
@@ -1820,96 +1999,98 @@ app.post(`/myads`, async function (req, res) {
   }
 });
 
-app.post(`/transfer_days`, async function(req, res) {
+app.post(`/transfer_days`, async function (req, res) {
   try {
-    let { month, cityfrom, cityto } = req.body
+    let { month, cityfrom, cityto } = req.body;
     if (cityfrom && cityto) {
-      let transfers = await CardTransfer.findAll({ where: { cityfrom, cityto } })
-      let days = []
+      let transfers = await CardTransfer.findAll({
+        where: { cityfrom, cityto },
+      });
+      let days = [];
       for (let i = 0; i < transfers.length; i++) {
-        let transfer = transfers[i]
+        let transfer = transfers[i];
         if (month.includes(transfer.datefrom) && transfer.passenger > 0) {
-          days.push(transfer)
+          days.push(transfer);
         }
       }
       days.sort((a, b) => new Date(a.datefrom) - new Date(b.datefrom));
-      res.send({ days })
+      res.send({ days });
     } else {
-      let transfers = await CardTransfer.findAll()
-      let days = []
+      let transfers = await CardTransfer.findAll();
+      let days = [];
       for (let i = 0; i < transfers.length; i++) {
-        let transfer = transfers[i]
+        let transfer = transfers[i];
         if (month.includes(transfer.datefrom) && transfer.passenger > 0) {
-          days.push(transfer)
+          days.push(transfer);
         }
       }
       days.sort((a, b) => new Date(a.datefrom) - new Date(b.datefrom));
-      res.send({ days })
+      res.send({ days });
     }
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
-app.post(`/confirmation`, async function(req, res) {
+app.post(`/confirmation`, async function (req, res) {
   try {
-    let { phone, codeInput } = req.body
-    let code
-    let number = phone.slice(1)
-    console.log(number, codeInput)
+    let { phone, codeInput } = req.body;
+    let code;
+    let number = phone.slice(1);
+    console.log(number, codeInput);
     if (codeInput) {
-      console.log(codeInput)
+      console.log(codeInput);
       if (codeInput == code) {
-        res.send({ verified: true })
+        res.send({ verified: true });
       } else {
-        res.send({ verified: false })
+        res.send({ verified: false });
       }
     } else {
-      const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-      const api_id = 'F2117CBA-89E3-7C23-1C4F-61E1F9338C54'
-      let success
-      console.log(ip, api_id)
-      let response = await axios.post('https://sms.ru/code/call', {
+      const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+      const api_id = "F2117CBA-89E3-7C23-1C4F-61E1F9338C54";
+      let success;
+      console.log(ip, api_id);
+      let response = await axios.post("https://sms.ru/code/call", {
         phone: number,
         ip: ip,
-        api_id: api_id
-      })
-      console.log(response.data)
+        api_id: api_id,
+      });
+      console.log(response.data);
       if (response.data) {
-        code = response.data.code
-        success = response.data.success
+        code = response.data.code;
+        success = response.data.success;
       } else {
-        success = false
+        success = false;
       }
-      res.send({ success })
+      res.send({ success });
     }
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
-app.post(`/request_payments`, async function(req, res) {
+app.post(`/request_payments`, async function (req, res) {
   try {
-    let { userID } = req.body
+    let { userID } = req.body;
     if (userID) {
-      let user = await UserModel.findOne({ id: userID })
+      let user = await UserModel.findOne({ id: userID });
       if (user) {
-        res.send({ balance: user.balance })
+        res.send({ balance: user.balance });
       }
     } else {
-      let requests = await RequestPaymentModel.findAll({ done: false })
-      res.send({ requests })
+      let requests = await RequestPaymentModel.findAll({ done: false });
+      res.send({ requests });
     }
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
-app.post(`/request_payment`, async function(req, res) {
+app.post(`/request_payment`, async function (req, res) {
   try {
-    let { userID, amount, card_number } = req.body
+    let { userID, amount, card_number } = req.body;
     if (userID && amount && card_number) {
-      let user = await UserModel.findOne({ id: userID })
+      let user = await UserModel.findOne({ id: userID });
       let request = await RequestPaymentModel.create({
         username: user.username,
         surname: user.surname,
@@ -1917,44 +2098,52 @@ app.post(`/request_payment`, async function(req, res) {
         amount: amount,
         card_number: card_number,
         phone: user.phone,
-        done: false
-      })
-      await request.save()
-      res.send({ success: true, status: 200, message: 'Запрос на вывод успешно создан, ожидайте' })
+        done: false,
+      });
+      await request.save();
+      res.send({
+        success: true,
+        status: 200,
+        message: "Запрос на вывод успешно создан, ожидайте",
+      });
     } else {
-      res.send({ success: false, status: 400, message: 'Недостаточно данных!' })
+      res.send({
+        success: false,
+        status: 400,
+        message: "Недостаточно данных!",
+      });
     }
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
-app.post(`/accept_payments`, async function(req, res) {
+app.post(`/accept_payments`, async function (req, res) {
   try {
-    let { id } = req.body
-    let request = await RequestPaymentModel.findOne({ id })
-    let user = await UserModel.findOne({ id: request.userID })
+    let { id } = req.body;
+    let request = await RequestPaymentModel.findOne({ id });
+    let user = await UserModel.findOne({ id: request.userID });
     if (user.balance >= request.amount) {
-      user.balance -= request.amount
-      request.done = true
-      await user.save()
-      await request.save()
-      res.send({ message: '', success: true })
+      user.balance -= request.amount;
+      request.done = true;
+      await user.save();
+      await request.save();
+      res.send({ message: "Успешно", success: true });
     } else {
-      res.send({ message: 'Сумма вывода превышает баланс пользователя!' })
+      res.send({ message: "Сумма вывода превышает баланс пользователя!", success: false });
     }
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
-app.post(`/reject_payments`, async function(req, res) {
+app.post(`/reject_payments`, async function (req, res) {
   try {
-    let { id } = req.body
-    let request = await RequestPaymentModel.findOne({ id })
-    await request.destroy()
-    res.send({ success: true })
-  } catch(err) {
-    console.log(err)
+    let { id } = req.body;
+    let request = await RequestPaymentModel.findOne({ id });
+    await request.destroy();
+    res.send({ success: true });
+  } catch (err) {
+    console.log(err);
   }
-})
+});

@@ -20,11 +20,20 @@ export default {
   },
   methods: {
     async loadWeather() {
+
+      
       await axios
         .get(
-          `http://api.weatherapi.com/v1/forecast.json?lang=ru&key=7b48837a60794ba2a7c193829232511&days=10&aqi=no&alerts=no&q=${
+          `https://api.gismeteo.net/v2/search/cities/?lang=en&query=${
             !this.find ? 'Шерегеш' : this.find
-          }`
+          }`,
+          {
+            headers: {
+              'X-Gismeteo-Token': '658aaaf0a8fee9.23888053',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+            },
+          }
         )
         .then((res) => {
           this.list = res.data.forecast.forecastday;
@@ -94,6 +103,7 @@ export default {
       <button class="nav" @click="weatherdays(3)">3-дня</button>
       <button class="nav" @click="weatherdays(7)">7-дней</button>
       <button class="nav" @click="weatherdays(10)">10-дней</button>
+      <button class="nav" @click="weatherdays(30)">Месяц</button>
     </div>
     <div class="wrapper">
       <!-- <div class="card" v-if="weatherDay < 0">
@@ -106,7 +116,11 @@ export default {
           <span class="days">{{ getDate(weatherDay.date) }}</span>
         </div>
       </div> -->
-      <div class="card" @click="hours(i), index = i" v-for="(item, i) in weatherDay">
+      <div
+        class="card"
+        @click="hours(i), (index = i)"
+        v-for="(item, i) in weatherDay"
+      >
         <div class="icon">
           <img :src="item.day.condition.icon" alt="" />
         </div>
@@ -116,9 +130,9 @@ export default {
           <span class="days">{{ getDate(item.date) }}</span>
         </div>
       </div>
-      
+
       <div class="hour">
-        <hr>
+        <hr />
         <!-- <h2>{{ getDate(weatherDay[index].date) }}</h2> -->
         <div class="wrapper_hour">
           <div class="card" v-for="(item, i) in hour">
@@ -138,6 +152,7 @@ export default {
 </template>
 
 <style scoped>
+
 .wrapper_hour {
   display: flex;
   justify-content: center;
@@ -145,11 +160,11 @@ export default {
   flex-wrap: wrap;
   gap: 25px;
 }
-.hour h2{
+.hour h2 {
   text-align: center;
   color: #d5d5d5;
 }
-.hour .card{
+.hour .card {
   width: 150px;
   font-size: 12px;
 }
@@ -253,5 +268,4 @@ export default {
 .weather {
   font-size: 18px;
 }
-
 </style>

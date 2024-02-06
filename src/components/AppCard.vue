@@ -112,7 +112,7 @@ img {
   max-height: 180px;
   min-height: 180px;
   object-fit: cover;
-  border-radius: 5px 5px 0 0;
+  border-radius: 15px 15px 0 0;
 }
 .price {
   font-size: 13px;
@@ -128,6 +128,7 @@ h5 {
   cursor: pointer;
   min-height: 290px;
   box-shadow: 0 0 10px 0 black;
+  border-radius: 15px;
 
   transition: all 400ms;
 }

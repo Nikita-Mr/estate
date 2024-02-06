@@ -13,27 +13,30 @@ export default defineComponent({
     Navigation,
     Pagination,
   },
+
   data() {
     return {
-      INFO: {},
       admin: ``,
       target: 0,
+      view: false,
+      id: '',
+      card: {}
     };
   },
   methods: {
     async loadCard() {
+      this.view = this.$route.query.view
+      this.id = this.$route.query.id
       let response = await axios.post(`/service-card`, {
-        id: this.$route.query.id
+        id: this.id
       });
-      this.$nextTick(() => {
-        this.INFO = response.data.card;
-      })
+      this.card = response.data.card;
       this.admin = response.data.admin;
     },
     async delete_service() {
       await axios
         .post('/delete_service', {
-          id: this.INFO.id,
+          id: this.card.id,
         })
         .then((e) => {
           if (e.data.status == '200') {
@@ -44,8 +47,22 @@ export default defineComponent({
     async edit() {
       this.$router.push({
         path: '/create-card',
-        query: { id: this.INFO.id, name: this.$route.query.name , edit: true },
+        query: { id: this.card.id, name: this.$route.query.name , edit: true },
       });
+    },
+
+    async payment() {
+      let response = await axios.post(`/payment`, {
+        name: this.card.name,
+        price: this.card.price,
+        id: this.card.id,
+        userID: this.card.userID
+      });
+      this.paymentRef = response.data.paymentRef;
+      this.success = response.data.success;
+      if (this.success) {
+        window.location.href = this.paymentRef;
+      }
     },
   },
   mounted() {
@@ -67,7 +84,7 @@ export default defineComponent({
       </div>
       <div class="img">
         <Carousel :autoplay="4000" :wrap-around="true">
-          <Slide v-for="slide in INFO.img" :key="slide">
+          <Slide v-for="slide in card.img" :key="slide">
             <div class="carousel__item">
               <img :src="`/dist/assets/img/user/` + slide" alt="" />
             </div>
@@ -81,16 +98,16 @@ export default defineComponent({
       </div>
       <div class="wrapper">
         <div class="info">
-          <span class="title">{{ INFO.name }}</span>
-          <span class="phone mb-2">{{ INFO.phone }}</span>
+          <span class="title">{{ card.name }}</span>
+          <span class="phone mb-2">{{ card.phone }}</span>
         </div>
       </div>
       <div class="body">
-        <span class="description">{{ INFO.description }}</span>
+        <span class="description">{{ card.description }}</span>
       </div>
       <div class="reviews"></div>
       <div class="button-wrapper" v-if="!view">
-        <button v-if="!admin">Купить</button>
+        <!-- <button @click="payment" class="publish" v-if="!admin">Оплатить</button> -->
         <button @click="delete_service" class="delete" v-if="admin">Удалить</button>
       </div>
     </div>
@@ -98,6 +115,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
+.publish {
+  padding: 5px 20px;
+}
 .delete {
   background-color: rgba(230, 86, 86, 0.992);
   color: #fff;
@@ -215,21 +236,9 @@ img {
   margin-top: 10px;
   width: 100%;
   display: flex;
+  justify-content: center;
   align-items: flex-end;
   gap: 10px;
-}
-
-button {
-  display: block;
-  margin: 0 auto;
-  border: none;
-  width: 50%;
-  padding: 5px 0;
-  box-shadow: 0 0 10px 0 #00000037;
-}
-
-button:active {
-  box-shadow: none;
 }
 
 .messengers {
@@ -248,7 +257,7 @@ button:active {
   font-size: 1.4rem !important;
 }
 
-.adress {
+.address {
   font-size: 1rem !important;
 }
 </style>

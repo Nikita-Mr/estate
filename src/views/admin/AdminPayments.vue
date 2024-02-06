@@ -46,6 +46,7 @@ export default {
         id: id,
       });
       this.success = response.data.success;
+      this.message = response.data.message
       if (this.success) {
         this.request();
       }
@@ -55,6 +56,11 @@ export default {
       let response = await axios.post(`/reject_payments`, {
         id: id
       });
+      this.success = response.data.success;
+      this.message = response.data.message
+      if (this.success) {
+        this.request();
+      }
     },
     async request() {
       let response = await axios.post(`/request_payments`);
@@ -62,7 +68,7 @@ export default {
     },
     async open(id) {
       this.info_open = true;
-      this.info = this.requests[id];
+      this.info = this.requests[id - 1];
       let response = await axios.post(`/request_payments`, {
         userID: this.info.userID,
       });
@@ -91,14 +97,14 @@ export default {
       <div class="buttons">
         <button
           type="button"
-          class="btn btn-danger"
+          class="btn btn-danger btn-delete"
           @click="reject(item.id, $event)"
         >
           Отклонить
         </button>
         <button
           type="button"
-          class="btn btn-success"
+          class="btn btn-success publish"
           @click="accept(item.id, $event)"
         >
           Выполнено
@@ -106,7 +112,7 @@ export default {
       </div>
     </div>
     <transition name="slide-fade">
-      <div class="info_open" v-if="info_open" v-on-click-outside="close_info">
+      <div class="info_open" v-if="info_open">
         <header class="title_info">
           {{ info.username + " " + info.surname }}
         </header>
@@ -141,7 +147,7 @@ export default {
     </div>
   </div>
   <div v-if="message" class="notification-container">
-    <div :class="{ error: status == 400, success: status == 200 }">
+    <div :class="{ error: !success, success: success }">
       <span>{{ message }}</span>
     </div>
   </div>

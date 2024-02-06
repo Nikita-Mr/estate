@@ -1,86 +1,82 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from "vue-router";
 
 export default {
-  components: {
-  },
+  components: {},
   data() {
     return {
-      id: ''
-    }
-
+      id: "",
+    };
   },
-  methods: {
-  },
-  mounted() {
-
-  }
-}
+  methods: {},
+  mounted() {},
+};
 </script>
 
 <template>
   <ul class="list-events">
     <li class="item-event">
       <RouterLink to="/info">
-      <div class="event">
-        Инфо
-      </div>
+        <div class="event">Информация
+          <img src="../../assets/img/event_info.avif" alt="" />
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/transfer-taksi">
-      <div class="event">
-        Трансфер/Такси
-      </div>
+        <div class="event transfer">Трансфер/Такси
+          <img src="../../assets/img/event_transfer.jpeg" alt="">
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/habitation">
-      <div class="event">
-        Проживание
-      </div>
+        <div class="event habitation">
+          Проживание
+          <img src="https://trisovy.ru/images/pages/3/thumbs/3.jpg" alt="" />
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/rental">
-      <div class="event">
-        Прокат
-      </div>
+        <div class="event">Прокат
+          <img src="../../assets/img/event_rental.jpeg" alt="">
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/forChildren">
-      <div class="event">
-        Детям
-      </div>
+        <div class="event transfer">Детям
+          <img src="../../assets/img/event_children.jpeg" alt="">
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/instructor-tours">
-      <div class="event">
-        Инструктор/Туры
-      </div>
+        <div class="event">Инструктор/Туры
+          <img src="../../assets/img/event_instructor.jpeg" alt="">
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/events">
-      <div class="event">
-        Развлечения
-      </div>
+        <div class="event">Развлечения
+          <img src="../../assets/img/event_events.jpg" alt="">
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/news">
-      <div class="event">
-        Новости
-      </div>
+        <div class="event transfer">Новости
+          <img src="../../assets/img/event_news.jpeg" alt="">
+        </div>
       </RouterLink>
     </li>
     <li class="item-event">
       <RouterLink to="/ads">
-      <div class="event">
-        Объявления
-      </div>
+        <div class="event">Объявления
+          <img src="../../assets/img/event_ads.jpeg" alt="">
+        </div>
       </RouterLink>
     </li>
   </ul>
@@ -110,6 +106,7 @@ export default {
 }
 
 .event {
+  position: relative;
   text-align: center;
   width: 70%;
   display: flex;
@@ -130,6 +127,29 @@ export default {
   border: 1px solid black;
   box-shadow: 0px 0 10px 0 black;
 }
+
+.event img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  border-radius: 15px;
+  opacity: 0;
+  transition: all 500ms;
+}
+
+.event:hover img {
+  opacity: 1;
+}
+
+.transfer {
+  transition: all 500ms;
+}
+
+.transfer:hover {
+  color: black;
+}
+
 @media (max-width: 670px) {
   .event {
     text-align: center;
@@ -158,7 +178,7 @@ export default {
     justify-content: center;
     align-items: center;
   }
-  .list-events{
+  .list-events {
     display: block;
     overflow-y: scroll;
   }

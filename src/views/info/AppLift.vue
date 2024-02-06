@@ -57,8 +57,8 @@ export default {
 <template>
   <div class="wrapperLifts">
     <div v-if="admin" class="create-news">
-      <RouterLink to="/lift/create-lift">Опубликовать информацию</RouterLink>
-    </div>
+      <RouterLink to="/lift/create-lift" class="publish">Опубликовать информацию</RouterLink>
+    </div>  
     <div class="content">
       <div class="wrapper" v-for="item in LIFTS">
         <div class="box">
@@ -84,7 +84,7 @@ export default {
           <div class="phone">{{ item.phone }}</div>
         </div>
         <div class="delete_lift" v-if="admin">
-          <button type="button" @click="delete_lift(item.id)" class="btn btn-outline-danger">Удалить</button>
+          <button type="button" @click="delete_lift(item.id)" class="btn btn-danger btn-delete">Удалить</button>
         </div>
       </div>
     </div>
@@ -125,39 +125,10 @@ export default {
   z-index: 10;
 }
 
-.delete {
-  width: fit-content;
-  position: absolute;
-  background: transparent;
-  color: #ee2e31;
-  border: 1px solid #ee2e31;
-  border-radius: 10px;
-  padding: 5px 10px;
-  z-index: 1000000;
-}
-
 .delete_lift {
   position: absolute;
   bottom: 5%;
   right: 3%;
-}
-
-a {
-  width: fit-content;
-  padding: 5px 10px;
-  border-radius: 10px;
-  /* position: absolute; */
-  /* top: 10px;
-  right: 10px; */
-  background: transparent;
-  border: 1px solid var(--mainColor);
-  color: var(--mainColor);
-
-  transition: scale 500ms;
-}
-
-a:hover {
-  scale: 1.05;
 }
 
 .wrapperLifts {
@@ -219,5 +190,25 @@ a:hover {
 
 .wrapper:hover {
   border: 1px solid black;
+}
+
+@media (max-width: 500px) {
+  .price {
+    font-size: 1.1rem;
+  }
+
+  .wrapper {
+    padding: 10px;
+  }
+
+  .btn-delete {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .box div {
+    font-size: 0.8rem;
+  }
 }
 </style>

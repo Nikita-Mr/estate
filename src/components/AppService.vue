@@ -9,6 +9,7 @@ export default {
     name: String,
     phone: String,
     description: String,
+    id: Number,
     i: Number
   },
   components: {},
@@ -16,7 +17,7 @@ export default {
   open(){
     this.$router.push({
         path: '/taxi-delivery/card',
-        query: { id: this.$route.query.id },
+        query: { id: this.id },
       });
   }
   },
@@ -68,7 +69,7 @@ img {
   max-height: 180px;
   min-height: 180px;
   object-fit: cover;
-  border-radius: 5px 5px 0 0;
+  border-radius: 15px 15px 0 0;
 }
 .price {
   font-size: 13px;

@@ -10,16 +10,42 @@
 
 */
 
-const { sequelize, HotelModel, NumberModel } = require('./models');
+const { sequelize, HotelModel, NumberModel } = require("./models");
 
 let bookingDebug = true;
 
-// добавление номеров
-const addNumber = async (hotel, name, adults, children, description, value, price) => {
-  if (bookingDebug)
-    console.log(hotel);
+const addNumber = async (
+  hotel,
+  title,
+  price,
+  floor,
+  lease_term,
+  total_area,
+  sleeping_rooms,
+  sleeping_places,
+  children_bed,
+  double_places,
+  single_spaces,
+  additional_sleeping_places,
+  bathrooms,
+  bathrooms_showers,
+  drying_for_inventory,
+  wifi,
+  warm_floor,
+  dishwasher,
+  parking_cars,
+  mall,
+  kazan,
+  bath_territory,
+  pool,
+  transfer_city,
+  transfer_mountain,
+  live_whith_animals,
+  additionally
+) => {
+  if (bookingDebug) console.log(hotel);
   //   let newNumber = await NumberModel.create({
-  //     name: name,
+  //     title: title,
   //     adults: adults,
   //     children: children,
   //     description: description,
@@ -28,31 +54,83 @@ const addNumber = async (hotel, name, adults, children, description, value, pric
   //     bookings: {},
   //   });
   //   await newNumber.save();
+  console.log([
+    {
+      price: price,
+      title: title,
+      bookings: {},
+      HotelModelId: hotel, 
+      floor: floor,
+      lease_term: lease_term,
+      total_area: total_area,
+      sleeping_rooms: sleeping_rooms,
+      sleeping_places: sleeping_places,
+      children_bed: children_bed,
+      double_places: double_places,
+      single_spaces: single_spaces,
+      additional_sleeping_places: additional_sleeping_places,
+      bathrooms: bathrooms,
+      bathrooms_showers: bathrooms_showers,
+      drying_for_inventory: drying_for_inventory,
+      wifi: wifi,
+      warm_floor: warm_floor,
+      dishwasher: dishwasher,
+      parking_cars: parking_cars,
+      mall: mall,
+      kazan: kazan,
+      bath_territory: bath_territory,
+      pool: pool,
+      transfer_city: transfer_city,
+      transfer_mountain: transfer_mountain,
+      live_whith_animals: live_whith_animals,
+      additionally: additionally,
+    },
+  ]);
   const newNumber = await NumberModel.create({
-    price: price,
-    name: name,
-    adults: adults,
-    children: children,
-    description: description,
+    price: lease_term,
+    title: title,
     bookings: {},
-    value: value,
-    HotelModelId: hotel,//ошибка тутутуутуутутуутуутуутутуутутуутутутууттуутутутууттт долбаебикс смотри сюда
+    HotelModelId: hotel,
+    floor: floor,
+    lease_term: lease_term,
+    total_area: total_area,
+    sleeping_rooms: sleeping_rooms,
+    sleeping_places: sleeping_places,
+    children_bed: children_bed,
+    double_places: double_places,
+    single_spaces: single_spaces,
+    additional_sleeping_places: additional_sleeping_places,
+    bathrooms: bathrooms,
+    bathrooms_showers: bathrooms_showers,
+    drying_for_inventory: drying_for_inventory,
+    wifi: wifi,
+    warm_floor: warm_floor,
+    dishwasher: dishwasher,
+    parking_cars: parking_cars,
+    mall: mall,
+    kazan: kazan,
+    bath_territory: bath_territory,
+    pool: pool,
+    transfer_city: transfer_city,
+    transfer_mountain: transfer_mountain,
+    live_whith_animals: live_whith_animals,
+    additionally: "none",
   });
   await newNumber.save();
 
-  if (bookingDebug) console.log('created number, will save now...');
+  if (bookingDebug) console.log("created number, will save now...");
 
-  return '200';
+  return "200";
 };
 
 // бронирование
 const tryBook = async (number, checkin, checkout, phone) => {
   // Примечание: number - объект бд, так что с ним тут юзаются сейвы и всякое такое
-  if (bookingDebug) console.log('number bookings is: ', number.bookings);
+  if (bookingDebug) console.log("number bookings is: ", number.bookings);
 
   // если есть уже забронированные номера тарифа
   if (Object.keys(number.bookings).length) {
-    if (bookingDebug) console.log('number have some bookings already');
+    if (bookingDebug) console.log("number have some bookings already");
 
     number.bookings = [...number.bookings];
 
@@ -69,7 +147,7 @@ const tryBook = async (number, checkin, checkout, phone) => {
 
       if (bookingDebug)
         console.log(
-          'timeIn valid/timeOut valid: ',
+          "timeIn valid/timeOut valid: ",
           timeIn < bookingTimeIn,
           timeOut > bookingTimeOut
         );
@@ -78,11 +156,11 @@ const tryBook = async (number, checkin, checkout, phone) => {
         bookedAtChosenDate++;
     });
     if (bookingDebug)
-      console.log('numbers booked already: ', bookedAtChosenDate);
+      console.log("numbers booked already: ", bookedAtChosenDate);
 
     // выясняет, есть ли номера
     let canBook = bookedAtChosenDate < number.value;
-    if (bookingDebug) console.log('canBook: ', canBook);
+    if (bookingDebug) console.log("canBook: ", canBook);
     if (!canBook) return canBook;
 
     //если номера есть, идет этот код
@@ -94,7 +172,7 @@ const tryBook = async (number, checkin, checkout, phone) => {
         phone,
       },
     ];
-    if (bookingDebug) console.log('done, number bookings: ', number.bookings);
+    if (bookingDebug) console.log("done, number bookings: ", number.bookings);
   } else
     number.bookings = [
       {
@@ -103,10 +181,11 @@ const tryBook = async (number, checkin, checkout, phone) => {
         phone,
       },
     ];
-  if (bookingDebug) console.log('done, number bookings: ', number.bookings);
+  if (bookingDebug) console.log("done, number bookings: ", number.bookings);
 
   await number.save();
-  if (bookingDebug) console.log('number saved'); return {status: 200, message: "Вы забронировались", success: true};
+  if (bookingDebug) console.log("number saved");
+  return { status: 200, message: "Вы забронировались", success: true };
   return true;
 };
 

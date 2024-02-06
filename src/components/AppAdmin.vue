@@ -139,4 +139,10 @@ a:hover {
     }
   }
 }
+
+@media (max-height: 810px) {
+  .icon {
+    height: 42px;
+  }
+}
 </style>

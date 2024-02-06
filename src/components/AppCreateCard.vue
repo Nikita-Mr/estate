@@ -5,7 +5,6 @@ import { defineComponent } from "vue";
 import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
 
 import "vue3-carousel/dist/carousel.css";
-import { param } from "express-validator";
 
 export default defineComponent({
   components: {
@@ -19,7 +18,7 @@ export default defineComponent({
       files: ``,
       img: "",
       title: ``,
-      adress: ``,
+      address: ``,
       email: "",
       chatID: "",
       phone: ``,
@@ -29,6 +28,67 @@ export default defineComponent({
       error: ``,
       INFO: {},
       edit: false,
+      switch: 1,
+      workbook: "",
+      createn: 0,
+      brony: 0,
+      category: this.$route.query.category,
+      subcategory: this.$route.query.subcategory,
+      namebrony: {
+        title: "название",
+        floor: "Этажей",
+        lease_term: "Минимальный срок аренды, суток",
+        total_area: "общая площадь, кв м",
+        sleeping_rooms: "спальных комнат",
+        sleeping_places: "спальных мест основных",
+        children_bed: "Детская кровать",
+        double_places: "двуспальные места",
+        single_spaces: "односпальные места",
+        additional_sleeping_places: "дополнительные спальные места",
+        bathrooms: "санузлов",
+        bathrooms_showers: "ванных/душевых",
+        drying_for_inventory: "сушилка для инвентаря",
+        wifi: "Wi-Fi",
+        warm_floor: "Тёплый пол",
+        dishwasher: "посудомойка",
+        parking_cars: "парковка, машин",
+        mall: "мангал",
+        kazan: "казан",
+        bath_territory: "баня на территори",
+        pool: "Бассейн Летом/зимой",
+        transfer_city: "Трансфер с городов",
+        transfer_mountain: "Трансфер на гору",
+        live_whith_animals: "Можно проживать с животными",
+        additionally: "дополнительно",
+      },
+      index: "",
+      NUMBERINDEX: "",
+      value: "",
+      floor: 0,
+      lease_term: 0,
+      total_area: 0,
+      sleeping_rooms: 0,
+      sleeping_places: 0,
+      children_bed: "",
+      double_places: 0,
+      single_spaces: 0,
+      additional_sleeping_places: 0,
+      bathrooms: 0,
+      bathrooms_showers: 0,
+      drying_for_inventory: "",
+      wifi: "",
+      warm_floor: "",
+      dishwasher: "",
+      parking_cars: 0,
+      mall: "",
+      kazan: "",
+      bath_territory: "",
+      pool: "",
+      transfer_city: "",
+      transfer_mountain: "",
+      live_whith_animals: "",
+      additional: "",
+      title: "",
     };
   },
   mounted() {
@@ -64,12 +124,36 @@ export default defineComponent({
           price: this.price,
           p: this.description,
           phone: this.phone,
-          adress: this.adress,
+          address: this.address,
           email: this.email,
           chatID: this.chatID,
           userID: this.getCookieValue("id"),
           subcategory: this.$route.query.name,
           category: this.$route.query.category,
+          floor: this.floor,
+          lease_term: this.lease_term,
+          total_area: this.total_area,
+          sleeping_rooms: this.sleeping_rooms,
+          sleeping_places: this.sleeping_places,
+          children_bed: this.children_bed,
+          double_places: this.double_places,
+          single_spaces: this.single_spaces,
+          additional_sleeping_places: this.additional_sleeping_places,
+          bathrooms: this.bathrooms,
+          bathrooms_showers: this.bathrooms_showers,
+          drying_for_inventory: this.drying_for_inventory,
+          wifi: this.wifi,
+          warm_floor: this.warm_floor,
+          dishwasher: this.dishwasher,
+          parking_cars: this.parking_cars,
+          mall: this.mall,
+          kazan: this.kazan,
+          bath_territory: this.bath_territory,
+          pool: this.pool,
+          transfer_city: this.transfer_city,
+          transfer_mountain: this.transfer_mountain,
+          live_whith_animals: this.live_whith_animals,
+          additionally: this.additionally,
         })
         .then((e) => {
           console.log(`card creation return: ${e.data.text}`);
@@ -139,10 +223,34 @@ export default defineComponent({
           price: this.price,
           p: this.description,
           phone: this.phone,
-          adress: this.adress,
+          address: this.address,
           email: this.email,
           edit: true,
           login: true,
+          floor: this.floor,
+          lease_term: this.lease_term,
+          total_area: this.total_area,
+          sleeping_rooms: this.sleeping_rooms,
+          sleeping_places: this.sleeping_places,
+          children_bed: this.children_bed,
+          double_places: this.double_places,
+          single_spaces: this.single_spaces,
+          additional_sleeping_places: this.additional_sleeping_places,
+          bathrooms: this.bathrooms,
+          bathrooms_showers: this.bathrooms_showers,
+          drying_for_inventory: this.drying_for_inventory,
+          wifi: this.wifi,
+          warm_floor: this.warm_floor,
+          dishwasher: this.dishwasher,
+          parking_cars: this.parking_cars,
+          mall: this.mall,
+          kazan: this.kazan,
+          bath_territory: this.bath_territory,
+          pool: this.pool,
+          transfer_city: this.transfer_city,
+          transfer_mountain: this.transfer_mountain,
+          live_whith_animals: this.live_whith_animals,
+          additionally: this.additionally,
         })
         .then((e) => {
           if (formData) {
@@ -167,7 +275,11 @@ export default defineComponent({
           }
 
           if (e.data.status == "200") {
-            this.$router.go(-1);
+            setTimeout(() => {
+              this.$router.go(-1);
+              this.error = "";
+              this.status = "";
+            }, 3000);
           }
         });
     },
@@ -181,14 +293,39 @@ export default defineComponent({
         });
         this.edit = this.$route.query.edit;
         this.INFO = response.data.card;
+        console.log(this.INFO);
         this.img = this.INFO.img;
         this.title = this.INFO.title;
         this.price = this.INFO.price;
         this.phone = this.INFO.phone;
-        this.adress = this.INFO.address;
+        this.address = this.INFO.address;
         this.description = this.INFO.p;
         this.email = this.INFO.email;
         this.chatID = this.INFO.chatID;
+        this.floor = this.INFO.floor;
+        this.lease_term = this.INFO.lease_term;
+        this.total_area = this.INFO.total_area;
+        this.sleeping_rooms = this.INFO.sleeping_rooms;
+        this.sleeping_places = this.INFO.sleeping_places;
+        this.children_bed = this.INFO.children_bed;
+        this.double_places = this.INFO.double_places;
+        this.single_spaces = this.INFO.single_spaces;
+        this.additional_sleeping_places = this.INFO.additional_sleeping_places;
+        this.bathrooms = this.INFO.bathrooms;
+        this.bathrooms_showers = this.INFO.bathrooms_showers;
+        this.drying_for_inventory = this.INFO.drying_for_inventory;
+        this.wifi = this.INFO.wifi;
+        this.warm_floor = this.INFO.warm_floor;
+        this.dishwasher = this.INFO.dishwasher;
+        this.parking_cars = this.INFO.parking_cars;
+        this.mall = this.INFO.mall;
+        this.kazan = this.INFO.kazan;
+        this.bath_territory = this.INFO.bath_territory;
+        this.pool = this.INFO.pool;
+        this.transfer_city = this.INFO.transfer_city;
+        this.transfer_mountain = this.INFO.transfer_mountain;
+        this.live_whith_animals = this.INFO.live_whith_animals;
+        this.additionally = this.INFO.additionally;
       }
     },
   },
@@ -197,11 +334,267 @@ export default defineComponent({
 
 <template>
   <div class="card-wrapper">
+    <transition name="slide-fade">
+      <div class="info_open" ref="modal" :class="{ 'd-none': createn == 0 }">
+        <header class="title_info">
+          <button
+            type="button"
+            @click="createn = 0"
+            class="btn-close"
+            aria-label="Close"
+          ></button>
+        </header>
+        <main class="main_info">
+          <div class="group">
+            <span> Название: </span>
+            <span>
+              <input type="text" name="" id="" v-model="title" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Этажей: </span>
+            <span>
+              <input type="number" name="" id="" v-model="floor" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Минимальный срок аренды, суток: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="lease_term"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Общая площадь, кв м: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="total_area"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Спальных комнат: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="sleeping_rooms"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Спальных мест основных: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="sleeping_places"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Детская кровать: </span>
+            <span>
+              <input
+                type="text"
+                name=""
+                id=""
+                v-model="children_bed"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Двуспальные места: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="double_places"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Односпальные места: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="single_spaces"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Дополнительные спальные места: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="additional_sleeping_places"
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Санузлов: </span>
+            <span>
+              <input type="number" name="" id="" v-model="bathrooms" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Ванных/Душевых: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="bathrooms_showers"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Сушилка для инвентаря: </span>
+            <span>
+              <input
+                type="text"
+                name=""
+                id=""
+                v-model="drying_for_inventory"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Wi-Fi: </span>
+            <span>
+              <input type="text" name="" id="" v-model="wifi" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Тёплый пол: </span>
+            <span>
+              <input type="text" name="" id="" v-model="warm_floor" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Посудомойка: </span>
+            <span>
+              <input type="text" name="" id="" v-model="dishwasher" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Парковка, машин: </span>
+            <span>
+              <input
+                type="number"
+                name=""
+                id=""
+                v-model="parking_cars"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Мангал: </span>
+            <span>
+              <input type="text" name="" id="" v-model="mall" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Казан: </span>
+            <span>
+              <input type="text" name="" id="" v-model="kazan" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Баня на территории: </span>
+            <span>
+              <input
+                type="text"
+                name=""
+                id=""
+                v-model="bath_territory"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Бассейн Летом/зимой: </span>
+            <span>
+              <input type="text" name="" id="" v-model="pool" required />
+            </span>
+          </div>
+          <div class="group">
+            <span> Трансфер из городов: </span>
+            <span>
+              <input
+                type="text"
+                name=""
+                id=""
+                v-model="transfer_city"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Трансфер на гору: </span>
+            <span>
+              <input
+                type="text"
+                name=""
+                id=""
+                v-model="transfer_mountain"
+                required
+              />
+            </span>
+          </div>
+          <div class="group">
+            <span> Можно проживать с животными: </span>
+            <span>
+              <input
+                type="text"
+                name=""
+                id=""
+                v-model="live_whith_animals"
+                required
+              />
+            </span>
+          </div>
+        </main>
+        <div class="button-wrapper">
+          <button v-if="buttonTarg == 0">Создать</button>
+          <span v-if="buttonTarg == 1">Созданно</span>
+          <button class="publish" @click="createn = 0">Сохранить</button>
+          <button
+            class="btn btn-light btn-cancel"
+            type="button"
+            @click="createn = 0"
+          >
+            Отмена
+          </button>
+        </div>
+      </div>
+    </transition>
     <div class="card">
       <div class="img">
-        <button @click="files = ``" class="cross">
-          <ion-icon name="close-outline"></ion-icon>
-        </button>
         <input
           type="file"
           ref="files"
@@ -255,11 +648,11 @@ export default defineComponent({
         <input
           v-model="price"
           type="number"
-          v-if="$route.query.name != 'hotels'"
+          v-if="subcategory != 'hotels'"
           placeholder="Цена"
         />
 
-        <input v-model="adress" type="text" placeholder="Адрес" />
+        <input v-model="address" type="text" placeholder="Адрес" />
 
         <input v-model="phone" type="tel" placeholder="Номер телефона" />
 
@@ -287,8 +680,13 @@ export default defineComponent({
         ></textarea>
       </div>
       <div class="button-wrapper">
-        <button v-if="!edit" @click="submitFiles">Создать</button>
-        <button v-if="edit" @click="editCard">Сохранить</button>
+        <button v-if="!edit" class="publish" @click="submitFiles">
+          Опубликовать
+        </button>
+        <button v-if="category=='habitation'" class="btn btn-info" @click="this.createn = 1">
+          Полная информация
+        </button>
+        <button v-if="edit" class="publish" @click="editCard">Сохранить</button>
       </div>
       <div v-if="error" class="notification-container">
         <div :class="{ error: status == 400, success: status == 200 }">
@@ -300,6 +698,69 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.title_info {
+  text-align: center;
+  font-size: large;
+  height: 20%;
+}
+
+.main_info {
+  margin-top: 7px;
+}
+.info_open {
+  position: absolute;
+  top: 0%;
+  min-width: 310px;
+  width: 80%;
+  min-height: 288px;
+  height: 65vh;
+  background: linear-gradient(45deg, #f2f2f2, #fff);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  border: 1px solid #fff;
+  border-radius: 15px;
+  padding: 10px 20px;
+  z-index: 20;
+  display: grid;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.btn-close {
+  border: none;
+  position: absolute;
+  right: 2%;
+  top: 2%;
+}
+
+.btn-close:focus,
+.btn-close:active,
+.btn-close:active:focus:not(:disabled):not(.disabled) {
+  box-shadow: none !important;
+  outline: 0;
+}
+
+.info_open input {
+  border: 1px solid black;
+  color: black;
+}
+
+.info_open .group {
+  font-weight: 500;
+  color: black;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
 .notification-container {
   position: fixed;
   bottom: 3%;
@@ -351,20 +812,6 @@ export default defineComponent({
   width: 40px;
 
   transition: all 400ms;
-}
-
-.button-wrapper button {
-  padding: 5px 15px;
-  background-color: transparent;
-  border: 1px solid #62a87c;
-  border-radius: 10px;
-  color: #62a87c;
-  font-weight: 600;
-  transition: scale 500ms;
-}
-
-.button-wrapper button:hover {
-  scale: 1.03;
 }
 
 @media (max-width: 426px) {
@@ -432,6 +879,15 @@ textarea::placeholder {
 
 input {
   color: #fff;
+  transition: all 500ms ease;
+}
+
+input:active,
+input:focus,
+input:hover {
+  box-shadow: 0 0 10px 0 black;
+  border: none;
+  outline: none;
 }
 
 textarea {
@@ -573,19 +1029,61 @@ img {
   margin-top: 10px;
   width: 100%;
   display: flex;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: stretch;
+  gap: 15px;
 }
-button {
-  display: block;
-  margin: 0 auto;
+
+.btn-info {
+  background: linear-gradient(45deg, #09203f, #537895);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
   border: none;
-  width: 50%;
-  padding: 5px 0;
-  box-shadow: 0 0 10px 0 #00000037;
+  color: #fff;
+  border-radius: 10px;
+
+  transition: all 500ms ease;
+}
+
+button {
+  border: none;
+  box-shadow: none;
 }
 
 button:active {
   box-shadow: none;
+}
+
+@media (max-width: 990px) {
+  .info_open {
+    height: 74vh;
+  }
+}
+
+@media (max-width: 771px) {
+  .info_open {
+    width: 95%;
+  }
+
+  .card-wrapper {
+    width: 100%;
+    height: 65vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 566px) {
+  .img {
+    width: 100%;
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 450px) {
+  .info {
+    width: 100%;
+  }
 }
 
 @media (max-height: 780px) {
@@ -594,6 +1092,10 @@ button:active {
     height: 70vh;
     overflow-y: scroll;
     overflow-x: hidden;
+  }
+
+  .info_open {
+    height: 70vh;
   }
 }
 </style>

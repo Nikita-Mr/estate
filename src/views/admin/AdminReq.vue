@@ -89,8 +89,8 @@ export default {
           <div class="title">{{item.name}}</div>
           <div class="date">{{getDate(item.createdAt)}}</div>
           <div class="buttons">
-            <button type="button" class="btn btn-danger" @click="reject(item.id, nameModel, $event)">Отклонить</button>
-            <button type="button" class="btn btn-success" @click="accept(item.id, nameModel, $event)">Принять</button>
+            <button type="button" class="btn btn-danger btn-delete" @click="reject(item.id, nameModel, $event)">Отклонить</button>
+            <button type="button" class="btn btn-success publish" @click="accept(item.id, nameModel, $event)">Принять</button>
           </div>
         </div>
 
@@ -99,8 +99,8 @@ export default {
           <div class="title">{{item.name}}</div>
           <div class="date">{{getDate(item.createdAt)}}</div>
           <div class="buttons">
-            <button type="button" class="btn btn-danger" @click="reject(item.id, nameModel, $event)">Отклонить</button>
-            <button type="button" class="btn btn-success" @click="accept(item.id, nameModel, $event)">Принять</button>
+            <button type="button" class="btn btn-danger btn-delete" @click="reject(item.id, nameModel, $event)">Отклонить</button>
+            <button type="button" class="btn btn-success publish" @click="accept(item.id, nameModel, $event)">Принять</button>
           </div>
         </div>
 
@@ -108,8 +108,8 @@ export default {
           <div class="title">{{item.title}}</div>
           <div class="date">{{getDate(item.createdAt)}}</div>
           <div class="buttons">
-            <button type="button" class="btn btn-danger" @click="reject(item.id, nameModel, $event)">Отклонить</button>
-            <button type="button" class="btn btn-success" @click="accept(item.id, nameModel, $event)">Принять</button>
+            <button type="button" class="btn btn-danger btn-delete" @click="reject(item.id, nameModel, $event)">Отклонить</button>
+            <button type="button" class="btn btn-success publish" @click="accept(item.id, nameModel, $event)">Принять</button>
           </div>
         </div>
       </div>

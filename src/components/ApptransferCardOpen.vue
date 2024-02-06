@@ -133,7 +133,7 @@ export default defineComponent({
     <div class="card">
       <div class="modalDelete" :class="{ 'd-none': target == 0 }">
         <div class="button-wrapper">
-          <button @click="deleteCard" class="delete" v-if="admin">
+          <button @click="deleteCard" class="btn-delete" v-if="admin">
             Удалить
           </button>
           <button @click="target = 0" v-if="admin">Отмена</button>
@@ -228,13 +228,13 @@ export default defineComponent({
       <div class="button-wrapper" v-if="!view">
         <span v-if="message" class="text-center mt-3">{{ message }}</span>
         <button v-if="!admin" @click="book">Забронировать</button>
-        <button v-if="editB" @click="edit" class="btn btn-info">
+        <button v-if="editB" @click="edit" class="btn btn-light">
           Редактировать
         </button>
-        <button @click="deleteCard" class="btn btn-danger" v-if="admin">
+        <button @click="deleteCard" class="btn btn-danger btn-delete" v-if="admin">
           Удалить
         </button>
-        <button @click="payment" class="btn btn-success">Оплатить</button>
+        <button @click="payment" class="btn btn-success publish">Оплатить</button>
       </div>
     </div>
   </div>
@@ -242,7 +242,7 @@ export default defineComponent({
 
 <style scoped>
 .card {
-  color: #000;
+  color: black;
 }
 .driver span {
   border-bottom: 1px solid #ffffff72;
@@ -486,6 +486,11 @@ img {
   padding: 5px 7px;
   box-shadow: 0 0 10px 0 #00000037;
 } */
+button {
+  border-radius: 10px;
+  transition: all 500ms;
+  font-weight: 550;
+}
 
 button:active {
   box-shadow: none;
@@ -507,7 +512,7 @@ button:active {
   font-size: 1.4rem !important;
 }
 
-.adress {
+.address {
   font-size: 1rem !important;
 }
 

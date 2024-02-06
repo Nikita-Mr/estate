@@ -87,7 +87,7 @@ export default {
       </div>
     </div>
     <div class="exit">
-      <button type="button" class="btn_exit" @click="exit">
+      <button type="button" class="btn-delete" @click="exit">
         Выйти
       </button>
     </div>
@@ -231,6 +231,10 @@ input {
   border-radius: 15px;
 
   transition: all 500ms;
+}
+
+.btn-delete {
+  padding: 5px 8px;
 }
 
 .btn_exit:hover, .btn_exit:active, .btn_exit:focus {

@@ -5,7 +5,6 @@ import { defineComponent } from "vue";
 import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
 
 import "vue3-carousel/dist/carousel.css";
-import { param } from "express-validator";
 
 export default defineComponent({
   components: {
@@ -301,6 +300,8 @@ export default defineComponent({
       ],
       region: null,
       city: null,
+      regionTo: null,
+      cityTo: null,
       img: "",
       files: "",
       edit: false,
@@ -319,9 +320,10 @@ export default defineComponent({
         this.card = response.data.card;
         if (this.card) {
           this.nametransfer = this.card.name;
-          this.region = this.card.region;
+          this.region = this.card.region.name;
+          this.regionTo = this.card.regionTo.name;
           this.city = this.card.cityfrom;
-          this.cityto = this.card.cityto;
+          this.cityto = this.card.cityTo;
           this.datefrom = this.card.datefrom;
           this.timefrom = this.card.timefrom;
           this.typeCar = this.card.typeCar;
@@ -352,8 +354,9 @@ export default defineComponent({
           .post(`/create_transfer`, {
             name: this.nametransfer,
             region: this.region.name,
+            regionTo: this.regionTo.name,
             cityfrom: this.city,
-            cityto: this.cityto,
+            cityto: this.cityTo,
             datefrom: this.datefrom,
             timefrom: this.timefrom,
             typeCar: this.typeCar,
@@ -585,7 +588,7 @@ export default defineComponent({
             </div>
           </div>
           <div class="input-group">
-            <div class="title">Регион:</div>
+            <div class="title">Регион (откуда):</div>
             <div class="wrapper-for-input">
               <select v-model="region">
                 <option v-for="region in regions" :value="region">
@@ -609,16 +612,26 @@ export default defineComponent({
           </div>
 
           <div class="input-group">
-            <div class="title">Куда:</div>
+            <div class="title">Регион (куда):</div>
             <div class="wrapper-for-input">
-              <input
-                v-model="cityto"
-                type="text"
-                name="cityto"
-                class="form-input cityto"
-                required
-                id=""
-              />
+              <select v-model="regionTo">
+                <option v-for="region in regions" :value="region">
+                  {{ region.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div
+            class="input-group"
+            :class="{ active: this.regionTo, 'd-none': !this.regionTo }"
+          >
+            <div class="title">Город:</div>
+            <div class="wrapper-for-input" v-if="regionTo">
+              <select v-model="cityTo">
+                <option v-for="city in regionTo.cities" :value="city">
+                  {{ city }}
+                </option>
+              </select>
             </div>
           </div>
           <div class="input-group">
@@ -779,7 +792,7 @@ export default defineComponent({
         </div>
       </div>
       <div v-else class="div-for-button">
-        <button class="create-transfer">Сохранить</button>
+        <button class="publish">Сохранить</button>
       </div>
     </form>
   </div>
@@ -931,16 +944,16 @@ form {
   display: flex;
   justify-content: center;
   align-items: center;
- }
- 
+}
+
 .success {
-  background-color: #87E752;
+  background-color: #87e752;
   border-radius: 15px;
   padding: 7px 12px;
   color: #fff;
 }
 .error {
-  background-color: #ED1C24;
+  background-color: #ed1c24;
   border-radius: 15px;
   padding: 7px 12px;
   color: #fff;

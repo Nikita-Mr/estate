@@ -48,7 +48,7 @@ export default {
 <template>
   <div class="wrapper-for-content">
     <div class="create-service">
-      <RouterLink v-if="admin" to="/create-service"
+      <RouterLink v-if="admin" to="/create-service" class="publish"
         >Опубликовать услугу</RouterLink
       >
     </div>
@@ -57,16 +57,11 @@ export default {
         <div v-for="(cardInfo, index) in info" class="cols">
           <AppService
             v-if="cardInfo.verified"
-            @click="
-              $router.push({
-                path: `/taxi-delivery/card`,
-                query: { id: cardInfo.id },
-              })
-            "
             :img="cardInfo.img"
             :name="cardInfo.name"
             :phone="cardInfo.phone"
             :description="cardInfo.description"
+            :id="cardInfo.id"
             :i="index"
           />
         </div>
@@ -105,21 +100,6 @@ export default {
   display: flex;
   justify-content: center;
 }
-
-.create-service a {
-  width: fit-content;
-  padding: 5px 10px;
-  border-radius: 10px;
-  background: transparent;
-  border: 1px solid var(--mainColor);
-  color: var(--mainColor);
-
-  transition: scale 500ms;
-}
-.create-service a:hover {
-  scale: 1.06;
-}
-
 .row {
   width: 100%;
   height: auto;
@@ -177,6 +157,13 @@ export default {
 @media (max-width: 1000px) {
   .cols {
     width: 48%;
+  }
+}
+
+@media (max-width: 600px) {
+  .cols {
+    width: 70%;
+    margin: 0 auto;
   }
 }
 </style>

@@ -5,7 +5,6 @@ import { defineComponent } from "vue";
 import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
 
 import "vue3-carousel/dist/carousel.css";
-import { param } from "express-validator";
 
 export default defineComponent({
   components: {
@@ -24,6 +23,7 @@ export default defineComponent({
       status: ``,
       error: ``,
       INFO: {},
+      chatID: "",
       edit: false,
     };
   },
@@ -34,6 +34,18 @@ export default defineComponent({
     async create() {},
     handleFilesUpload() {
       this.files = this.$refs.files.files;
+    },
+
+    getCookieValue(name) {
+      const cookies = document.cookie.split("; ");
+      let res;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        if (cookie.slice(0, 2) == name) {
+          res = cookie.replace(name + "=", "");
+        }
+      }
+      return res;
     },
     async submitFiles() {
       let formData = new FormData();
@@ -46,7 +58,8 @@ export default defineComponent({
           name: this.name,
           phone: this.phone,
           description: this.description,
-          userID: this.getCookieValue('id')
+          userID: this.getCookieValue("id"),
+          chatID: this.chatID,
         })
         .then((e) => {
           console.log(`card creation return: ${e.data.text}`);
@@ -81,8 +94,8 @@ export default defineComponent({
             setTimeout(() => {
               this.error = "";
               this.status = "";
-              // this.$router.go(-1);
-            }, 300000);
+              this.$router.go(-1);
+            }, 2000);
           }
         });
       // if (this.status == "200") {
@@ -124,7 +137,7 @@ export default defineComponent({
           price: this.price,
           p: this.description,
           phone: this.phone,
-          adress: this.adress,
+          address: this.address,
           edit: true,
         })
         .then((e) => {
@@ -168,7 +181,7 @@ export default defineComponent({
         this.title = this.INFO.title;
         this.price = this.INFO.price;
         this.phone = this.INFO.phone;
-        this.adress = this.INFO.address;
+        this.address = this.INFO.address;
         this.description = this.INFO.p;
       }
     },
@@ -180,9 +193,6 @@ export default defineComponent({
   <div class="card-wrapper">
     <div class="card">
       <div class="img">
-        <button @click="files = ``" class="cross">
-          <ion-icon name="close-outline"></ion-icon>
-        </button>
         <input
           type="file"
           ref="files"
@@ -238,6 +248,17 @@ export default defineComponent({
           type="text"
           placeholder="описание услуги"
         />
+        <input v-model="chatID" type="text" placeholder="чат ID" />
+        <div class="telegramBot">
+          <a href="https://t.me/SNEGINFO_BOT" target="_blank">
+            <img class="teleg" src="../assets/img/telegram.png" alt="" />
+            <span class="text"
+              >Чтобы получать уведомления по вашему объекту, перейдите в
+              телеграм, нажав на иконку и напишите "/start", получите чат
+              ID</span
+            >
+          </a>
+        </div>
       </div>
       <!-- <div class="body">
         <textarea
@@ -249,24 +270,84 @@ export default defineComponent({
       </div> -->
       <div class="reviews"></div>
       <div class="button-wrapper">
-        <button v-if="!edit" @click="submitFiles">Опубликовать</button>
-        <button v-if="edit" @click="editCard">Сохранить</button>
+        <button class="publish" v-if="!edit" @click="submitFiles">
+          Опубликовать
+        </button>
+        <button class="" v-if="edit" @click="editCard">Сохранить</button>
       </div>
     </div>
-    <div v-if="error" class="notification-container">
-      <div :class="{ error: status == 400, success: status == 200 }">
-        <span>{{ error }}</span>
-      </div>
+  </div>
+  <div v-if="error" class="notification-container">
+    <div :class="{ error: status == 400, success: status == 200 }">
+      <span>{{ error }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
-
-* {
-  color: #fff;
+.title_info {
+  text-align: center;
+  font-size: large;
+  height: 20%;
 }
 
+.main_info {
+  margin-top: 7px;
+}
+.info_open {
+  position: absolute;
+  top: 0%;
+  min-width: 310px;
+  width: 80%;
+  min-height: 288px;
+  height: 65vh;
+  background: linear-gradient(45deg, #f2f2f2, #fff);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  border: 1px solid #fff;
+  border-radius: 15px;
+  padding: 10px 20px;
+  z-index: 20;
+  display: grid;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.btn-close {
+  border: none;
+  position: absolute;
+  right: 2%;
+  top: 2%;
+}
+
+.btn-close:focus,
+.btn-close:active,
+.btn-close:active:focus:not(:disabled):not(.disabled) {
+  box-shadow: none !important;
+  outline: 0;
+}
+
+.info_open input {
+  border: 1px solid black;
+  color: black;
+}
+
+.info_open .group {
+  font-weight: 500;
+  color: black;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
 .notification-container {
   position: fixed;
   bottom: 3%;
@@ -274,39 +355,62 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
- }
- 
+}
+
 .success {
-  background-color: #87E752;
+  background-color: #87e752;
   border-radius: 15px;
   padding: 7px 12px;
   color: #fff;
 }
 .error {
-  background-color: #ED1C24;
+  background-color: #ed1c24;
   border-radius: 15px;
   padding: 7px 12px;
   color: #fff;
   font-weight: 550;
 }
-.button-wrapper button {
-  padding: 5px 15px;
-  background-color: transparent;
-  border: 1px solid #62a87c;
-  border-radius: 10px;
-  color: #62a87c;
-  font-weight: 600;
-  transition: scale 500ms;
+
+.telegramBot {
+  padding: 7px;
 }
 
-.button-wrapper button:hover {
-  scale: 1.03;
+.telegramBot a {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row;
+
+  transition: all 400ms;
 }
 
+.telegramBot img:hover {
+  transform: scale(1.07);
+}
+
+.text {
+  font-size: 0.9rem !important;
+}
+
+.teleg {
+  height: 40px !important;
+  width: 40px;
+
+  transition: all 400ms;
+}
+
+@media (max-width: 426px) {
+  label {
+    height: 200px !important;
+  }
+}
 .imgCross {
   position: relative;
 }
 .cross {
+  color: red;
   z-index: 20;
   width: 20px;
   background: transparent;
@@ -318,7 +422,14 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+
+  transition: all 500ms;
 }
+
+.cross:hover {
+  transform: scale(1.4);
+}
+
 .carousel {
   height: 100%;
 }
@@ -352,10 +463,25 @@ input::placeholder {
 textarea::placeholder {
   color: #fff;
 }
+
+input {
+  color: #fff;
+  transition: all 500ms ease;
+}
+
+input:active, input:focus, input:hover {
+  box-shadow: 0 0 10px 0 black;
+  border: none;
+  outline: none;
+}
+
 textarea {
   height: 100%;
   background: transparent;
   border: 1px solid var(--mainColor);
+  padding: 5px;
+  border-radius: 10px;
+  color: #fff;
 }
 .info {
   gap: 10px;
@@ -367,21 +493,10 @@ input {
   background: transparent;
   border: 1px solid var(--mainColor);
   border-radius: 10px;
-  padding: 0 5px 0 5px;
+  padding: 0 35px 0 5px;
   width: 100%;
   height: 50px;
-
-  transition: all 400ms;
 }
-
-input::placeholder {
-  color: #fff;
-}
-
-input:hover {
-  color: black;
-}
-
 input:nth-child(2) {
   width: 95%;
   height: 40px;
@@ -394,6 +509,11 @@ input:nth-child(3) {
 
 input:nth-child(4) {
   width: 85%;
+  height: 40px;
+}
+
+input:nth-child(5) {
+  width: 80%;
   height: 40px;
 }
 
@@ -410,7 +530,9 @@ label {
   cursor: pointer;
   border: 1px solid var(--mainColor);
   border-radius: 10px;
+  max-height: 200px !important;
 }
+
 .line img {
   width: 50px !important;
   height: 50px !important;
@@ -418,6 +540,14 @@ label {
 
 .carousel {
   height: 100%;
+}
+@media (max-width: 426px) {
+  .info {
+    width: 100% !important;
+  }
+  .img {
+    width: 100% !important;
+  }
 }
 
 .img {
@@ -484,42 +614,70 @@ img {
   margin-top: 10px;
   width: 100%;
   display: flex;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: stretch;
+  gap: 15px;
 }
-button {
-  display: block;
-  margin: 0 auto;
+
+.btn-info {
+  background: linear-gradient(45deg, #09203f, #537895);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
   border: none;
-  width: 50%;
-  padding: 5px 0;
-  box-shadow: 0 0 10px 0 #00000037;
+  color: #fff;
+}
+
+button {
+  border: none;
+  box-shadow: none;
 }
 
 button:active {
   box-shadow: none;
 }
 
-@media (max-width: 426px) {
-  .info {
-    width: 100% !important;
-  }
-  .img {
-    width: 100% !important;
-  }
-
-  label {
-    height: 200px !important;
-  }
-
-  button {
-    width: 70%;
-    padding: 5px;
+@media (max-width: 990px) {
+  .info_open {
+    height: 74vh;
   }
 }
 
-@media (max-width: 300px) {
-  button {
-    width: 85%;
+@media (max-width: 771px) {
+  .info_open {
+    width: 95%;
+  }
+
+  .card-wrapper {
+    width: 100%;
+    height: 65vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 566px) {
+  .img {
+    width: 100%;
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 450px) {
+  .info {
+    width: 100%;
+  }
+}
+
+@media (max-height: 780px) {
+  .card-wrapper {
+    width: 100%;
+    height: 70vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  .info_open {
+    height: 70vh;
   }
 }
 </style>
