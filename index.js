@@ -2174,19 +2174,6 @@ app.post(`/weather`, async function (req, res) {
     })
 
     res.send({ today, tomorrow, twoWeeks, month })
-
-
-    // axios
-    //   .get(`https://api.gismeteo.net/v2/stations/weather/${city}`, {
-    //     params: {
-    //       "X-Gismeteo-Token": "	56b30cb255.3443075",
-    //       "Accept-Language": "ru",
-    //       "Units": "metric",
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //   });
   } catch (err) {
     console.log(err);
   }
