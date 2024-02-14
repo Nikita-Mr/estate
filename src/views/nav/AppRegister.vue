@@ -35,7 +35,6 @@ export default {
       this.status = error.data.status;
       setTimeout(() => {
         if (this.status == "200") {
-          this.$refs.form.reset();
           document.cookie = new String();
           document.cookie = `token=${this.token}; max-age=1123200`;
 
@@ -55,6 +54,11 @@ export default {
       let response = await axios.post(`/confirmation`, {
         phone: this.number,
       });
+      this.error = response.data.message
+      this.status = response.data.status
+      setTimeout(() => {
+        (this.error = ``), (this.status = ``);
+      }, 5000);
     },
 
     async check() {
@@ -66,6 +70,7 @@ export default {
         this.confirmation = false;
         this.status = 200;
         this.error = "Верификация прошла успешно";
+        this.submit();
       } else {
         this.status = 400;
         this.error = "Введенный код не совпадает с правильным";
@@ -90,70 +95,68 @@ export default {
 
 <template>
   <div class="wrapper">
-    <div class="form-box">
-      <form v-if="!confirmation" ref="form" @submit.prevent="submit">
-        <h2 class="title">Регистрация</h2>
-        <div class="input-box">
-          <input v-model="username" type="text" required id="name" />
-          <label for="name" class="name">Имя</label>
-        </div>
-        <div class="input-box">
-          <input v-model="surname" type="text" required id="surname" />
-          <label for="surname" class="surname">Фамилия</label>
-        </div>
-        <div class="input-box">
-          <input v-model="email" type="email" required id="emailInput" />
-          <label for="emailInput" class="">Почта</label>
-        </div>
-        <div class="input-box">
-          <input
-            :value="formatPhoneNumber"
-            @input="updateValue($event)"
-            type="tel"
-            size="20"
-            maxlength="12"
-            required
-            id="number"
-          />
-          <label for="number" class="number">Номер телефона</label>
-        </div>
-        <div class="input-box">
-          <input v-model="password" type="password" required id="password" />
-          <label for="password" class="password">Пароль</label>
-        </div>
-        <div class="group mb-3">
-          <RouterLink to="/login" class="node">Перейти к входу</RouterLink>
-        </div>
-        <div class="sign-up">
-          <button @click="toconfirm" class="sign-up-btn" id="sign-up">
-            Продолжить
-          </button>
-        </div>
-        <div class="email_check"></div>
-      </form>
-      <div class="wrapper-for-register" v-if="confirmation">
-        <h2 class="title">Подтверждение</h2>
-        <div class="text">
-          Для подтверждения номера телефона введите последние 4 цифры номера,
-          который позвонит на ваш указанный номер
-        </div>
-        <div class="input-box">
-          <input v-model="code" type="text" required id="code" />
-          <label for="code" class="name">Последние 4 цифры</label>
-        </div>
-        <div class="group mb-3">
-          <RouterLink to="/phone_policy" class="node"
-            >Политика соглашения</RouterLink
-          >
-        </div>
-        <div class="sign-up">
-          <button @click="call" class="call">Позвонить</button>
-          <button @click="check" type="submit" class="sign-up-btn" id="sign-up">
-            Проверить
-          </button>
-        </div>
-        <div class="email_check"></div>
+    <div v-if="!confirmation" class="form-box">
+      <h2 class="title">Регистрация</h2>
+      <div class="input-box">
+        <input v-model="username" type="text" required id="name" />
+        <label for="name" class="name">Имя</label>
       </div>
+      <div class="input-box">
+        <input v-model="surname" type="text" required id="surname" />
+        <label for="surname" class="surname">Фамилия</label>
+      </div>
+      <div class="input-box">
+        <input v-model="email" type="email" required id="emailInput" />
+        <label for="emailInput" class="">Почта</label>
+      </div>
+      <div class="input-box">
+        <input
+          :value="formatPhoneNumber"
+          @input="updateValue($event)"
+          type="tel"
+          size="20"
+          maxlength="12"
+          required
+          id="number"
+        />
+        <label for="number" class="number">Номер телефона</label>
+      </div>
+      <div class="input-box">
+        <input v-model="password" type="password" required id="password" />
+        <label for="password" class="password">Пароль</label>
+      </div>
+      <div class="group mb-3">
+        <RouterLink to="/login" class="node">Перейти к входу</RouterLink>
+      </div>
+      <div class="sign-up">
+        <button @click="toconfirm" class="sign-up-btn" id="sign-up">
+          Продолжить
+        </button>
+      </div>
+      <div class="email_check"></div>
+    </div>
+    <div class="wrapper-for-register" v-if="confirmation">
+      <h2 class="title">Подтверждение</h2>
+      <div class="text">
+        Для подтверждения номера телефона введите последние 4 цифры номера,
+        который позвонит на ваш указанный номер
+      </div>
+      <div class="input-box">
+        <input v-model="code" type="text" required id="code" />
+        <label for="code" class="name">Последние 4 цифры</label>
+      </div>
+      <div class="group mb-3">
+        <RouterLink to="/phone_policy" class="node"
+          >Политика соглашения</RouterLink
+        >
+      </div>
+      <div class="sign-up">
+        <button @click="call" class="call">Позвонить</button>
+        <button @click="check" class="sign-up-btn" id="sign-up">
+          Проверить
+        </button>
+      </div>
+      <div class="email_check"></div>
     </div>
     <div v-if="error" class="notification-container">
       <div :class="{ error: status == 400, success: status == 200 }">
@@ -194,7 +197,11 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 70vh;
+}
+
+.group a {
+  width: 100%;
 }
 
 .text {
@@ -202,10 +209,11 @@ export default {
   text-align: center;
 }
 
-.form-box {
+.form-box, .wrapper-for-register {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   color: #d5d5d5;
   border: 1px solid #d5d5d5;
   padding: 10px;
@@ -214,18 +222,13 @@ export default {
   flex-basis: 300px;
 }
 
-form,
-.wrapper-for-register {
-  width: 100%;
-}
-
 a {
   color: #d5d5d5 !important;
   text-decoration: none;
 }
 .input-box {
   position: relative;
-  margin: 25px 0;
+  margin: 12px 0;
   width: 100%;
   border-bottom: 2px solid #b3b3b3bc;
 }
@@ -255,7 +258,7 @@ a {
 input:focus ~ label,
 input[type="email"]:focus ~ label,
 input:valid ~ label {
-  top: -10px;
+  top: 0px;
 }
 
 .input-box label {
@@ -293,7 +296,7 @@ input:valid ~ label {
   padding: 5px 7px;
 }
 
-@media (max-height: 780px) {
+@media (max-height: 760px) {
   .form-box {
     flex-basis: 90%;
   }

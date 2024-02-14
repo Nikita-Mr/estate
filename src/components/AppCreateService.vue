@@ -638,7 +638,7 @@ button:active {
 
 @media (max-width: 990px) {
   .info_open {
-    height: 74vh;
+    height: 68vh;
   }
 }
 

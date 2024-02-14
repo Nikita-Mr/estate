@@ -175,6 +175,7 @@ export default {
 }
 * {
   color: #fff;
+  transition: all 500ms ease;
 }
 
 .myads {
@@ -254,7 +255,6 @@ input {
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
   padding: 10px;
   overflow-x: hidden;
@@ -323,7 +323,7 @@ input {
   width: 40%;
 }
 
-@media (max-width: 460px) {
+@media (max-width: 510px) {
   .title span {
     font-size: 1.6rem !important;
   }

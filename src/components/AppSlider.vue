@@ -271,7 +271,7 @@ a {
 @media (max-height: 820px) {
   .wrapper-for-slider {
     backdrop-filter: blur(10px);
-    padding: 12px 21px;
+    padding: 21px;
     border-radius: 15px;
     border: 1px solid #fff;
     top: 1%

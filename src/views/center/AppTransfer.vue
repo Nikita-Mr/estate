@@ -391,7 +391,7 @@ input::placeholder {
   }
 
   .cards {
-    width: 93%;
+    width: 100%;
     margin: 5px;
   }
   
@@ -437,10 +437,6 @@ input::placeholder {
 
   .empty img {
     height: 50px;
-  }
-
-  .cards {
-    padding: 2px;
   }
 }
 

@@ -215,6 +215,16 @@ export default {
   transition: all 500ms ease;
 }
 
+.btn-find {
+  background: linear-gradient(45deg, #56CCF2, #2F80ED);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  border: none;
+  color: #fff;
+
+  transition: all 500ms ease;
+}
+
 .btn-cancel:hover {
   transform: scale(1.06);
 }

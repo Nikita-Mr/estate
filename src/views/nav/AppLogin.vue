@@ -32,7 +32,6 @@ export default {
       }
       setTimeout(() => {
         if (this.status == 200) {
-          this.$refs.form.reset();
           location.reload();
         }
       }, 1000);
@@ -71,37 +70,35 @@ export default {
 <template>
   <div class="wrapper">
     <div class="form-box">
-      <form ref="form" @submit.prevent="submit">
-        <h2 class="title">Вход</h2>
-        <div class="input-box">
-          <input
-            v-model="email"
-            name="email"
-            type="email"
-            class="email"
-            required
-          />
-          <label for="">Почта</label>
-        </div>
-        <div class="input-box">
-          <input
-            v-model="password"
-            name="password"
-            type="password"
-            class="password"
-            required
-          />
-          <label for="">Пароль</label>
-        </div>
-        <div class="group mb-3">
-          <RouterLink to="/register" class="node"
-            >Перейти к регистрации</RouterLink
-          >
-        </div>
-        <div class="sign-up">
-          <button type="submit" class="sign-up-btn">Войти</button>
-        </div>
-      </form>
+      <h2 class="title">Вход</h2>
+      <div class="input-box">
+        <input
+          v-model="email"
+          name="email"
+          type="email"
+          class="email"
+          required
+        />
+        <label for="">Почта</label>
+      </div>
+      <div class="input-box">
+        <input
+          v-model="password"
+          name="password"
+          type="password"
+          class="password"
+          required
+        />
+        <label for="">Пароль</label>
+      </div>
+      <div class="group mb-3">
+        <RouterLink to="/register" class="node"
+          >Перейти к регистрации</RouterLink
+        >
+      </div>
+      <div class="sign-up">
+        <button type="submit" @click="submit" class="sign-up-btn">Войти</button>
+      </div>
     </div>
     <transition name="ant">
       <div v-if="error" class="notification-container">
@@ -158,13 +155,14 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 70vh;
 }
 
 .form-box {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   color: #d5d5d5;
   border: 1px solid #d5d5d5;
   padding: 10px;
@@ -173,9 +171,6 @@ export default {
   flex-basis: 300px;
 }
 
-form {
-  width: 100%;
-}
 
 a {
   color: #d5d5d5 !important;
@@ -183,7 +178,7 @@ a {
 }
 .input-box {
   position: relative;
-  margin: 25px 0;
+  margin: 12px 0;
   width: 100%;
   border-bottom: 2px solid #b3b3b3bc;
 }
@@ -204,7 +199,7 @@ a {
 input:focus ~ label,
 input[type="email"]:focus ~ label,
 input:valid ~ label {
-  top: -10px;
+  top: 0px;
 }
 
 .input-box label {
@@ -230,6 +225,10 @@ input:valid ~ label {
 
 .node {
   color: black;
+}
+
+.group a {
+  width: 100%;
 }
 
 .sign-up-btn {

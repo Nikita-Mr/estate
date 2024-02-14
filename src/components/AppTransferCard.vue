@@ -1,7 +1,7 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ru';
+import { RouterLink, RouterView } from "vue-router";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
 import { defineComponent } from "vue";
 import { Carousel, Navigation, Slide, Pagination } from "vue3-carousel";
 
@@ -21,7 +21,7 @@ export default defineComponent({
     price_sit: Number,
     length: String,
     boardedPlaces: Number,
-    passenger2: Number
+    passenger2: Number,
   },
   components: {
     Carousel,
@@ -31,14 +31,14 @@ export default defineComponent({
   },
   data() {
     return {
-      passenger3: this.passenger/2
+      passenger3: this.passenger / 2,
     };
   },
   methods: {
     getDate(data) {
       let date = new Date(data);
-      let day = dayjs(date)
-      dayjs.locale('ru')
+      let day = dayjs(date);
+      dayjs.locale("ru");
       return day.format(`dd, D MMM`);
     },
   },
@@ -47,103 +47,106 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="wrapperTransfer">
-    <div class="cardTransfer">
-      <div class="wrapinfo">
-        <div class="info">
-          <div class="time">
-            <div class="first">
-              <span>{{ timefrom }}</span>
-              <span class="sub">{{ getDate(datefrom) }}</span>
-            </div>
-            <div class="second">
-              <span class="moreText">Длительность поездки: {{ length }} часа</span>
-            </div>
+  <div class="cardTransfer">
+    <div class="wrapinfo">
+      <div class="info">
+        <div class="time">
+          <div class="">
+            <span>{{ timefrom }}</span>
+            <span class="sub">{{ getDate(datefrom) }}</span>
           </div>
-          <!-- <div class="line"></div> -->
-          <div class="city">
-            <div class="first">
-              <span class="textCity">{{ cityfrom }}</span>
-              <span class="sub">Мест: {{ passenger }}</span>
-            </div>
-            <div class="second">
-              <span>{{ cityto }}</span>
-              <div class="wrapsvg">
-                <div
-                  class="circlesvg"
-                  :class="{
-                    green: boardedPlaces < passenger3 && typeCar == `bus`,
-                    green: boardedPlaces < passenger3 && typeCar == `car`,
-                  }"
-                >
-                  <ion-icon name="person"></ion-icon>
-                </div>
-                <div
-                  class="circlesvg"
-                  :class="{
-                    yellow:
-                      boardedPlaces >= passenger3 - 2 &&
-                      boardedPlaces <= passenger3 + 2 &&
-                      typeCar == `bus`,
-                    yellow:
-                      boardedPlaces >= passenger3 - 1 &&
-                      boardedPlaces <= passenger1 + 1 &&
-                      typeCar == `car`,
-                  }"
-                >
-                  <ion-icon name="person"></ion-icon>
-                </div>
-                <div
-                  class="circlesvg"
-                  :class="{
-                    red:
-                      boardedPlaces <= passenger &&
-                      boardedPlaces > passenger3 &&
-                      typeCar == `bus`,
-                    red:
-                      boardedPlaces <= passenger &&
-                      boardedPlaces > passenger3 &&
-                      typeCar == `car`,
-                  }"
-                >
-                  <ion-icon name="person"></ion-icon>
-                </div>
+          <div class="second">
+            <span class="moreText"
+              >Длительность поездки: {{ length }} часа</span
+            >
+          </div>
+        </div>
+        <!-- <div class="line"></div> -->
+        <div class="city">
+          <div class="">
+            <span class="textCity">{{ cityfrom }}</span>
+            <span class="sub">Мест: {{ passenger }}</span>
+          </div>
+          <div class="second">
+            <span>{{ cityto }}</span>
+            <div class="wrapsvg">
+              <div
+                class="circlesvg"
+                :class="{
+                  green: boardedPlaces < passenger3 && typeCar == `bus`,
+                  green: boardedPlaces < passenger3 && typeCar == `car`,
+                }"
+              >
+                <ion-icon name="person"></ion-icon>
+              </div>
+              <div
+                class="circlesvg"
+                :class="{
+                  yellow:
+                    boardedPlaces >= passenger3 - 2 &&
+                    boardedPlaces <= passenger3 + 2 &&
+                    typeCar == `bus`,
+                  yellow:
+                    boardedPlaces >= passenger3 - 1 &&
+                    boardedPlaces <= passenger1 + 1 &&
+                    typeCar == `car`,
+                }"
+              >
+                <ion-icon name="person"></ion-icon>
+              </div>
+              <div
+                class="circlesvg"
+                :class="{
+                  red:
+                    boardedPlaces <= passenger &&
+                    boardedPlaces > passenger3 &&
+                    typeCar == `bus`,
+                  red:
+                    boardedPlaces <= passenger &&
+                    boardedPlaces > passenger3 &&
+                    typeCar == `car`,
+                }"
+              >
+                <ion-icon name="person"></ion-icon>
               </div>
             </div>
           </div>
         </div>
-        <div class="cars">
-          <div class="img">
-            <Carousel :autoplay="4000" :wrap-around="true">
-              <Slide v-for="slide in img" :key="slide">
-                <div class="carousel__item">
-                  <img class="carousel_img" :src="`/dist/assets/img/user/` + slide" alt="" />
-                </div>
-              </Slide>
-            </Carousel>
-          </div>
-          <span class="modelCar">{{ typeCar == `car` ? name : car }}</span>
-        </div>
       </div>
-      <div class="wrapprice">
-        <div class="price">
-          <span v-if="boardedPlaces != passenger">{{ price_sit }}₽</span>
-          <span v-if="boardedPlaces == passenger">Нет мест</span>
-          <span v-if="boardedPlaces != passenger" class="sub discount"
-            >{{ price_sit + 300 }}₽</span
-          >
+      <div class="cars">
+        <div class="img">
+          <Carousel :autoplay="4000" :wrap-around="true">
+            <Slide v-for="slide in img" :key="slide">
+              <div class="carousel__item">
+                <img
+                  class="carousel_img"
+                  :src="`/dist/assets/img/user/` + slide"
+                  alt=""
+                />
+              </div>
+            </Slide>
+          </Carousel>
         </div>
-        <div class="content">
-          <img src="" alt="" />
-          <img src="" alt="" />
-        </div>
+        <span class="modelCar">{{ typeCar == `car` ? name : car }}</span>
+      </div>
+    </div>
+    <div class="wrapprice">
+      <div class="price">
+        <span v-if="boardedPlaces != passenger">{{ price_sit }}₽</span>
+        <span v-if="boardedPlaces == passenger">Нет мест</span>
+        <span v-if="boardedPlaces != passenger" class="sub discount"
+          >{{ price_sit + 300 }}₽</span
+        >
+      </div>
+      <div class="content">
+        <img src="" alt="" />
+        <img src="" alt="" />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 * {
   color: #fff;
 }
@@ -170,12 +173,8 @@ export default defineComponent({
   border-radius: 100%;
 }
 
-.wrapperTransfer {
-  margin: 7px;
-}
-
 .cars {
- padding-top: 7px;
+  padding-top: 7px;
 }
 
 .time {
@@ -192,7 +191,8 @@ export default defineComponent({
   transition: all 150ms linear;
   border-radius: 12px;
   cursor: pointer;
-  width: 100%;
+  width: 50%;
+  margin: 7px;
 }
 .cardTransfer:hover {
   box-shadow: 0px 5px 15px 0px #2b2b2b;
@@ -203,7 +203,6 @@ export default defineComponent({
   gap: 15px;
   height: 100px;
   margin-bottom: 10px;
-  min-width: 230px;
   justify-content: space-between;
 }
 .first span {
@@ -296,40 +295,34 @@ span:not(.sub, .cars span) {
 .red {
   background: #ee2e31;
 }
-
-@media (max-width: 400px) {
-
-  .first {
-    width: 85px;
-    word-break: break-all;
-  }
-  .textCity {
-    width: 130px;
-    word-break: break-all;
-  }
-
+@media (max-width: 1000px) {
   .cardTransfer {
-    padding: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-
-  .info {
-    min-width: 200px;
-  }
-}
-
-@media (max-height: 720px) {
-  .cardTransfer {
-    width: 96%;
+    width: 70%;
   }
 }
 
 @media (max-width: 770px) {
+  .cardTransfer {
+    width: 100%;
+  }
   .container {
     max-width: 100%;
   }
 }
 
+@media (max-width: 480px) {
+  .info {
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 400px) {
+  .first {
+    width: 85px;
+    word-break: break-all;
+  }
+  .cardTransfer {
+    padding: 8px;
+  }
+}
 </style>

@@ -1,87 +1,120 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router';
-import axios from 'axios';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ru';
+import { RouterLink, RouterView } from "vue-router";
+import axios from "axios";
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
 
 export default {
   data() {
     return {
-      weather: ``,
-      alerts: ``,
-      time: ``,
-      icon: ``,
-      find: ``,
-      list: [],
-      weatherDay: [],
-      hour: [],
+      today: {},
+      tomorrow: {},
+      twoWeeks: {},
+      month: {},
+      find: `Шерегеш`,
+      target: "сегодня",
       index: 0,
+      weather: {},
+      dayHours: [
+        "2:00",
+        "5:00",
+        "8:00",
+        "11:00",
+        "14:00",
+        "17:00",
+        "20:00",
+        "23:00",
+      ],
+      monthDays: [],
     };
   },
   methods: {
     async loadWeather() {
+      let response = await axios.post(`/weather`, {
+        city: this.find,
+      });
+      this.today = response.data.today;
+      this.tomorrow = response.data.tomorrow;
+      this.twoWeeks = response.data.twoWeeks;
+      this.month = response.data.month;
 
-      
-      await axios
-        .get(
-          `https://api.gismeteo.net/v2/search/cities/?lang=en&query=${
-            !this.find ? 'Шерегеш' : this.find
-          }`,
-          {
-            headers: {
-              'X-Gismeteo-Token': '658aaaf0a8fee9.23888053',
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Headers': '*',
-            },
-          }
-        )
-        .then((res) => {
-          this.list = res.data.forecast.forecastday;
-          /* this.weather = res.data.main.temp; this.alerts = res.data.weather[0].description; this.icon = res.data.weather[0].icon;*/
-          console.log(this.list);
-          console.log(res.data);
-          this.weatherDays = res.data;
-        });
+      let toDay = new Date();
+      this.monthDays = [];
+      this.cal = true;
+      for (let i = 0; i < 36; i++) {
+        let date = new Date(toDay);
+        date.setDate(toDay.getDate() + i);
+        this.monthDays.push(date.toISOString().slice(0, 10));
+      }
+    },
+    show_day(s) {
+      let arr = s.split("-");
+      s = arr.reverse().join(".");
+      return s;
     },
     getDate(data) {
+      dayjs.locale("ru");
       let date = new Date(data);
       let day = dayjs(date);
-      dayjs.locale('ru');
       return day.format(`dd, D MMM`);
     },
-    days(day) {
-      // if (day < 1) {
-      //   return 'Сегодня';
-      // }
-      // if (day > 0 && day < 4) {
-      //   return '3 дня';
-      // }
+    dataWeather(s) {
+      this.target = s;
+      if (this.target == "сегодня") {
+        this.weather = this.today;
+      } else if (this.target == "завтра") {
+        this.weather = this.tomorrow;
+      } else if (this.target == "14-дней") {
+        this.weather = this.twoWeeks;
+      } else if (this.target == "месяц") {
+        this.weather = this.month;
+      }
+      console.log(this.weather);
     },
-    weatherdays(e) {
-      if (e == 1) {
-        this.weatherDay = this.list.slice(0, 1);
-      }
-      if (e == 3) {
-        this.weatherDay = this.list.slice(0, 3);
-      }
-      if (e == 7) {
-        this.weatherDay = this.list.slice(0, 7);
-      }
-      if (e == 10) {
-        this.weatherDay = this.list.slice(0, 9);
+
+    getsrc(s, t) {
+      if (s) {
+        if (s.toLowerCase().includes("дожд")) {
+          return "rainy.png";
+        } else if (
+          s.toLowerCase().includes("снег") ||
+          s.toLowerCase().includes("снеж")
+        ) {
+          return "snow.png";
+        } else if (
+          (s.toLowerCase().includes("ясн") ||
+            s.toLowerCase().includes("безоблачно")) &&
+          (t == "8:00" || t == "11:00" || t == "14:00" || t == "17:00")
+        ) {
+          return "sun.png";
+        } else if (s.toLowerCase().includes("тум")) {
+          return "foog.png";
+        } else if (
+          s.toLowerCase().includes("пасмурн") ||
+          s.toLowerCase().includes("облачн")
+        ) {
+          return "cloudy.png";
+        } else if (
+          s.toLowerCase().includes("безоблачн") &&
+          (t == "2:00" || t == "5:00" || t == "20:00" || t == "23:00")
+        ) {
+          return "luna.png";
+        }
+      } else {
+        return "no.png";
       }
     },
-    hours(weatI) {
-      this.hour = [];
-      for (let i = 0; i < this.weatherDay[weatI].hour.length; i += 3) {
-        // console.log(this.weatherDay[weatI].hour[i])
-        this.hour.push(this.weatherDay[weatI].hour[i]);
-      }
+
+    getTemp(tmin, tmax) {
+      let n1 = parseInt(tmin);
+      let n2 = parseInt(tmax);
+      let sum = n1 + n2;
+      console.log(tmin, n1, tmax, n2, sum);
+      return Math.floor(sum / 2);
     },
   },
   mounted() {
     this.loadWeather();
-    this.weatherdays(1);
   },
 };
 </script>
@@ -95,177 +128,209 @@ export default {
         type="text"
         placeholder="Шерегеш"
       />
-      <button @click="loadWeather" type="submit">Поиск</button>
+      <button @click="loadWeather" class="btn-find" type="submit">Поиск</button>
     </div>
-    <span class="city">{{ !find ? 'Шерегеш' : find }}</span>
+    <span class="city">{{ !find ? "Шерегеш" : find }}</span>
     <div class="wrapp">
-      <button class="nav" @click="weatherdays(1)">Сегодня</button>
-      <button class="nav" @click="weatherdays(3)">3-дня</button>
-      <button class="nav" @click="weatherdays(7)">7-дней</button>
-      <button class="nav" @click="weatherdays(10)">10-дней</button>
-      <button class="nav" @click="weatherdays(30)">Месяц</button>
-    </div>
-    <div class="wrapper">
-      <!-- <div class="card" v-if="weatherDay < 0">
-        <div class="icon">
-          <img :src="weatherDay.day.condition.icon" alt="" />
-        </div>
-        <div class="card-title">
-          <span class="weather">{{ weatherDay.day.mintemp_c }}°C</span>
-          <span class="title">{{ weatherDay.day.condition.text }}</span>
-          <span class="days">{{ getDate(weatherDay.date) }}</span>
-        </div>
-      </div> -->
-      <div
-        class="card"
-        @click="hours(i), (index = i)"
-        v-for="(item, i) in weatherDay"
+      <button
+        class="btn-weather"
+        :class="{ active: this.target == 'сегодня' }"
+        @click="dataWeather('сегодня')"
       >
-        <div class="icon">
-          <img :src="item.day.condition.icon" alt="" />
-        </div>
-        <div class="card-title">
-          <span class="weather">{{ item.day.mintemp_c }}°C</span>
-          <span class="title">{{ item.day.condition.text }}</span>
-          <span class="days">{{ getDate(item.date) }}</span>
-        </div>
+        Сегодня
+      </button>
+      <button
+        class="btn-weather"
+        :class="{ active: this.target == 'завтра' }"
+        @click="dataWeather('завтра')"
+      >
+        Завтра
+      </button>
+      <button
+        class="btn-weather"
+        :class="{ active: this.target == '14-дней' }"
+        @click="dataWeather('14-дней')"
+      >
+        14-дней
+      </button>
+      <button
+        class="btn-weather"
+        :class="{ active: this.target == 'месяц' }"
+        @click="dataWeather('месяц')"
+      >
+        Месяц
+      </button>
+    </div>
+    <div class="wrapper" v-if="weather.length < 14">
+      <div class="card-weather" v-for="(item, i) in weather">
+        <span>{{ dayHours[i] }}</span>
+        <img
+          class="card-weather-img"
+          :src="'/src/assets/img/' + getsrc(item.summary, dayHours[i])"
+          alt=""
+        />
+        <span>{{ item.temp }}°</span>
       </div>
-
-      <div class="hour">
-        <hr />
-        <!-- <h2>{{ getDate(weatherDay[index].date) }}</h2> -->
-        <div class="wrapper_hour">
-          <div class="card" v-for="(item, i) in hour">
-            <div class="icon">
-              <img :src="item.condition.icon" alt="" />
-            </div>
-            <div class="card-title">
-              <span class="weather">{{ item.temp_c }}°C</span>
-              <span class="title">{{ item.condition.text }}</span>
-              <span class="days">{{ item.time.slice(11) }}</span>
-            </div>
-          </div>
-        </div>
+    </div>
+    <div class="wrapper" v-if="weather.length >= 14">
+      <div class="card-weather" v-for="(item, i) in weather">
+        <span class="data">{{ getDate(monthDays[i]) }}</span>
+        <img
+          class="card-weather-img"
+          :src="'/src/assets/img/' + getsrc(item.summary, dayHours[i])"
+          alt=""
+        />
+        <span>Мин. °C: {{ item.tmin }}°</span>
+        <span>Макс. °C: {{ item.tmax }}°</span>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+* {
+  font-weight: 500;
+}
 
-.wrapper_hour {
+.card-weather {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 25px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 15px;
+
+  transition: all 500ms ease;
 }
-.hour h2 {
-  text-align: center;
-  color: #d5d5d5;
+
+.card-weather:hover {
+  border: 1px solid #fff;
+  box-shadow: 0 0 10px 0 #fff;
+  transform: translateY(-2px);
 }
-.hour .card {
-  width: 150px;
-  font-size: 12px;
+
+.card-weather span {
+  color: #fff;
 }
-.wrapp {
+
+.card-weather-img {
+  height: 25px;
+}
+
+.wrapper {
+  width: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
+  flex-wrap: wrap;
+  height: 50vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
-.nav {
-  padding: 0 10px;
-  width: 100px;
+
+.weather-wrapper {
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  border: none;
-  background: #fff;
+  flex-direction: column;
+  gap: 10px;
 }
-.nav:focus {
-  filter: brightness(80%);
-  transition: filter 200ms;
-  cursor: pointer;
+
+input {
+  background: #fff;
+  outline: none;
+  border: none;
+  border-radius: 15px 0 0 15px;
+  padding: 3px 7px;
+}
+
+.wrapper-input {
+  box-shadow: 0 0 10px 0 #fff;
+  border-radius: 15px;
 }
 
 .city {
-  color: #d5d5d5;
-  display: inline-block;
-  width: 100%;
-  text-align: center;
+  color: #fff;
+  font-size: 2rem;
 }
-.wrapper {
-  display: flex;
-  align-items: start;
-  overflow-x: scroll;
-  padding: 15px 10px;
-  height: 300px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 22px;
-}
-.wrapper-input {
+
+.wrapp {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
-.wrapper-input button {
+
+.btn-weather {
+  background: #fff;
+  border-radius: 15px;
   border: none;
-  border-radius: 0 10px 10px 0;
-  padding: 1.5px 8px;
-  box-shadow: 0 0 10px #d5d5d5;
+  font-weight: 500;
+  padding: 5px 12px;
+  box-shadow: 0px 0 10px 0 #fff;
+
+  transition: all 500ms ease;
 }
-.wrapper-input input {
-  border: none;
-  border-radius: 10px 0 0 10px;
-  padding: 1.5px 10px;
-  box-shadow: 0 0 10px #d5d5d5;
+
+.btn-find {
+  border-radius: 0 15px 15px 0;
+  padding: 3px 7px;
 }
-.wrapper-input input:focus {
-  box-shadow: none;
+
+.btn-weather:hover,
+.btn-weather:active,
+.btn-weather:focus {
+  box-shadow: 0px 0 10px 0 black;
+  background: none;
+  color: #fff;
+  transform: translateY(-2px);
   outline: none;
 }
-.wrapper-input button:hover {
-  box-shadow: none;
+
+.data {
+  font-size: 1rem;
 }
-.weather-wrapper {
-  width: 100%;
-  height: 100%;
+
+@media (max-width: 1000px) {
+  .wrapper {
+    width: 100%;
+    gap: 5px;
+  }
 }
-.card {
-  max-width: 200px;
-  width: 100%;
-  height: 30%;
-  background-color: transparent;
-  border: none;
-  color: #d5d5d5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: row;
-  cursor: pointer;
+
+@media (max-width: 768px) {
+  span {
+    font-size: .7rem;
+  }
 }
-.city {
-  font-size: 40px;
+
+@media (max-width: 570px) {
+  .wrapper {
+    gap: 0;
+    height: 50vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
 }
-.card-title span {
-  display: block;
-  text-align: center;
+
+@media (max-width: 480px) {
+  .wrapp button {
+    font-size: 0.8rem;
+  }
+
+  .wrapp {
+    gap: 5px;
+  }
 }
-.icon {
-  text-align: center;
-}
-.icon img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 100%;
-  box-shadow: 0px 0 10px 0 #fff;
-  background-color: #ffffff80;
-}
-.weather {
-  font-size: 18px;
+
+@media (max-height: 760px) {
+  .wrapper {
+    height: 41vh;
+  }
 }
 </style>

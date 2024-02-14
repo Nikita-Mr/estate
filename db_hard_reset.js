@@ -1,4 +1,5 @@
 let { sequelize, NewsModel, UserModel, CardModel, HotelModel, NumberModel } = require('./modules/models');
+const bcrypt = require("bcryptjs");
 
 
 const THE_FUCKING_CURE = async () => 
@@ -27,27 +28,16 @@ const THE_FUCKING_CURE = async () =>
     // });
 
     console.log('created card...');
-
+    let hashPassword = bcrypt.hashSync('admin123', 7);
     const newUser = await UserModel.create({
         username: 'Admin',
         surname: 'Adminov',
         email: 'example@example.com',
         phone: '+79042065393',
-        password: 'admin123',
+        password: hashPassword,
         role: "ADMIN",
-        balance: 1000
+        balance: 10000
     }, );
-    
-    const otherUser = await UserModel.create({
-        username: 'name',
-        surname: 'surname',
-        email: 'name@mail.ru',
-        phone: 'phone',
-        password: 'password',
-        role: "ADMIN",
-        balance: 0
-    }, );
-    console.log('created user...');
 
     const newNew = await NewsModel.create({
         title: 'example new',
@@ -81,7 +71,6 @@ const THE_FUCKING_CURE = async () =>
     
     // await newCard.save();
     await newUser.save();
-    await otherUser.save();
     await newNew.save();
     
     //hotels

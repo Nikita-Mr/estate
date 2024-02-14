@@ -13,18 +13,18 @@ const fs = require("fs");
 const mkdirp = require("mkdirp");
 const nodemailer = require("nodemailer");
 
-const TelegramApi = require("node-telegram-bot-api");
-const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
+// const TelegramApi = require("node-telegram-bot-api");
+// const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
 
-let bot = new TelegramApi(tokenBot, { polling: true });
+// let bot = new TelegramApi(tokenBot, { polling: true });
 
-bot.on(`message`, (msg) => {
-  let text = msg.text;
-  let chatID = msg.chat.id;
-  if (text == "/start") {
-    bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
-  }
-});
+// bot.on(`message`, (msg) => {
+//   let text = msg.text;
+//   let chatID = msg.chat.id;
+//   if (text == "/start") {
+//     bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
+//   }
+// });
 
 // модули самого бэкенда
 const {
@@ -49,6 +49,12 @@ const { initPayment, awaitPayment } = require(`./modules/payments`);
 const { name } = require("dayjs/locale/ru");
 const internal = require("stream");
 const { default: axios } = require("axios");
+const { SMSRu } = require("node-sms-ru");
+
+const sms = new SMSRu("F2117CBA-89E3-7C23-1C4F-61E1F9338C54");
+const { Gismeteo } = require("gismeteo");
+
+const gismeteo = new Gismeteo({ lang: "ru", unit_temp: "C" });
 
 let app = express();
 let port = process.env.PORT || 3005;
@@ -304,7 +310,7 @@ app.post(`/upload`, async function (req, res) {
   }
   if (req.file) {
     let file = req.file;
-    console.log(file)
+    console.log(file);
     //let filename = files[i].name;
     let date = new Date();
     let time = date.getTime();
@@ -352,7 +358,7 @@ app.post(`/upload`, async function (req, res) {
   }
   let files = req.files.files;
   let imgName = [];
-  console.log(files, "Файлы")
+  console.log(files, "Файлы");
 
   //console.log(files);
   for (let i = 0; i < files.length; i++) {
@@ -463,7 +469,7 @@ app.post(`/create-card`, async function (req, res) {
     } = req.body;
     if (category == `habitation`) {
       if (edit) {
-        console.log(1)
+        console.log(1);
         let card = await HotelModel.findOne({ where: { id: id } });
         card.title = title;
         card.price = price;
@@ -472,39 +478,39 @@ app.post(`/create-card`, async function (req, res) {
         card.img = img;
         card.p = p;
         card.email = email;
-        card.chatID = chatID
+        card.chatID = chatID;
         card.verified = false;
-        card.floor = floor
-        card.lease_term = lease_term
-        card.total_area = total_area
-        card.sleeping_rooms = sleeping_rooms
-        card.sleeping_places = sleeping_places
-        card.children_bed = children_bed
-        card.double_places = double_places
-        card.single_spaces = single_spaces
-        card.additional_sleeping_places = additional_sleeping_places
-        card.bathrooms = bathrooms
-        card.bathrooms_showers = bathrooms_showers
-        card.drying_for_inventory = drying_for_inventory
-        card.wifi = wifi
-        card.warm_floor = warm_floor
-        card.dishwasher = dishwasher
-        card.parking_cars = parking_cars
-        card.mall = mall
-        card.kazan = kazan
-        card.bath_territory = bath_territory
-        card.pool = pool
-        card.transfer_city = transfer_city
-        card.transfer_mountain = transfer_mountain
-        card.live_whith_animals = live_whith_animals
-        card.additionally = additionally
+        card.floor = floor;
+        card.lease_term = lease_term;
+        card.total_area = total_area;
+        card.sleeping_rooms = sleeping_rooms;
+        card.sleeping_places = sleeping_places;
+        card.children_bed = children_bed;
+        card.double_places = double_places;
+        card.single_spaces = single_spaces;
+        card.additional_sleeping_places = additional_sleeping_places;
+        card.bathrooms = bathrooms;
+        card.bathrooms_showers = bathrooms_showers;
+        card.drying_for_inventory = drying_for_inventory;
+        card.wifi = wifi;
+        card.warm_floor = warm_floor;
+        card.dishwasher = dishwasher;
+        card.parking_cars = parking_cars;
+        card.mall = mall;
+        card.kazan = kazan;
+        card.bath_territory = bath_territory;
+        card.pool = pool;
+        card.transfer_city = transfer_city;
+        card.transfer_mountain = transfer_mountain;
+        card.live_whith_animals = live_whith_animals;
+        card.additionally = additionally;
         await card.save();
         console.log(card);
         return res.json({ status: "200" });
       } else {
         try {
-          console.log(userID)
-          console.log(price)
+          console.log(userID);
+          console.log(price);
           let card = await HotelModel.build({
             img: {},
             category: category,
@@ -557,7 +563,7 @@ app.post(`/create-card`, async function (req, res) {
                   status: "400",
                 });
               }
-  
+
               console.log("done.");
               return res.send({
                 //message: `Создание карты завершено, timeId: ${timeId}`,
@@ -733,8 +739,7 @@ app.post(`/login`, async function (req, res) {
       });
     }
 
-    // let validPassword = bcrypt.compareSync(password, user.password);
-    validPassword = true;
+    let validPassword = bcrypt.compareSync(password, user.password);
     if (!validPassword) {
       return res.json({ message: "Введен неверный пароль", status: 400 });
     }
@@ -1171,7 +1176,7 @@ app.post(`/services`, async function (req, res) {
 app.post(`/service-card`, async function (req, res) {
   try {
     let { id } = req.body;
-    console.log(id)
+    console.log(id);
     let card = await CardService.findOne({ where: { id: id } });
     res.send({ card });
   } catch (err) {
@@ -2032,37 +2037,35 @@ app.post(`/transfer_days`, async function (req, res) {
   }
 });
 
+let code;
+
 app.post(`/confirmation`, async function (req, res) {
   try {
     let { phone, codeInput } = req.body;
-    let code;
-    let number = phone.slice(1);
+    let number;
+    if (phone) {
+      number = phone.slice(1);
+    }
     console.log(number, codeInput);
     if (codeInput) {
-      console.log(codeInput);
+      console.log(codeInput, code);
       if (codeInput == code) {
         res.send({ verified: true });
       } else {
         res.send({ verified: false });
       }
     } else {
-      const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-      const api_id = "F2117CBA-89E3-7C23-1C4F-61E1F9338C54";
-      let success;
-      console.log(ip, api_id);
-      let response = await axios.post("https://sms.ru/code/call", {
-        phone: number,
-        ip: ip,
-        api_id: api_id,
+      let response = await sms.codeCall({
+        to: phone,
       });
-      console.log(response.data);
-      if (response.data) {
-        code = response.data.code;
-        success = response.data.success;
+      console.log(response);
+      code = response.code;
+      let status = response.status;
+      if (status == "OK") {
+        res.send({ status: 200, message: "Звонок будет исполнен, ожидайте" });
       } else {
-        success = false;
+        res.send({ status: 400, message: "Ошибка, попробуйте позже" });
       }
-      res.send({ success });
     }
   } catch (err) {
     console.log(err);
@@ -2130,7 +2133,10 @@ app.post(`/accept_payments`, async function (req, res) {
       await request.save();
       res.send({ message: "Успешно", success: true });
     } else {
-      res.send({ message: "Сумма вывода превышает баланс пользователя!", success: false });
+      res.send({
+        message: "Сумма вывода превышает баланс пользователя!",
+        success: false,
+      });
     }
   } catch (err) {
     console.log(err);
@@ -2143,6 +2149,44 @@ app.post(`/reject_payments`, async function (req, res) {
     let request = await RequestPaymentModel.findOne({ id });
     await request.destroy();
     res.send({ success: true });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post(`/weather`, async function (req, res) {
+  try {
+    let { city } = req.body;
+    let today, tomorrow, twoWeeks, month;
+    city = 'Оренбург'
+    await gismeteo.getToday(city).then((data) => {
+      today = data
+    })
+    await gismeteo.getTomorrow(city).then((data) => {
+      console.log('Tomorrow', data)
+      tomorrow = data
+    })
+    await gismeteo.getTwoWeeks(city).then((data) => {
+      twoWeeks = data
+    })
+    await gismeteo.getMonth(city).then((data) => {
+      month = data
+    })
+
+    res.send({ today, tomorrow, twoWeeks, month })
+
+
+    // axios
+    //   .get(`https://api.gismeteo.net/v2/stations/weather/${city}`, {
+    //     params: {
+    //       "X-Gismeteo-Token": "	56b30cb255.3443075",
+    //       "Accept-Language": "ru",
+    //       "Units": "metric",
+    //     },
+    //   })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //   });
   } catch (err) {
     console.log(err);
   }

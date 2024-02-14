@@ -538,4 +538,11 @@ button:active {
     height: 70vh;
   }
 }
+
+@media (max-width: 700px) {
+  .button-wrapper {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
 </style>
