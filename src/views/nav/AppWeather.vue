@@ -328,6 +328,12 @@ input {
   }
 }
 
+@media (max-width: 300px) {
+  .wrapper-input {
+    display: flex;
+  }
+}
+
 @media (max-height: 760px) {
   .wrapper {
     height: 41vh;

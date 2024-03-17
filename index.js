@@ -13,18 +13,18 @@ const fs = require("fs");
 const mkdirp = require("mkdirp");
 const nodemailer = require("nodemailer");
 
-// const TelegramApi = require("node-telegram-bot-api");
-// const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
+const TelegramApi = require("node-telegram-bot-api");
+const tokenBot = "6512089922:AAEkul2Yw8aIIfh0A4vSypeC1kXJaTNDs9Y";
 
-// let bot = new TelegramApi(tokenBot, { polling: true });
+let bot = new TelegramApi(tokenBot, { polling: true });
 
-// bot.on(`message`, (msg) => {
-//   let text = msg.text;
-//   let chatID = msg.chat.id;
-//   if (text == "/start") {
-//     bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
-//   }
-// });
+bot.on(`message`, (msg) => {
+  let text = msg.text;
+  let chatID = msg.chat.id;
+  if (text == "/start") {
+    bot.sendMessage(chatID, `ваш чат ID: ${chatID}`);
+  }
+});
 
 // модули самого бэкенда
 const {
